@@ -2,6 +2,7 @@ import { h, Component, Fragment } from "preact";
 
 import Editor from "./Editor.js";
 import Error from "./Error.js";
+import DropZone from "./DropZone.js";
 
 const CONTENT_KEY = "content";
 const CONTENT_CACHE = {};
@@ -40,36 +41,14 @@ export default class App extends Component {
     this.setState({ ...this.state, content });
   }
 
-  componentDidMount() {
-    const DRAG_CLASS_NAME = "dragover";
-    document.body.addEventListener("drop", e => {
-      e.preventDefault();
-      document.documentElement.classList.remove(DRAG_CLASS_NAME);
-
-      for (let file of e.dataTransfer.items || e.dataTransfer.files) {
-        if (file.kind === "file") {
-          file = file.getAsFile();
-        }
-        console.log(file);
-
-        file
-          .text()
-          .then(JSON.parse)
-          .then(data => {
-            this.setState({ ...this.state, content: this.deserialize(data) });
-            this.serialize();
-          })
-          .catch(console.error);
-      }
-    });
-    document.body.addEventListener("dragover", e => {
-      e.preventDefault();
-      document.documentElement.classList.add(DRAG_CLASS_NAME);
-    });
-    document.body.addEventListener("dragleave", e => {
-      e.preventDefault();
-      document.documentElement.classList.remove(DRAG_CLASS_NAME);
-    });
+  handleFile(file) {
+    return file
+      .text()
+      .then(JSON.parse)
+      .then(data => {
+        this.setState({ ...this.state, content: this.deserialize(data) });
+        this.serialize();
+      });
   }
 
   serialize(array = null, i = null, data = null) {
@@ -114,9 +93,12 @@ export default class App extends Component {
 
   render() {
     return (
-      <Editor title="EcoXpert Newsletter template filling">
-        {this.state.content}
-      </Editor>
+      <>
+        <DropZone fileHandler={file => this.handleFile(file)} />
+        <Editor title="EcoXpert Newsletter template filling">
+          {this.state.content}
+        </Editor>
+      </>
     );
   }
 }
