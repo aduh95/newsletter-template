@@ -41,14 +41,13 @@ export default class App extends Component {
     this.setState({ ...this.state, content });
   }
 
-  handleFile(file) {
-    return file
-      .text()
-      .then(JSON.parse)
-      .then(data => {
-        this.setState({ ...this.state, content: this.deserialize(data) });
-        this.serialize();
-      });
+  importData(data) {
+    try {
+      const content = this.deserialize(JSON.parse(data));
+      this.setState({ ...this.state, content });
+    } catch (e) {
+      console.warn(e, data);
+    }
   }
 
   serialize(array = null, i = null, data = null) {
@@ -94,7 +93,7 @@ export default class App extends Component {
   render() {
     return (
       <>
-        <DropZone fileHandler={file => this.handleFile(file)} />
+        <DropZone dataHandler={txt => this.importData(txt)} />
         <Editor title="EcoXpert Newsletter template filling">
           {this.state.content}
         </Editor>

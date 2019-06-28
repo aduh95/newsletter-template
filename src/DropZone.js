@@ -1,5 +1,9 @@
 import { h, Component, Fragment } from "preact";
 
+if (!("text" in Blob.prototype)) {
+  import("./polyfill/blob-text.js");
+}
+
 const DRAG_CLASS_NAME = "dragover";
 const DROP_ZONE_ID = "drop-zone";
 
@@ -14,21 +18,22 @@ export default class DropZone extends Component {
     document.getElementById(DROP_ZONE_ID).addEventListener("drop", e => {
       e.preventDefault();
 
-      const promises = [];
+      const { dataHandler } = this.props;
 
-      for (let file of e.dataTransfer.items || e.dataTransfer.files) {
+      for (const file of e.dataTransfer.items || e.dataTransfer.files) {
         if (file.kind === "file") {
-          file = file.getAsFile();
+          file
+            .getAsFile()
+            .text()
+            .then(dataHandler);
+        } else if (file.kind === "string") {
+          file.getAsString(dataHandler);
+        } else {
+          file.text().then(dataHandler);
         }
-        console.log(file);
-
-        promises.push(this.props.fileHandler(file));
       }
-      Promise.all(promises)
-        .catch(console.error)
-        .finally(() =>
-          document.documentElement.classList.remove(DRAG_CLASS_NAME)
-        );
+
+      document.documentElement.classList.remove(DRAG_CLASS_NAME);
     });
     document.getElementById(DROP_ZONE_ID).addEventListener("dragleave", e => {
       e.preventDefault();
