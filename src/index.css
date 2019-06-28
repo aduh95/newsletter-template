@@ -1,0 +1,46 @@
+* {
+  box-sizing: border-box;
+}
+:root {
+  font-size: 20px;
+}
+body {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: 300px 1fr;
+  grid-template-areas: "header header" "aside main" "footer footer";
+  min-height: 100vh;
+  width: 100vw;
+  margin: 0;
+}
+
+header,
+footer {
+  padding: 1rem 0.1rem;
+}
+
+header {
+  grid-area: header;
+}
+main {
+  grid-area: main;
+}
+aside {
+  grid-area: aside;
+}
+footer {
+  grid-area: footer;
+}
+
+.text-center {
+  text-align: center;
+}
+h1 {
+  text-align: center;
+  margin: 0;
+}
+
+/* Fix for cross-domain */
+section.newsletter-hero {
+  background-image: url(https://ecobuilding.schneider-electric.com/documents/10807/21555442/hero.jpg/5b9d6950-2b9b-450d-b5b0-a2b78ee31192) !important;
+}
