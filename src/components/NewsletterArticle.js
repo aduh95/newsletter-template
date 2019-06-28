@@ -1,6 +1,8 @@
-import { h, Component } from "preact";
+import { h, Component, Fragment } from "preact";
 
 const getArray = obj => (obj ? (Array.isArray(obj) ? obj : [obj]) : []);
+
+const filterLink = href => href;
 
 class VideoPlayer extends Component {
   render() {
