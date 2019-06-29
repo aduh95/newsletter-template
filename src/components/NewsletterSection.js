@@ -2,13 +2,15 @@ import { h, Component } from "preact";
 import NewsletterArticle from "./NewsletterArticle";
 
 export default class NewsletterSection extends Component {
-  state = { articles: this.props.content || [] };
-
   render() {
+    const articles = this.props.content || [];
     return (
-      <section className="newsletter">
+      <section
+        className="newsletter"
+        style={{ ["--nb-of-articles"]: articles.length }}
+      >
         <h2 className="newsletter">{this.props.title}</h2>
-        {this.state.articles.map(article => (
+        {articles.map(article => (
           <NewsletterArticle {...article} />
         ))}
       </section>

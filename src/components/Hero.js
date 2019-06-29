@@ -1,14 +1,12 @@
 import { h, Component } from "preact";
 
 export default class Hero extends Component {
-  state = { date: this.props.date || "" };
-
   render() {
     return (
       <section className="newsletter-hero">
         <h1>EcoXpert™ Connect</h1>
 
-        <h6>{this.state.date}</h6>
+        <h6>{this.props.date}</h6>
         <svg
           height="38.734"
           //   style=""

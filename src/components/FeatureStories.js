@@ -4,18 +4,18 @@ import Nav from "./FeatureStoriesNav.js";
 import NewsletterSection from "./NewsletterSection.js";
 
 export default class FeatureStories extends Component {
-  state = { sections: this.props.content || [] };
-
   render() {
+    const sections = this.props.content || [];
+
     return (
-      <section>
+      <section class="newsletter">
         <h2 class="newsletter">
           {this.props.title}&nbsp;&mdash; Feature Stories
         </h2>
 
-        <Nav sections={this.state.sections} />
+        <Nav sections={sections} />
 
-        {this.state.sections.map(section => (
+        {sections.map(section => (
           <NewsletterSection {...section} />
         ))}
       </section>

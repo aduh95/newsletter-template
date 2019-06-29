@@ -2,14 +2,14 @@ import { h, Component } from "preact";
 import NewsletterArticle from "./NewsletterArticle";
 
 export default class HotTopics extends Component {
-  state = { articles: this.props.content || [] };
-
   render() {
+    const articles = this.props.content || [];
+
     return (
       <section class="newsletter hot-topics">
-        <h3>Hot Topics</h3>
+        <h2>Hot Topics</h2>
 
-        {this.state.articles.map(article => (
+        {articles.map(article => (
           <NewsletterArticle {...article} />
         ))}
       </section>

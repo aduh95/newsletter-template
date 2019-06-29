@@ -40,15 +40,17 @@ class Illustration extends Component {
 }
 
 export default class NewsletterArticle extends Component {
-  state = {
-    title: this.props.title,
-    description: getArray(this.props.description),
-    isMain: !!this.props.isMain,
-    isVideo: !!this.props.isVideo,
-    illustration: this.props.illustration || null,
-    illustrationDescription: this.props.illustrationDescription,
-    links: getArray(this.props.links) || getArray(this.props.link),
-  };
+  static getDerivedStateFromProps(props) {
+    return {
+      title: props.title,
+      description: getArray(props.description),
+      isMain: !!props.isMain,
+      isVideo: !!props.isVideo,
+      illustration: props.illustration || null,
+      illustrationDescription: props.illustrationDescription,
+      links: getArray(props.links) || getArray(props.link),
+    };
+  }
 
   render() {
     return (
