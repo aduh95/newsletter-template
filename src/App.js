@@ -1,50 +1,31 @@
 import { h, Component, Fragment } from "preact";
+import { Suspense, lazy } from "preact/compat";
 
 import Editor from "./Editor.js";
-import Error from "./Error.js";
+import Loading from "./Loading.js";
 import DropZone from "./DropZone.js";
 
 const CONTENT_KEY = "content";
 const CONTENT_CACHE = {};
 
-class LazyLoadingComponent extends Component {
-  state = { component: <div>Loading</div> };
-  componentWillMount() {
-    this.props
-      .load()
-      .then(component => this.setState({ ...this.state, component }))
-      .catch(e => {
-        console.warn(e);
-        this.setState({ ...this.state, component: <Error /> });
-      });
-  }
-
-  render() {
-    return this.state.component;
-  }
-}
+const ASYNC_COMP = new Map();
 
 export default class App extends Component {
-  state = { previewing: true, content: null };
+  state = { previewing: true, main: null, aside: null };
 
   componentWillMount() {
     const savedContent = localStorage.getItem(CONTENT_KEY);
 
-    let { content } = this.state;
-
     try {
-      content = this.deserialize(JSON.parse(savedContent));
+      this.deserialize(savedContent);
     } catch (e) {
       console.warn(e);
     }
-
-    this.setState({ ...this.state, content });
   }
 
   importData(data) {
     try {
-      const content = this.deserialize(JSON.parse(data));
-      this.setState({ ...this.state, content });
+      this.serialize(this.deserialize(data));
     } catch (e) {
       console.warn(e, data);
     }
@@ -57,45 +38,49 @@ export default class App extends Component {
     localStorage.setItem(CONTENT_KEY, JSON.stringify(CONTENT_CACHE));
   }
 
-  deserialize({ main, aside }) {
-    const getComponents = array =>
-      array.map((data, i, array) => (
-        <LazyLoadingComponent
-          load={() =>
-            import(`./components/${data.type}.js`)
-              .then(module => module.default)
-              .then(Component => (
-                <Component
-                  {...data}
-                  onChange={data => this.serialize(array, i, data)}
-                />
-              ))
-              .catch(e => {
-                console.warn(e);
-                return <Error />;
-              })
-          }
+  getComponents(array) {
+    return array.map((props, i, array) => {
+      const { type } = props;
+      if (!ASYNC_COMP.has(type)) {
+        ASYNC_COMP.set(type, lazy(() => import(`./components/${type}.js`)));
+      }
+      const Component = ASYNC_COMP.get(type);
+      return (
+        <Component
+          key={i}
+          {...props}
+          onChange={data => this.serialize(array, i, data)}
         />
-      ));
+      );
+    });
+  }
 
+  deserialize(data) {
+    const { main, aside } = JSON.parse(data);
     CONTENT_CACHE.main = main;
     CONTENT_CACHE.aside = aside;
-    return (
-      <>
-        <main>{getComponents(main)}</main>
-        <aside>
-          <section className="newsletter aside">{getComponents(aside)}</section>
-        </aside>
-      </>
-    );
+    this.setState({ main, aside });
   }
 
   render() {
+    const { main, aside } = this.state;
+    console.log("render");
     return (
       <>
         <DropZone dataHandler={txt => this.importData(txt)} />
         <Editor title="EcoXpert Newsletter template filling">
-          {this.state.content}
+          <main>
+            <Suspense fallback={<Loading />}>
+              {this.getComponents(main)}
+            </Suspense>
+          </main>
+          <aside>
+            <section className="newsletter aside">
+              <Suspense fallback={<Loading />}>
+                {this.getComponents(aside)}
+              </Suspense>
+            </section>
+          </aside>
         </Editor>
       </>
     );
