@@ -42,7 +42,14 @@ export default class App extends Component {
     return array.map((props, i, array) => {
       const { type } = props;
       if (!ASYNC_COMP.has(type)) {
-        ASYNC_COMP.set(type, lazy(() => import(`./components/${type}.js`)));
+        ASYNC_COMP.set(
+          type,
+          lazy(() =>
+            /[^\w]/.test(type)
+              ? Promise.reject(new Error("Invalid component name"))
+              : import(`./components/${type}.js`)
+          )
+        );
       }
       const Component = ASYNC_COMP.get(type);
       return (
