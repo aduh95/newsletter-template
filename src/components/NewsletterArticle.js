@@ -54,7 +54,10 @@ export default class NewsletterArticle extends Component {
 
   render() {
     return (
-      <article className={this.state.isMain ? "main" : undefined}>
+      <article
+        className={this.state.isMain ? "main" : undefined}
+        data-name="NewsletterArticle"
+      >
         <h4>{this.state.title}</h4>
 
         <Illustration

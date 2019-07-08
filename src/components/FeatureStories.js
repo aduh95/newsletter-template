@@ -8,7 +8,7 @@ export default class FeatureStories extends Component {
     const sections = this.props.content || [];
 
     return (
-      <section class="newsletter">
+      <section class="newsletter" data-name="FeatureStories">
         <h2 class="newsletter">
           {this.props.title}&nbsp;&mdash; Feature Stories
         </h2>

@@ -7,6 +7,7 @@ export default class NewsletterSection extends Component {
     return (
       <section
         className="newsletter"
+        data-name="NewsletterSection"
         style={{ ["--nb-of-articles"]: articles.length }}
       >
         <h2 className="newsletter">{this.props.title}</h2>

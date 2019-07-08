@@ -3,7 +3,7 @@ import { h, Component } from "preact";
 export default class Footer extends Component {
   render() {
     return (
-      <section className="newsletter-footer">
+      <section className="newsletter-footer" data-name="Footer">
         <p class="text-center">
           <b>We want to hear from you!</b>
           <br />
