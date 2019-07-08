@@ -1,0 +1,63 @@
+%maskForAction {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: #fffa;
+  border: 3px dashed #000;
+
+  pointer-events: auto;
+}
+
+#re-order-elements {
+  & ~ main,
+  & ~ aside {
+    &,
+    section.newsletter {
+      &:hover {
+        position: relative;
+        cursor: move;
+        &::after {
+          @extend %maskForAction;
+          content: "ReOrder";
+        }
+      }
+    }
+  }
+}
+
+#re-order-elements-reordering {
+  outline: 5px solid blue;
+  > [data-name] {
+    position: relative;
+    display: flex !important;
+    flex-direction: column;
+    outline: 1px dashed #000a;
+    min-height: 1rem;
+    max-height: 12.5vh;
+    cursor: move;
+    &::after {
+      @extend %maskForAction;
+      content: attr(data-name);
+    }
+    &:hover::after {
+      content: "Drag to move, click to reorder";
+    }
+    &:empty:hover::after {
+      content: "Drag to move";
+    }
+  }
+  img {
+    display: none;
+  }
+}
+
+#re-order-placeholder {
+  background-color: #8888;
+}

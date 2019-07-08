@@ -1,10 +1,11 @@
 import { h, Component, Fragment } from "preact";
 
+import ReOrderComponents from "./ReOrderComponents.js";
 import Save from "./Save.js";
 import Error from "./Error.js";
 
 export default class Editor extends Component {
-  state = { hasError: false };
+  state = { hasError: false, showControls: false, reOrder: true };
 
   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
@@ -25,6 +26,7 @@ export default class Editor extends Component {
         <header>
           <h1>{this.props.title}</h1>
         </header>
+        {this.state.reOrder ? <ReOrderComponents /> : null}
         {this.props.children}
         <footer>
           <Save />
