@@ -4,7 +4,7 @@ export default class AsideList extends Component {
   render() {
     const list = this.props.content || [];
     return (
-      <article>
+      <article data-name="AsideList">
         <h4>{this.props.title}</h4>
 
         <ul>

@@ -76,13 +76,13 @@ export default class App extends Component {
       <>
         <DropZone dataHandler={txt => this.importData(txt)} />
         <Editor title="EcoXpert Newsletter template filling">
-          <main>
+          <main data-name="main">
             <Suspense fallback={<Loading />}>
               {this.getComponents(main)}
             </Suspense>
           </main>
-          <aside>
-            <section className="newsletter aside">
+          <aside data-name="aside">
+            <section className="newsletter aside" data-name="aside">
               <Suspense fallback={<Loading />}>
                 {this.getComponents(aside)}
               </Suspense>
