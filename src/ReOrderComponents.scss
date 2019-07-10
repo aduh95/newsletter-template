@@ -41,6 +41,7 @@
     outline: 1px dashed #000a;
     min-height: 1rem;
     max-height: 12.5vh;
+    overflow: hidden;
     cursor: move;
     &::after {
       @extend %maskForAction;
