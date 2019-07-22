@@ -62,3 +62,22 @@
 #re-order-placeholder {
   background-color: #8888;
 }
+
+.drop-candidate-for-reordering > .drop-candidate-for-reordering::before {
+  content: "Insert here";
+  display: flex;
+  place-content: center;
+  outline: inherit;
+  margin-bottom: 1rem;
+  padding: 1rem;
+}
+.drop-candidate-for-reordering > .to-be-deleted {
+  background-color: red;
+}
+.drop-candidate-for-reordering > .drop-candidate-for-reordering::after {
+  top: 4rem !important;
+}
+.drop-candidate-for-reordering > .drop-candidate-for-reordering {
+  min-height: 5rem;
+  max-height: calc(12.5vh + 4rem);
+}
