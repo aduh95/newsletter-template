@@ -31,6 +31,20 @@ module.exports = {
             test: /\.css$/,
             use: [MiniCssExtractPlugin.loader, "css-loader"],
           },
+          {
+            test: /\.scss$/,
+            use: [
+              MiniCssExtractPlugin.loader,
+              "css-loader",
+              {
+                loader: "sass-loader",
+                options: {
+                  implementation: require("sass"),
+                  fiber: require("fibers"),
+                },
+              },
+            ],
+          },
         ],
       },
     ],
