@@ -6,8 +6,8 @@ import Error from "./Error.js";
 
 const mutationObserverOptions = {
   childList: true,
-  characterData: true,
-  subtree: true,
+  characterData: false,
+  subtree: false,
 };
 
 export default class Editor extends Component {
@@ -31,42 +31,36 @@ export default class Editor extends Component {
    */
   handleMutation(mutationList, observer) {
     const data = this.#childrenRefs;
-    const filterNodes = el => el.dataset.name !== undefined;
     for (const mutation of mutationList) {
       if (mutation.type === "childList") {
         const { target } = mutation;
-        if (target.dataset.name !== undefined) {
+        if (target.dataset.type !== undefined) {
           const log = { target };
           if (mutation.addedNodes.length) {
-            Array.from(mutation.addedNodes)
-              .filter(filterNodes)
-              .forEach(node => {
-                if (!data.has(node)) {
-                  const { name } = node.dataset;
-                  data.set(node, { name, content: [] });
+            Array.from(mutation.addedNodes).forEach(node => {
+              if (!data.has(node)) {
+                this.observeNode(node);
+              }
+              const { nextSibling } = mutation;
+              if (nextSibling) {
+                const content = data.get(target)?.content;
+                const index = content?.indexOf(data.get(nextSibling));
+                if (content && index !== -1) {
+                  content.splice(index, 0, data.get(node));
                 }
-                const { nextSibling } = mutation;
-                if (nextSibling) {
-                  const content = data.get(target)?.content;
-                  const index = content?.indexOf(data.get(nextSibling));
-                  if (content && index !== -1) {
-                    content.splice(index, 0, data.get(node));
-                  }
-                } else {
-                  data.get(target)?.content.push(data.get(node));
-                }
-              });
+              } else {
+                data.get(target)?.content.push(data.get(node));
+              }
+            });
           }
           if (mutation.removedNodes.length) {
-            Array.from(mutation.removedNodes)
-              .filter(filterNodes)
-              .forEach(node => {
-                const content = data.get(target)?.content;
-                const index = content?.indexOf(data.get(node));
-                if (content && index !== -1) {
-                  content.splice(index, 1);
-                }
-              });
+            Array.from(mutation.removedNodes).forEach(node => {
+              const content = data.get(target)?.content;
+              const index = content?.indexOf(data.get(node));
+              if (content && index !== -1) {
+                content.splice(index, 1);
+              }
+            });
           }
         }
       }
@@ -75,14 +69,31 @@ export default class Editor extends Component {
   }
 
   observeNode(node) {
-    const { name } = node.dataset;
+    const { type, json } = node.dataset;
 
-    if (name) {
+    if (json) {
+      return this.#childrenRefs.set(node, JSON.parse(json));
+    }
+
+    if (type) {
       this.#observer.observe(node, mutationObserverOptions);
-      this.#childrenRefs.set(node, { name, content: [] });
-      this.#childrenRefs.get(this)[node.dataset.name] = this.#childrenRefs.get(
-        node
-      );
+      this.#childrenRefs.set(node, { type, content: [] });
+    }
+
+    if (node.childElementCount) {
+      Array.from(node.children).forEach(child => {
+        const { ignore, key } = child.dataset;
+        if (ignore) {
+          // if ignore attribute is on the node, do nothing
+        } else if (key) {
+          this.#childrenRefs.get(node)[key] = child.textContent;
+        } else {
+          this.observeNode(child);
+          this.#childrenRefs
+            .get(node)
+            ?.content?.push(this.#childrenRefs.get(child));
+        }
+      });
     }
   }
 
@@ -90,11 +101,19 @@ export default class Editor extends Component {
     this.#childrenRefs.set(this, {});
     let node = this.#beforeRef.current.nextElementSibling;
     while (node && node !== this.#afterRef.current) {
+      this.observeNode(node);
       if (node.childElementCount) {
-        Array.from(node.children).forEach(node => this.observeNode(node));
+        Array.from(node.children).forEach(node => {
+          this.#childrenRefs.get(this)[
+            node.dataset.type
+          ] = this.#childrenRefs.get(node).content;
+        });
       } else {
-        this.observeNode(node);
+        this.#childrenRefs.get(this)[
+          node.dataset.type
+        ] = this.#childrenRefs.get(node)?.content;
       }
+
       node = node.nextElementSibling;
     }
   }
