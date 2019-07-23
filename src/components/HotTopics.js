@@ -6,7 +6,7 @@ export default class HotTopics extends Component {
     const articles = this.props.content || [];
 
     return (
-      <section class="newsletter hot-topics" data-name="HotTopics">
+      <section class="newsletter hot-topics" data-type="HotTopics">
         <h2>Hot Topics</h2>
 
         {articles.map(article => (

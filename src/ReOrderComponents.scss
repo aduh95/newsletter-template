@@ -34,7 +34,7 @@
 
 #re-order-elements-reordering {
   outline: 5px solid blue;
-  > [data-name] {
+  > [data-type] {
     position: relative;
     display: flex !important;
     flex-direction: column;
@@ -45,7 +45,7 @@
     cursor: move;
     &::after {
       @extend %maskForAction;
-      content: attr(data-name);
+      content: attr(data-type);
     }
     &:hover::after {
       content: "Drag to move, click to reorder";

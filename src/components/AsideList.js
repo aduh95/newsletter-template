@@ -4,7 +4,7 @@ export default class AsideList extends Component {
   render() {
     const list = this.props.content || [];
     return (
-      <article data-name="AsideList" data-json={JSON.stringify(this.props)}>
+      <article data-type="AsideList" data-json={JSON.stringify(this.props)}>
         <h4 data-key="title">{this.props.title}</h4>
 
         <ul>

@@ -56,7 +56,7 @@ export default class NewsletterArticle extends Component {
     return (
       <article
         className={this.state.isMain ? "main" : undefined}
-        data-name="NewsletterArticle"
+        data-type="NewsletterArticle"
         data-json={JSON.stringify(this.props)}
       >
         <h4>{this.state.title}</h4>

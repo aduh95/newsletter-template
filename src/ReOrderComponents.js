@@ -17,7 +17,7 @@ const clickHandler = e => {
   const { target } = e;
   target.id = CHECK_CHILDREN_ELEMENT;
   const subElements = target.querySelectorAll(
-    `#${CHECK_CHILDREN_ELEMENT}>[data-name]`
+    `#${CHECK_CHILDREN_ELEMENT}>[data-type]`
   );
 
   if (subElements.length) {
@@ -133,7 +133,7 @@ export default class ReOrderComponents extends Component {
 
   componentDidMount() {
     Array.from(
-      document.querySelectorAll(`#${DROP_ZONE_ID}~[data-name]`)
+      document.querySelectorAll(`#${DROP_ZONE_ID}~[data-type]`)
     ).forEach(addEventListener);
   }
 

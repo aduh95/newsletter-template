@@ -3,7 +3,7 @@ import { h, Component } from "preact";
 export default class Hero extends Component {
   render() {
     return (
-      <section className="newsletter-hero" data-name="Hero">
+      <section className="newsletter-hero" data-type="Hero">
         <h1>EcoXpert™ Connect</h1>
 
         <h6>{this.props.date}</h6>
