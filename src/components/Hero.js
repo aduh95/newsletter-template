@@ -4,12 +4,12 @@ export default class Hero extends Component {
   render() {
     return (
       <section className="newsletter-hero" data-type="Hero">
-        <h1>EcoXpert™ Connect</h1>
+        <h1 data-key="title">EcoXpert™ Connect</h1>
 
-        <h6>{this.props.date}</h6>
+        <h6 data-key="date">{this.props.date}</h6>
         <svg
           height="38.734"
-          //   style=""
+          data-ignore
           width="103.855"
           xmlns="http://www.w3.org/2000/svg"
         >

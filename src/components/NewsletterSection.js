@@ -10,7 +10,9 @@ export default class NewsletterSection extends Component {
         data-type="NewsletterSection"
         style={{ ["--nb-of-articles"]: articles.length }}
       >
-        <h2 className="newsletter">{this.props.title}</h2>
+        <h2 className="newsletter" data-key="title">
+          {this.props.title}
+        </h2>
         {articles.map(article => (
           <NewsletterArticle {...article} />
         ))}
