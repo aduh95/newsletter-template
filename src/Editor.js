@@ -64,6 +64,18 @@ export default class Editor extends Component {
             parent = parent.parentElement;
           }
           this.#childrenRefs.get(parent)[dataset.key] = textContent;
+          break;
+
+        case "attributes":
+          if (mutation.attributeName === "data-json") {
+            const obj = this.#childrenRefs.get(target);
+
+            Object.keys(obj).forEach(key => {
+              obj[key] = undefined;
+            });
+            Object.assign(obj, JSON.parse(target.dataset.json));
+          }
+          break;
       }
     }
     console.log(data.get(this));
