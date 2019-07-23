@@ -3,7 +3,7 @@ import { h, Component } from "preact";
 export default class AsideStory extends Component {
   render() {
     return (
-      <article data-name="AsideStory">
+      <article data-name="AsideStory" data-json={JSON.stringify(this.props)}>
         <h4>{this.props.title}</h4>
       </article>
     );
