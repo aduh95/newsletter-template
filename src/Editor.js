@@ -4,12 +4,6 @@ import ReOrderComponents from "./ReOrderComponents.js";
 import Save from "./Save.js";
 import Error from "./Error.js";
 
-const mutationObserverOptions = {
-  childList: true,
-  characterData: false,
-  subtree: false,
-};
-
 export default class Editor extends Component {
   #observer = new window.MutationObserver(this.handleMutation.bind(this));
   #childrenRefs = new WeakMap();
@@ -17,7 +11,7 @@ export default class Editor extends Component {
   #beforeRef = createRef();
   #afterRef = createRef();
 
-  state = { hasError: false, showControls: false, reOrder: true };
+  state = { hasError: false, showControls: false, reOrder: false };
 
   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
@@ -32,10 +26,9 @@ export default class Editor extends Component {
   handleMutation(mutationList, observer) {
     const data = this.#childrenRefs;
     for (const mutation of mutationList) {
-      if (mutation.type === "childList") {
-        const { target } = mutation;
-        if (target.dataset.type !== undefined) {
-          const log = { target };
+      const { target, type } = mutation;
+      switch (type) {
+        case "childList":
           if (mutation.addedNodes.length) {
             Array.from(mutation.addedNodes).forEach(node => {
               if (!data.has(node)) {
@@ -62,7 +55,15 @@ export default class Editor extends Component {
               }
             });
           }
-        }
+          break;
+
+        case "characterData":
+          const { dataset, textContent } = target.parentElement;
+          let parent = target;
+          while (!this.#childrenRefs.has(parent)) {
+            parent = parent.parentElement;
+          }
+          this.#childrenRefs.get(parent)[dataset.key] = textContent;
       }
     }
     console.log(data.get(this));
@@ -72,11 +73,12 @@ export default class Editor extends Component {
     const { type, json } = node.dataset;
 
     if (json) {
+      this.#observer.observe(node, { attributes: true });
       return this.#childrenRefs.set(node, JSON.parse(json));
     }
 
     if (type) {
-      this.#observer.observe(node, mutationObserverOptions);
+      this.#observer.observe(node, { childList: true });
       this.#childrenRefs.set(node, { type, content: [] });
     }
 
@@ -86,7 +88,11 @@ export default class Editor extends Component {
         if (ignore) {
           // if ignore attribute is on the node, do nothing
         } else if (key) {
+          Array.from(child.childNodes).forEach(el =>
+            this.#observer.observe(el, { characterData: true })
+          );
           this.#childrenRefs.get(node)[key] = child.textContent;
+          child.contentEditable = true;
         } else {
           this.observeNode(child);
           this.#childrenRefs
