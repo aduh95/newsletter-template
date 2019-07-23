@@ -29,12 +29,12 @@ export default class Editor extends Component {
       const { target, type } = mutation;
       switch (type) {
         case "childList":
-          if (mutation.addedNodes.length) {
-            Array.from(mutation.addedNodes).forEach(node => {
+          const { addedNodes, removedNodes, nextSibling } = mutation;
+          if (addedNodes.length) {
+            Array.from(addedNodes).forEach(node => {
               if (!data.has(node)) {
                 this.observeNode(node);
               }
-              const { nextSibling } = mutation;
               if (nextSibling) {
                 const content = data.get(target)?.content;
                 const index = content?.indexOf(data.get(nextSibling));
@@ -46,8 +46,8 @@ export default class Editor extends Component {
               }
             });
           }
-          if (mutation.removedNodes.length) {
-            Array.from(mutation.removedNodes).forEach(node => {
+          if (removedNodes.length) {
+            Array.from(removedNodes).forEach(node => {
               const content = data.get(target)?.content;
               const index = content?.indexOf(data.get(node));
               if (content && index !== -1) {
