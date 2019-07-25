@@ -19,6 +19,10 @@ export default class Editor extends Component {
     return { hasError: true };
   }
 
+  get data() {
+    return this.#childrenRefs.get(this);
+  }
+
   /**
    * @param {MutationRecord[]} mutationList
    * @param {MutationObserver} observer
@@ -58,11 +62,17 @@ export default class Editor extends Component {
           break;
 
         case "characterData":
-          const { dataset, textContent } = target.parentElement;
           let parent = target;
+          while (parent.parentElement.isContentEditable) {
+            parent = parent.parentElement;
+          }
+          const { dataset, textContent } = parent;
+          console.log(parent);
+
           while (!this.#childrenRefs.has(parent)) {
             parent = parent.parentElement;
           }
+          console.log(parent);
           this.#childrenRefs.get(parent)[dataset.key] = textContent;
           break;
 
@@ -78,7 +88,6 @@ export default class Editor extends Component {
           break;
       }
     }
-    console.log(data.get(this));
   }
 
   observeNode(node) {
@@ -156,7 +165,7 @@ export default class Editor extends Component {
         {this.state.reOrder ? <ReOrderComponents /> : null}
         {this.props.children}
         <footer ref={this.#afterRef}>
-          <Save />
+          <Save editor={this} />
         </footer>
       </>
     );
