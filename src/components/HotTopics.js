@@ -7,7 +7,7 @@ export default class HotTopics extends Component {
 
     return (
       <section class="newsletter hot-topics" data-type="HotTopics">
-        <h2 data-key="title">Hot Topics</h2>
+        <h2 data-key="title">{this.props.title}</h2>
 
         {articles.map(article => (
           <NewsletterArticle {...article} />

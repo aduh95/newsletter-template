@@ -10,7 +10,7 @@ export default class FeatureStories extends Component {
     return (
       <section class="newsletter" data-type="FeatureStories">
         <h2 class="newsletter" data-key="title">
-          {this.props.title}&nbsp;&mdash; Feature Stories
+          {this.props.title}
         </h2>
 
         <Nav sections={sections} />

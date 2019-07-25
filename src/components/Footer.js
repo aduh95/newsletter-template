@@ -4,7 +4,7 @@ export default class Footer extends Component {
   render() {
     return (
       <section className="newsletter-footer" data-type="Footer">
-        <p class="text-center">
+        <p class="text-center" data-ignore>
           <b>We want to hear from you!</b>
           <br />
           Send your feedback and suggestions about EcoXpert™ Connect.

@@ -9,7 +9,12 @@ export default class NewsletterSection extends Component {
         className="newsletter"
         data-type="NewsletterSection"
         style={{ ["--nb-of-articles"]: articles.length }}
+        id={this.props.id}
       >
+        <output hidden data-key="id">
+          {this.props.id}
+        </output>
+
         <h2 className="newsletter" data-key="title">
           {this.props.title}
         </h2>
