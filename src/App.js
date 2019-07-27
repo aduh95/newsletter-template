@@ -6,7 +6,6 @@ import Loading from "./Loading.js";
 import DropZone from "./DropZone.js";
 
 const CONTENT_KEY = "content";
-const CONTENT_CACHE = {};
 
 const ASYNC_COMP = new Map();
 
@@ -14,28 +13,20 @@ export default class App extends Component {
   state = { previewing: true, main: null, aside: null };
 
   componentWillMount() {
-    const savedContent = localStorage.getItem(CONTENT_KEY);
-
-    try {
-      this.deserialize(savedContent);
-    } catch (e) {
-      console.warn(e);
-    }
+    this.importJSONData(localStorage.getItem(CONTENT_KEY));
   }
 
-  importData(data) {
+  importJSONData(data) {
     try {
-      this.serialize(this.deserialize(data));
+      const { main, aside } = JSON.parse(data);
+      this.setState({ main, aside });
     } catch (e) {
       console.warn(e, data);
     }
   }
 
-  serialize(array = null, i = null, data = null) {
-    if (Array.isArray(array) && Number.isInteger(i)) {
-      array[i] = data;
-    }
-    localStorage.setItem(CONTENT_KEY, JSON.stringify(CONTENT_CACHE));
+  saveState(data) {
+    localStorage.setItem(CONTENT_KEY, JSON.stringify(data));
   }
 
   getComponents(array) {
@@ -52,21 +43,8 @@ export default class App extends Component {
         );
       }
       const Component = ASYNC_COMP.get(type);
-      return (
-        <Component
-          key={i}
-          {...props}
-          onChange={data => this.serialize(array, i, data)}
-        />
-      );
+      return <Component key={i} {...props} />;
     });
-  }
-
-  deserialize(data) {
-    const { main, aside } = JSON.parse(data);
-    CONTENT_CACHE.main = main;
-    CONTENT_CACHE.aside = aside;
-    this.setState({ main, aside });
   }
 
   render() {
@@ -74,15 +52,18 @@ export default class App extends Component {
     console.log("render");
     return (
       <>
-        <DropZone dataHandler={txt => this.importData(txt)} />
-        <Editor title="EcoXpert Newsletter template filling">
-          <main data-name="main">
+        <DropZone dataHandler={txt => this.importJSONData(txt)} />
+        <Editor
+          title="EcoXpert Newsletter template filling"
+          onChange={data => this.saveState(data)}
+        >
+          <main data-type="main">
             <Suspense fallback={<Loading />}>
               {this.getComponents(main)}
             </Suspense>
           </main>
-          <aside data-name="aside">
-            <section className="newsletter aside" data-name="aside">
+          <aside data-type="aside">
+            <section className="newsletter aside" data-type="aside">
               <Suspense fallback={<Loading />}>
                 {this.getComponents(aside)}
               </Suspense>

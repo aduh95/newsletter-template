@@ -88,6 +88,7 @@ export default class Editor extends Component {
           break;
       }
     }
+    this.props.onChange(data.get(this));
   }
 
   observeNode(node) {
