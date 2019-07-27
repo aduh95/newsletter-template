@@ -1,0 +1,32 @@
+#drop-zone {
+  display: none;
+}
+
+:root.dragover #drop-zone {
+  position: fixed;
+  top: 1rem;
+  bottom: 1rem;
+  right: 1rem;
+  left: 1rem;
+
+  opacity: 0;
+  transition: opacity 300ms ease-in;
+  z-index: 1;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: #fffa;
+  border: 3px dashed #000;
+
+  pointer-events: auto;
+  opacity: 1;
+  z-index: 1;
+
+  &::after {
+    content: "Drop File Here";
+    font-size: large;
+    font-weight: bold;
+  }
+}

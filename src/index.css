@@ -14,35 +14,6 @@ body {
   margin: 0;
 }
 
-#drop-zone {
-  position: fixed;
-  top: 1rem;
-  bottom: 1rem;
-  right: 1rem;
-  left: 1rem;
-
-  opacity: 0;
-  transition: opacity 300ms ease-in;
-  z-index: 1;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  background-color: #fffa;
-  border: 3px dashed #000;
-
-  pointer-events: auto;
-}
-.dragover #drop-zone {
-  opacity: 1;
-}
-.dragover #drop-zone::after {
-  content: "Drop File Here";
-  font-size: large;
-  font-weight: bold;
-}
-
 header,
 footer {
   padding: 1rem 0.1rem;

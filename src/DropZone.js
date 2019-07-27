@@ -1,5 +1,7 @@
 import { h, Component, Fragment } from "preact";
 
+import "./DropZone.scss";
+
 if (!("text" in Blob.prototype)) {
   import("./polyfill/blob-text.js");
 }
