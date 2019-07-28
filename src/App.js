@@ -10,7 +10,7 @@ const CONTENT_KEY = "content";
 const ASYNC_COMP = new Map();
 
 export default class App extends Component {
-  state = { previewing: true, main: null, aside: null };
+  state = { previewing: true };
 
   componentWillMount() {
     this.importJSONData(localStorage.getItem(CONTENT_KEY));
@@ -19,7 +19,9 @@ export default class App extends Component {
   importJSONData(data) {
     try {
       const { main, aside } = JSON.parse(data);
-      this.setState({ main, aside });
+      if (Array.isArray(main) && Array.isArray(aside)) {
+        this.setState({ main, aside });
+      }
     } catch (e) {
       console.warn(e, data);
     }
@@ -63,13 +65,25 @@ export default class App extends Component {
         >
           <main data-type="main">
             <Suspense fallback={<Loading />}>
-              {this.getComponents(main)}
+              {main ? (
+                this.getComponents(main)
+              ) : (
+                <p data-ignore>
+                  <em>Empty</em>
+                </p>
+              )}
             </Suspense>
           </main>
           <aside data-type="aside">
             <section className="newsletter aside" data-type="aside">
               <Suspense fallback={<Loading />}>
-                {this.getComponents(aside)}
+                {aside ? (
+                  this.getComponents(aside)
+                ) : (
+                  <p data-ignore>
+                    <em>Empty</em>
+                  </p>
+                )}
               </Suspense>
             </section>
           </aside>

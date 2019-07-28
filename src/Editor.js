@@ -134,7 +134,7 @@ export default class Editor extends Component {
         Array.from(node.children).forEach(node => {
           this.#childrenRefs.get(this)[
             node.dataset.type
-          ] = this.#childrenRefs.get(node).content;
+          ] = this.#childrenRefs.get(node)?.content;
         });
       } else {
         this.#childrenRefs.get(this)[
