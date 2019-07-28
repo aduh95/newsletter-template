@@ -2,7 +2,6 @@ import { h, Component, Fragment, createRef } from "preact";
 
 import ReOrderComponents from "./ReOrderComponents.js";
 import Save from "./Save.js";
-import Error from "./Error.js";
 
 export default class Editor extends Component {
   #observer = new window.MutationObserver(this.handleMutation.bind(this));
@@ -12,12 +11,6 @@ export default class Editor extends Component {
   #afterRef = createRef();
 
   state = { hasError: false, showControls: false, reOrder: false };
-
-  static getDerivedStateFromError(error) {
-    // Update state so the next render will show the fallback UI.
-    console.warn(error);
-    return { hasError: true };
-  }
 
   get data() {
     return this.#childrenRefs.get(this);
@@ -36,6 +29,7 @@ export default class Editor extends Component {
           const { addedNodes, removedNodes, nextSibling } = mutation;
           if (addedNodes.length) {
             Array.from(addedNodes).forEach(node => {
+              console.log("add", node);
               if (!data.has(node)) {
                 this.observeNode(node);
               }
@@ -52,6 +46,7 @@ export default class Editor extends Component {
           }
           if (removedNodes.length) {
             Array.from(removedNodes).forEach(node => {
+              console.log("remove", node);
               const content = data.get(target)?.content;
               const index = content?.indexOf(data.get(node));
               if (content && index !== -1) {
@@ -88,6 +83,7 @@ export default class Editor extends Component {
           break;
       }
     }
+    console.log(data.get(this));
     this.props.onChange(data.get(this));
   }
 
@@ -125,25 +121,42 @@ export default class Editor extends Component {
     }
   }
 
+  observeNodeDeep(node) {
+    if (node.dataset.contents) {
+      return Array.from(node.children, this.observeNodeDeep.bind(this));
+    }
+    this.observeNode(node);
+    this.#childrenRefs.get(this)[node.dataset.type] = this.#childrenRefs.get(
+      node
+    )?.content;
+  }
+
   componentDidMount() {
     this.#childrenRefs.set(this, {});
-    let node = this.#beforeRef.current.nextElementSibling;
+    requestIdleCallback(this.checkForDOMChanges.bind(this));
+  }
+
+  checkForDOMChanges() {
+    console.log("updated");
+    let node = this.#beforeRef.current?.nextElementSibling;
     while (node && node !== this.#afterRef.current) {
-      this.observeNode(node);
-      if (node.childElementCount) {
-        Array.from(node.children).forEach(node => {
-          this.#childrenRefs.get(this)[
-            node.dataset.type
-          ] = this.#childrenRefs.get(node)?.content;
-        });
-      } else {
-        this.#childrenRefs.get(this)[
-          node.dataset.type
-        ] = this.#childrenRefs.get(node)?.content;
+      if (!this.#childrenRefs.has(node)) {
+        this.observeNodeDeep(node);
       }
 
       node = node.nextElementSibling;
     }
+
+    // requestIdleCallback(this.checkForDOMChanges.bind(this));
+  }
+
+  shouldComponentUpdate() {
+    console.log("should it?", this.props.children);
+    // requestIdleCallback(() => this.forceUpdate());
+  }
+
+  componentDidUpdate() {
+    requestIdleCallback(this.checkForDOMChanges.bind(this));
   }
 
   componentWillUnmount() {
@@ -156,9 +169,7 @@ export default class Editor extends Component {
   }
 
   render() {
-    return this.state.hasError ? (
-      <Error />
-    ) : (
+    return (
       <>
         <header ref={this.#beforeRef}>
           <h1>{this.props.title}</h1>
