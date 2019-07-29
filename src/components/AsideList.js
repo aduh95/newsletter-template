@@ -46,7 +46,13 @@ export default class AsideList extends Component {
           ))}
         </ul>
 
-        <Suspense fallback={<div data-ignore>Loading...</div>}>
+        <Suspense
+          fallback={
+            <dialog open data-ignore>
+              Loading...
+            </dialog>
+          }
+        >
           <UpdateAsideList
             {...this.props}
             focus={this.state.focus}
