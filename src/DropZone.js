@@ -1,4 +1,5 @@
 import { h, Component, Fragment } from "preact";
+import { setGlobalDragOverListener } from "./createDragHandler.js";
 
 import "./DropZone.scss";
 
@@ -13,7 +14,7 @@ export default class DropZone extends Component {
   state = { previewing: true, content: null };
 
   componentDidMount() {
-    document.body.addEventListener("dragover", e => {
+    setGlobalDragOverListener(e => {
       e.preventDefault();
       document.documentElement.classList.add(DRAG_CLASS_NAME);
     });

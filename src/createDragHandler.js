@@ -1,6 +1,13 @@
 const DRAG_CLASS_NAME = "drop-candidate-for-reordering";
 const TO_BE_DELETED_CLASS_NAME = "to-be-deleted";
 
+const globalDragOverListeners = [];
+
+export const setGlobalDragOverListener = listener => {
+  document.body.addEventListener("dragover", listener);
+  globalDragOverListeners.push(listener);
+};
+
 /**
  * @param {DragEvent} e
  */
@@ -10,6 +17,9 @@ const dragStartHandler = callback => e => {
   const { parentElement } = target;
   let destination;
 
+  for (const listener of globalDragOverListeners) {
+    document.body.removeEventListener("dragover", listener);
+  }
   parentElement.classList.add(DRAG_CLASS_NAME);
 
   let updateDestination;
@@ -58,6 +68,9 @@ const dragStartHandler = callback => e => {
       callback(e, destination);
       parentElement.removeEventListener("dragover", dragOverHandler);
       document.body.removeEventListener("dragover", dragLeaveHandler);
+      for (const listener of globalDragOverListeners) {
+        document.body.addEventListener("dragover", listener);
+      }
     },
     {
       once: true,
