@@ -3,26 +3,37 @@ import { h, Component, createRef } from "preact";
 class UpdateAsideList extends Component {
   dialog = createRef();
 
-  static getDerivedStateFromProps({ type, title, content }) {
-    return { type, title, content };
+  componentWillMount() {
+    const { type, title, content } = this.props;
+    this.setState({
+      type,
+      title,
+      content: Array.isArray(content) ? content.map(obj => ({ ...obj })) : [],
+    });
   }
 
   componentDidMount() {
+    this.update();
+  }
+  componentDidUpdate(prevProps) {
+    this.update(prevProps);
+  }
+
+  update(prevProps = {}) {
     const { current } = this.dialog;
-    current.addEventListener("close", e => {
-      const { returnValue } = e.target;
 
-      this.props.saveState(returnValue);
-    });
+    if (current && prevProps.focus !== this.props.focus) {
+      const focusSelector = this.props.focus;
 
-    const focusIndex = this.props.focus.match(/^(.+)\[(\d+)\]$/);
-    const focusElement = focusIndex
-      ? current
-          .querySelectorAll(`input[name=${focusIndex[1]}]`)
-          .item(focusIndex[2])
-      : current.querySelector(`input[name=${this.props.focus}]`);
+      const focusIndex = focusSelector?.match(/^(.+)\[(\d+)\]$/);
+      const focusElement = focusIndex
+        ? current
+            .querySelectorAll(`input[name=${focusIndex[1]}]`)
+            .item(focusIndex[2])
+        : current.querySelector(`input[name=${focusSelector}]`);
 
-    focusElement?.focus();
+      focusElement?.focus();
+    }
   }
 
   handleChange(event, index) {
@@ -38,53 +49,65 @@ class UpdateAsideList extends Component {
     this.setState({ content });
   }
 
-  onSubmit(e) {
-    e.preventDefault();
-    this.dialog.current.close(JSON.stringify(this.state));
+  handleSubmit(e) {
+    const data = { ...this.state };
+    data.content = this.state.content
+      .filter(({ label, href }) => label || href)
+      .map(({ label, href }) => ({
+        label: label || "[Link]",
+        href: href || "about:blank",
+      }));
+
+    this.props.saveState(data);
   }
 
   onReset(e) {
-    e.preventDefault();
-    this.dialog.current.close();
+    e.stopPropagation();
+    this.props.resetState();
   }
 
   render() {
     const list = this.state.content || [];
 
     return (
-      <dialog open ref={this.dialog}>
-        <form
-          onSubmit={this.onSubmit.bind(this)}
-          onReset={this.onReset.bind(this)}
-        >
+      <dialog open onClose={this.handleSubmit.bind(this)} ref={this.dialog}>
+        <form method="dialog">
           <div>
             <label>
               Title:&nbsp;
-              <input name="title" value={this.props.title} />
+              <input
+                name="title"
+                value={this.state.title}
+                onChange={e => this.setState({ title: e.target.value })}
+              />
             </label>
-          </div>
-          <ul>
-            {list.concat([{}]).map(({ label, href }, i) => (
-              <li>
-                <input
-                  name="label"
-                  value={label || ""}
-                  placeholder="Link label"
-                  onChange={e => this.handleChange(e, i)}
-                />
-                <input
-                  name="href"
-                  value={href || ""}
-                  placeholder="Link URL"
-                  onChange={e => this.handleChange(e, i)}
-                  type="url"
-                />
-              </li>
-            ))}
-          </ul>
-          <div>
-            <button type="submit">Save</button>
-            <button type="reset">Cancel</button>
+
+            <ul>
+              {list.concat([{}]).map(({ label, href }, i) => (
+                <li>
+                  <input
+                    name="label"
+                    value={label || ""}
+                    placeholder="Link label"
+                    onChange={e => this.handleChange(e, i)}
+                  />
+                  <input
+                    name="href"
+                    value={href || ""}
+                    placeholder="Link URL"
+                    onChange={e => this.handleChange(e, i)}
+                    type="url"
+                  />
+                </li>
+              ))}
+            </ul>
+
+            <button type="submit" onClick={e => e.target.form.submit()}>
+              Save
+            </button>
+            <button type="reset" onClick={this.onReset.bind(this)}>
+              Cancel
+            </button>
           </div>
         </form>
       </dialog>
@@ -93,14 +116,16 @@ class UpdateAsideList extends Component {
 }
 
 export default class AsideList extends Component {
-  state = { writeMode: false };
+  state = { writeMode: false, data: JSON.stringify(this.props) };
 
   update(data) {
-    this.setState({ writeMode: false, data });
-  }
+    const { title, content } = data;
+    this.setState({
+      writeMode: false,
+      data: JSON.stringify(data),
+    });
 
-  static getDerivedStateFromProps(nextProps) {
-    return { data: JSON.stringify(nextProps) };
+    Object.assign(this.props, data);
   }
 
   render() {
@@ -136,6 +161,7 @@ export default class AsideList extends Component {
             {...this.props}
             focus={this.state.focus}
             saveState={this.update.bind(this)}
+            resetState={() => this.setState({ writeMode: false })}
           />
         ) : null}
       </article>
