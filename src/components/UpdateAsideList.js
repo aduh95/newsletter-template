@@ -93,12 +93,6 @@ export default class UpdateAsideList extends Component {
     }
   }
 
-  handleEscape(e) {
-    if (e.key === "Escape") {
-      this.onReset(e);
-    }
-  }
-
   handleChange(event, index) {
     const { name, value } = event.target;
     const { content } = this.state;
@@ -112,7 +106,7 @@ export default class UpdateAsideList extends Component {
     this.setState({ content });
   }
 
-  handleSubmit(e) {
+  handleSubmit() {
     const data = { ...this.state };
     data.content = this.state.content
       .filter(({ label, href }) => label || href)
@@ -121,7 +115,7 @@ export default class UpdateAsideList extends Component {
         href: href || "about:blank",
       }));
 
-    this.props.saveState(data);
+    requestAnimationFrame(() => this.props.saveState(data));
   }
 
   handleReOrder(from, to) {
@@ -133,7 +127,6 @@ export default class UpdateAsideList extends Component {
         currentContent.slice(0, from),
         currentContent.slice(from + 1)
       );
-      console.log(content);
     } else if (from < to) {
       content = content.concat(
         currentContent.slice(0, from),
@@ -161,12 +154,11 @@ export default class UpdateAsideList extends Component {
     return (
       <dialog
         data-ignore
-        onClose={this.handleSubmit.bind(this)}
-        onCancel={this.onReset.bind(this)}
+        onClose={this.onReset.bind(this)}
         onClick={e => e.stopPropagation()}
         ref={this.dialog}
       >
-        <form method="dialog">
+        <form method="dialog" onSubmit={this.handleSubmit.bind(this)}>
           <div>
             <label>
               Title:&nbsp;
@@ -183,9 +175,7 @@ export default class UpdateAsideList extends Component {
               handleReOrder={this.handleReOrder.bind(this)}
             />
 
-            <button type="submit" onClick={e => e.target.form.submit()}>
-              Save
-            </button>
+            <button type="submit">Save</button>
             <button type="reset" onClick={this.onReset.bind(this)}>
               Cancel
             </button>
