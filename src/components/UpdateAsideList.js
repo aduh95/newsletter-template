@@ -1,8 +1,7 @@
 import { h, Component, createRef } from "preact";
 
 import createDragHandler from "../createDragHandler.js";
-
-const needPolyfill = !("HTMLDialogElement" in window);
+import registerDialogElement from "../polyfill/htmldialogelement.js";
 
 class OrderedList extends Component {
   handleDrag({ srcElement }, destination) {
@@ -70,14 +69,9 @@ export default class UpdateAsideList extends Component {
   update(prevProps = {}) {
     const { current } = this.dialog;
 
-    if (needPolyfill) {
-      import("dialog-polyfill")
-        .then(module => module.default)
-        .then(dialogPolyfill => dialogPolyfill.registerDialog(current))
-        .then(() => current && !current.open && current.showModal());
-    } else if (current && !current.open) {
-      current.showModal();
-    }
+    registerDialogElement(current).then(
+      () => current && !current.open && current.showModal()
+    );
 
     if (current && prevProps.focus !== this.props.focus) {
       const focusSelector = this.props.focus;
