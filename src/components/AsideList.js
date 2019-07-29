@@ -1,5 +1,7 @@
 import { h, Component, createRef } from "preact";
 
+const needPolyfill = !("HTMLDialogElement" in window);
+
 class UpdateAsideList extends Component {
   dialog = createRef();
 
@@ -22,7 +24,12 @@ class UpdateAsideList extends Component {
   update(prevProps = {}) {
     const { current } = this.dialog;
 
-    if (current && !current.open) {
+    if (needPolyfill) {
+      import("dialog-polyfill")
+        .then(module => module.default)
+        .then(dialogPolyfill => dialogPolyfill.registerDialog(current))
+        .then(() => current && !current.open && current.showModal());
+    } else if (current && !current.open) {
       current.showModal();
     }
 
