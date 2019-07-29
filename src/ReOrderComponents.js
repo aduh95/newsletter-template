@@ -1,8 +1,8 @@
 import { h, Component, Fragment } from "preact";
 
 import "./ReOrderComponents.scss";
+import createDragHandler from "./createDragHandler.js";
 
-const DRAG_CLASS_NAME = "drop-candidate-for-reordering";
 const DROP_ZONE_ID = "re-order-elements";
 const CHECK_CHILDREN_ELEMENT = "re-order-elements-check-children";
 const RE_ORDERING_CLASS_NAME = "re-order-elements-reordering";
@@ -40,74 +40,13 @@ const clickHandler = e => {
   }
 };
 
-/**
- * @param {DragEvent} e
- */
-const dragStartHandler = e => {
-  // TODO
-  const { target } = e;
-  const { parentElement } = target;
-  let destination;
-
-  parentElement.classList.add(DRAG_CLASS_NAME);
-
-  let updateDestination;
-  const updateClassNames = () => {
-    updateDestination = null;
-    parentElement
-      .querySelector("." + DRAG_CLASS_NAME)
-      ?.classList.remove(DRAG_CLASS_NAME);
-    if (destination) {
-      target.classList.remove("to-be-deleted");
-      destination.classList.add(DRAG_CLASS_NAME);
-    } else {
-      target.classList.add("to-be-deleted");
-    }
-  };
-
-  /**
-   * @param {DragEvent} e
-   */
-  const dragOverHandler = e => {
-    e.stopImmediatePropagation();
-    destination = e.toElement;
-    if (!updateDestination) {
-      updateDestination = requestAnimationFrame(updateClassNames);
-    }
-  };
-  const dragLeaveHandler = () => {
-    destination = null;
-    if (!updateDestination) {
-      updateDestination = requestAnimationFrame(updateClassNames);
-    }
-  };
-
-  parentElement.addEventListener("dragover", dragOverHandler, {
-    passive: true,
-  });
-  document.body.addEventListener("dragover", dragLeaveHandler, {
-    passive: true,
-  });
-  target.addEventListener(
-    "dragend",
-    () => {
-      if (destination) {
-        Array.from(document.getElementsByClassName(DRAG_CLASS_NAME), el =>
-          el.classList.remove(DRAG_CLASS_NAME)
-        );
-        parentElement.insertBefore(target, destination);
-      } else {
-        target.remove();
-      }
-      parentElement.removeEventListener("dragover", dragOverHandler);
-      document.body.removeEventListener("dragover", dragLeaveHandler);
-    },
-    {
-      once: true,
-      passive: true,
-    }
-  );
-};
+const dragStartHandler = createDragHandler(({ target }, destination) => {
+  if (destination) {
+    target.parentElement.insertBefore(target, destination);
+  } else {
+    target.remove();
+  }
+});
 
 /**
  * @param {HTMLElement} el
