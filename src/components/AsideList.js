@@ -22,6 +22,10 @@ class UpdateAsideList extends Component {
   update(prevProps = {}) {
     const { current } = this.dialog;
 
+    if (current && !current.open) {
+      current.showModal();
+    }
+
     if (current && prevProps.focus !== this.props.focus) {
       const focusSelector = this.props.focus;
 
@@ -33,6 +37,12 @@ class UpdateAsideList extends Component {
         : current.querySelector(`input[name=${focusSelector}]`);
 
       focusElement?.focus();
+    }
+  }
+
+  handleEscape(e) {
+    if (e.key === "Escape") {
+      this.onReset(e);
     }
   }
 
@@ -70,7 +80,12 @@ class UpdateAsideList extends Component {
     const list = this.state.content || [];
 
     return (
-      <dialog open onClose={this.handleSubmit.bind(this)} ref={this.dialog}>
+      <dialog
+        data-ignore
+        onClose={this.handleSubmit.bind(this)}
+        onCancel={this.onReset.bind(this)}
+        ref={this.dialog}
+      >
         <form method="dialog">
           <div>
             <label>
