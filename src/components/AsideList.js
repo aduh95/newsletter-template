@@ -16,8 +16,8 @@ export default class AsideList extends Component {
 
   render() {
     const list = this.props.content || [];
-    const UpdateAsideList = this.state.writeMode
-      ? lazy(() => import("./UpdateAsideList.js"))
+    const EditAsideList = this.state.writeMode
+      ? lazy(() => import("./EditAsideList.js"))
       : Fragment;
 
     return (
@@ -53,7 +53,7 @@ export default class AsideList extends Component {
             </dialog>
           }
         >
-          <UpdateAsideList
+          <EditAsideList
             {...this.props}
             focus={this.state.focus}
             saveState={this.update.bind(this)}
