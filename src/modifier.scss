@@ -1,0 +1,69 @@
+%backdrop {
+  background-color: #000a;
+}
+dialog {
+  // border: none;
+  padding: 2rem;
+  border-radius: 6px;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.1), 0 0 10px rgba(0, 0, 0, 0.25);
+  max-width: 90vw;
+
+  &::backdrop {
+    @extend %backdrop;
+  }
+  & + .backdrop {
+    @extend %backdrop;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
+
+  &[open] {
+    animation: appear 0.15s cubic-bezier(0, 1.8, 1, 1.8);
+  }
+
+  form label {
+    display: block;
+  }
+
+  .ordered-list {
+    cursor: move;
+    &.drop-candidate-for-reordering > .drop-candidate-for-reordering {
+      transform: translateY(var(--dragged-element-height, 1rem));
+      &::before {
+        content: "Move here";
+        display: flex;
+        height: var(--dragged-element-height, 1rem);
+        background-color: #000a;
+        color: #fff;
+        place-content: center;
+      }
+      & > *,
+      &::before {
+        transform: translateY(calc(var(--dragged-element-height, 1rem) * -1));
+      }
+      & + * {
+        transform: translateY(calc(var(--dragged-element-height, 1rem) * 0.25));
+        & > * {
+          transform: translateY(
+            calc(var(--dragged-element-height, 1rem) * -0.25)
+          );
+        }
+      }
+    }
+  }
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: translateX(-3rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

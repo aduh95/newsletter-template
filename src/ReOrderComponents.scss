@@ -50,8 +50,11 @@
     &:hover::after {
       content: "Drag to move, click to reorder";
     }
-    &:empty:hover::after {
-      content: "Drag to move";
+    &:empty,
+    &[data-json] {
+      &:hover::after {
+        content: "Drag to move";
+      }
     }
   }
   img {
@@ -63,21 +66,27 @@
   background-color: #8888;
 }
 
-.drop-candidate-for-reordering > .drop-candidate-for-reordering::before {
-  content: "Insert here";
-  display: flex;
-  place-content: center;
-  outline: inherit;
-  margin-bottom: 1rem;
-  padding: 1rem;
-}
-.drop-candidate-for-reordering > .to-be-deleted {
-  background-color: red;
-}
-.drop-candidate-for-reordering > .drop-candidate-for-reordering::after {
-  top: 4rem !important;
-}
-.drop-candidate-for-reordering > .drop-candidate-for-reordering {
-  min-height: 5rem;
-  max-height: calc(12.5vh + 4rem);
+.drop-candidate-for-reordering {
+  & > .drop-candidate-for-reordering {
+    & > ::before {
+      content: "Insert here";
+      display: flex;
+      place-content: center;
+      outline: inherit;
+      margin-bottom: 1rem;
+      height: var(--dragged-element-height, 3rem);
+    }
+    &::after {
+      top: 4rem !important;
+    }
+    // min-height: 5rem;
+    max-height: calc(12.5vh + 4rem);
+  }
+
+  & > .to-be-deleted {
+    &,
+    & > input {
+      background-color: red;
+    }
+  }
 }

@@ -3,11 +3,8 @@ import { h, Component } from "preact";
 import createDragHandler from "../createDragHandler.js";
 
 export default class OrderedList extends Component {
-  handleDrag({ srcElement }, destination) {
+  handleDrag({ currentTarget: srcElement }, destination) {
     const siblings = Array.from(srcElement.parentNode.children);
-    while (destination && destination.parentNode !== srcElement.parentNode) {
-      destination = destination.parentNode;
-    }
 
     const draggedElementIndex = siblings.indexOf(srcElement);
     const targetElementIndex = siblings.indexOf(destination);
@@ -19,10 +16,10 @@ export default class OrderedList extends Component {
     const list = this.props.content || [];
 
     return (
-      <ol>
+      <ol className="ordered-list">
         {list.concat([{}]).map(({ label, href }, i) => (
           <li
-            draggable
+            draggable={i < list.length}
             onDragStart={createDragHandler(this.handleDrag.bind(this))}
             key={i}
           >

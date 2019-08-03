@@ -9,13 +9,19 @@ export const setGlobalDragOverListener = listener => {
 };
 
 /**
- * @param {DragEvent} e
+ * @param {(e:DragEvent)=>void} callback
+ * @returns {(e: DragEvent)=>void}
  */
 const dragStartHandler = callback => e => {
-  // TODO
   const { target } = e;
   const { parentElement } = target;
-  let destination;
+  let draggedOverDestination, droppedDestination;
+
+  e.dataTransfer.effectAllowed = "move";
+  parentElement.style.setProperty(
+    "--dragged-element-height",
+    target.offsetHeight + "px"
+  );
 
   for (const listener of globalDragOverListeners) {
     document.body.removeEventListener("dragover", listener);
@@ -28,9 +34,11 @@ const dragStartHandler = callback => e => {
     parentElement
       .querySelector("." + DRAG_CLASS_NAME)
       ?.classList.remove(DRAG_CLASS_NAME);
-    if (destination) {
+    if (draggedOverDestination) {
       target.classList.remove(TO_BE_DELETED_CLASS_NAME);
-      destination.classList.add(DRAG_CLASS_NAME);
+      if (draggedOverDestination !== target) {
+        draggedOverDestination.classList.add(DRAG_CLASS_NAME);
+      }
     } else {
       target.classList.add(TO_BE_DELETED_CLASS_NAME);
     }
@@ -40,36 +48,56 @@ const dragStartHandler = callback => e => {
    * @param {DragEvent} e
    */
   const dragOverHandler = e => {
-    e.stopImmediatePropagation();
-    destination = e.toElement;
+    e.stopPropagation();
+    e.preventDefault();
+    draggedOverDestination = e.currentTarget;
     if (!updateDestination) {
       updateDestination = requestAnimationFrame(updateClassNames);
     }
   };
-  const dragLeaveHandler = () => {
-    destination = null;
+  const dragLeaveHandler = e => {
+    e.preventDefault();
+    draggedOverDestination = null;
     if (!updateDestination) {
       updateDestination = requestAnimationFrame(updateClassNames);
     }
+  };
+  const dropOnSiblingHandler = e => {
+    e.stopPropagation();
+    e.preventDefault();
+    droppedDestination = e.currentTarget;
+  };
+  const dropOutHandler = e => {
+    e.preventDefault();
+    droppedDestination = null;
   };
 
-  parentElement.addEventListener("dragover", dragOverHandler, {
-    passive: true,
+  Array.from(parentElement.children, el => {
+    el.addEventListener("drop", dropOnSiblingHandler);
+    el.addEventListener("dragover", dragOverHandler);
   });
-  document.body.addEventListener("dragover", dragLeaveHandler, {
-    passive: true,
-  });
+  document.body.addEventListener("dragover", dragLeaveHandler);
+  document.body.addEventListener("drop", dropOutHandler);
   target.addEventListener(
     "dragend",
     e => {
       Array.from(document.getElementsByClassName(DRAG_CLASS_NAME), el =>
         el.classList.remove(DRAG_CLASS_NAME)
       );
-      callback(e, destination);
-      parentElement.removeEventListener("dragover", dragOverHandler);
+
       document.body.removeEventListener("dragover", dragLeaveHandler);
+      document.body.removeEventListener("drop", dropOutHandler);
+      for (const child of parentElement.children) {
+        child.removeEventListener("drop", dropOnSiblingHandler);
+        child.removeEventListener("dragover", dragOverHandler);
+      }
       for (const listener of globalDragOverListeners) {
         document.body.addEventListener("dragover", listener);
+      }
+
+      if (droppedDestination !== undefined) {
+        // The callback won't be called if event has been cancelled
+        callback(e, droppedDestination);
       }
     },
     {
