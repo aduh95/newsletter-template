@@ -92,7 +92,10 @@ export default class UpdateAsideList extends Component {
         currentContent.slice(from + 1)
       );
     }
-    this.setState({ content });
+
+    if (from !== to) {
+      this.setState({ content });
+    }
   }
 
   onReset(e) {

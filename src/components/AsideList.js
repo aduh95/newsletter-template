@@ -5,7 +5,6 @@ export default class AsideList extends Component {
   state = { writeMode: false, data: JSON.stringify(this.props) };
 
   update(data) {
-    const { title, content } = data;
     this.setState({
       writeMode: false,
       data: JSON.stringify(data),
