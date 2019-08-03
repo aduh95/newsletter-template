@@ -1,5 +1,5 @@
 import { h, Component, Fragment } from "preact";
-import { Suspense, lazy } from "preact/compat";
+import Edit from "../edit_components/lazy-edit-compomponent.js";
 
 export default class AsideList extends Component {
   state = { writeMode: false, data: JSON.stringify(this.props) };
@@ -16,9 +16,6 @@ export default class AsideList extends Component {
 
   render() {
     const list = this.props.content || [];
-    const EditAsideList = this.state.writeMode
-      ? lazy(() => import("./EditAsideList.js"))
-      : Fragment;
 
     return (
       <article
@@ -46,20 +43,16 @@ export default class AsideList extends Component {
           ))}
         </ul>
 
-        <Suspense
-          fallback={
-            <dialog open data-ignore>
-              Loading...
-            </dialog>
-          }
-        >
-          <EditAsideList
-            {...this.props}
-            focus={this.state.focus}
-            saveState={this.update.bind(this)}
-            resetState={() => this.setState({ writeMode: false })}
-          />
-        </Suspense>
+        <Edit
+          componentName="AsideList"
+          active={this.state.writeMode}
+          props={{
+            ...this.props,
+            focus: this.state.focus,
+            saveState: this.update.bind(this),
+            resetState: () => this.setState({ writeMode: false }),
+          }}
+        />
       </article>
     );
   }
