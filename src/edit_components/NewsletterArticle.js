@@ -3,6 +3,108 @@ import { h, Component, createRef } from "preact";
 import OrderedList from "./OrderedList.js";
 import registerDialogElement from "../polyfill/htmldialogelement.js";
 
+class EditIllustration extends Component {
+  static getDerivedStateFromProps({ src }) {
+    return { noIllustration: !src };
+  }
+
+  disableIllustration(e) {
+    this.props.onChange({
+      src: undefined,
+      alt: undefined,
+      isVideo: undefined,
+    });
+  }
+
+  switchToVideo(e) {
+    this.props.onChange({
+      src: "about:blank",
+      alt: undefined,
+      isVideo: true,
+    });
+    requestAnimationFrame(() => e.target.form.elements["src"].focus());
+  }
+
+  switchToImage(e) {
+    this.props.onChange({
+      src: "about:blank",
+      alt: "",
+      isVideo: false,
+    });
+    requestAnimationFrame(() => e.target.form.elements["src"].focus());
+  }
+
+  handleChange(e) {
+    const { target } = e;
+    const { name, value } = target;
+
+    this.props.onChange({ ...this.props, [name]: value });
+  }
+
+  render() {
+    console.log(this.props);
+    return (
+      <fieldset>
+        <legend>Illustration</legend>
+        Illustration type:&nbsp;
+        <label>
+          <input
+            onChange={this.disableIllustration.bind(this)}
+            name="isVideo"
+            type="radio"
+            value="noIllustration"
+            checked={this.state.noIllustration}
+          />
+          &nbsp;No illustration
+        </label>
+        <label>
+          <input
+            onChange={this.switchToImage.bind(this)}
+            name="isVideo"
+            type="radio"
+            value="false"
+            checked={!this.state.noIllustration && !this.props.isVideo}
+          />
+          &nbsp;Image
+        </label>
+        <label>
+          <input
+            onChange={this.switchToVideo.bind(this)}
+            name="isVideo"
+            type="radio"
+            value="true"
+            checked={!this.state.noIllustration && this.props.isVideo}
+          />
+          &nbsp;Video
+        </label>
+        {this.state.noIllustration ? null : (
+          <label>
+            {this.props.isVideo ? "Video" : "Image"} URL:&nbsp;
+            <input
+              onChange={this.handleChange.bind(this)}
+              name="src"
+              type="url"
+              value={this.props.src}
+            />
+          </label>
+        )}
+        {this.state.noIllustration || this.props.isVideo ? null : (
+          <label>
+            Image description:&nbsp;
+            <input
+              onChange={this.handleChange.bind(this)}
+              name="alt"
+              value={this.props.alt}
+              placeholder="Mandatory description of the image"
+              required
+            />
+          </label>
+        )}
+      </fieldset>
+    );
+  }
+}
+
 export default class EditNewsletterArticle extends Component {
   dialog = createRef();
 
@@ -135,7 +237,22 @@ export default class EditNewsletterArticle extends Component {
                 onChange={e => this.setState({ isMain: e.target.checked })}
               />
             </label>
-            <label>Illustration</label>
+            <EditIllustration
+              isVideo={this.state.isVideo}
+              src={this.state.illustration}
+              alt={this.state.illustrationDescription}
+              onChange={({
+                isVideo,
+                src: illustration,
+                alt: illustrationDescription,
+              }) =>
+                this.setState({
+                  isVideo,
+                  illustration,
+                  illustrationDescription,
+                })
+              }
+            />
             <label>
               Text:&nbsp;
               <textarea

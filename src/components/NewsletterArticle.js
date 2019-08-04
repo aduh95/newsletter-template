@@ -45,13 +45,6 @@ export default class NewsletterArticle extends Component {
   state = {
     writeMode: false,
     data: JSON.stringify(this.props),
-    title: this.props.title,
-    description: this.props.description,
-    isMain: !!this.props.isMain,
-    isVideo: !!this.props.isVideo,
-    illustration: this.props.illustration || null,
-    illustrationDescription: this.props.illustrationDescription,
-    links: getArray(this.props.links) || getArray(this.props.link),
   };
 
   update(data) {
@@ -66,7 +59,7 @@ export default class NewsletterArticle extends Component {
   render() {
     return (
       <article
-        className={this.state.isMain ? "main" : undefined}
+        className={this.props.isMain ? "main" : undefined}
         data-type="NewsletterArticle"
         data-json={this.state.data}
         onClick={e => {
@@ -78,21 +71,21 @@ export default class NewsletterArticle extends Component {
           this.setState({ writeMode: true, focus: e.path[i]?.dataset?.key });
         }}
       >
-        <h4 data-key="title">{this.state.title}</h4>
+        <h4 data-key="title">{this.props.title}</h4>
 
         <Illustration
-          isVideo={this.state.isVideo}
-          src={this.state.illustration}
-          alt={this.state.illustrationDescription}
+          isVideo={this.props.isVideo}
+          src={this.props.illustration}
+          alt={this.props.illustrationDescription}
         />
 
         <MarkdownContent
-          content={this.state.description}
+          content={this.props.description}
           attributes={{ ["data-key"]: "description" }}
         />
 
         <p>
-          {this.state.links.map((link, i) => (
+          {getArray(this.props.links).map((link, i) => (
             <>
               <a
                 data-key={`label[${i}]`}
