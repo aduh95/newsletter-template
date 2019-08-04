@@ -40,6 +40,10 @@ h1 {
   margin: 0;
 }
 
+output[data-contents] {
+  display: contents;
+}
+
 /* Fix for cross-domain */
 section.newsletter-hero {
   background-image: url(https://ecobuilding.schneider-electric.com/documents/10807/21555442/hero.jpg/5b9d6950-2b9b-450d-b5b0-a2b78ee31192) !important;
