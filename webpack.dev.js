@@ -19,6 +19,10 @@ module.exports = {
             use: { loader: "file-loader" },
           },
           {
+            test: /\.worker\.js$/,
+            use: { loader: "worker-loader" },
+          },
+          {
             test: /\.js$/,
             exclude: /node_modules/,
             use: {
