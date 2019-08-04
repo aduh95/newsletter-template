@@ -1,4 +1,6 @@
 import { h, Component, Fragment } from "preact";
+import MarkdownContent from "../markdown/MarkdownContent.js";
+import Edit from "../edit_components/lazy-edit-compomponent.js";
 
 const getArray = obj => (obj ? (Array.isArray(obj) ? obj : [obj]) : []);
 
@@ -40,16 +42,25 @@ class Illustration extends Component {
 }
 
 export default class NewsletterArticle extends Component {
-  static getDerivedStateFromProps(props) {
-    return {
-      title: props.title,
-      description: getArray(props.description),
-      isMain: !!props.isMain,
-      isVideo: !!props.isVideo,
-      illustration: props.illustration || null,
-      illustrationDescription: props.illustrationDescription,
-      links: getArray(props.links) || getArray(props.link),
-    };
+  state = {
+    writeMode: false,
+    data: JSON.stringify(this.props),
+    title: this.props.title,
+    description: this.props.description,
+    isMain: !!this.props.isMain,
+    isVideo: !!this.props.isVideo,
+    illustration: this.props.illustration || null,
+    illustrationDescription: this.props.illustrationDescription,
+    links: getArray(this.props.links) || getArray(this.props.link),
+  };
+
+  update(data) {
+    this.setState({
+      writeMode: false,
+      data: JSON.stringify(data),
+    });
+
+    Object.assign(this.props, data);
   }
 
   render() {
@@ -57,9 +68,17 @@ export default class NewsletterArticle extends Component {
       <article
         className={this.state.isMain ? "main" : undefined}
         data-type="NewsletterArticle"
-        data-json={JSON.stringify(this.props)}
+        data-json={this.state.data}
+        onClick={e => {
+          e.preventDefault();
+          let i = 0;
+          while (e.path[i] && undefined === e.path[i].dataset?.key) {
+            i++;
+          }
+          this.setState({ writeMode: true, focus: e.path[i]?.dataset?.key });
+        }}
       >
-        <h4>{this.state.title}</h4>
+        <h4 data-key="title">{this.state.title}</h4>
 
         <Illustration
           isVideo={this.state.isVideo}
@@ -67,20 +86,37 @@ export default class NewsletterArticle extends Component {
           alt={this.state.illustrationDescription}
         />
 
-        {this.state.description.map(text => (
-          <p>{text}</p>
-        ))}
+        <MarkdownContent
+          content={this.state.description}
+          attributes={{ ["data-key"]: "description" }}
+        />
 
         <p>
-          {this.state.links.map(link => (
+          {this.state.links.map((link, i) => (
             <>
-              <a href={filterLink(link.href)} target="_blank" rel="noopener">
+              <a
+                data-key={`label[${i}]`}
+                href={filterLink(link.href)}
+                target="_blank"
+                rel="noopener"
+              >
                 {link.label}
               </a>
               .<br />
             </>
           ))}
         </p>
+
+        <Edit
+          componentName="NewsletterArticle"
+          active={this.state.writeMode}
+          props={{
+            ...this.props,
+            focus: this.state.focus,
+            saveState: this.update.bind(this),
+            resetState: () => this.setState({ writeMode: false }),
+          }}
+        />
       </article>
     );
   }
