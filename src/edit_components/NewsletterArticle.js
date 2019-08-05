@@ -154,15 +154,15 @@ export default class EditNewsletterArticle extends Component {
 
   handleChange(event, index) {
     const { name, value } = event.target;
-    const { content } = this.state;
+    const { links } = this.state;
 
-    if (index === content.length) {
-      content.push({ [name]: value });
+    if (index === links.length) {
+      links.push({ [name]: value });
     } else {
-      content[index][name] = value;
+      links[index][name] = value;
     }
 
-    this.setState({ content });
+    this.setState({ links });
   }
 
   handleSubmit() {
@@ -261,7 +261,7 @@ export default class EditNewsletterArticle extends Component {
                 name="description"
                 value={this.state.description}
                 onChange={e => this.setState({ description: e.target.value })}
-                initialyActive={this.props.focus === "description"}
+                initiallyActive={this.props.focus === "description"}
               />
             </label>
 

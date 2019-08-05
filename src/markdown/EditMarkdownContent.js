@@ -25,7 +25,7 @@ const ul_end_patern = /\n\s*(-|\*)\s*$/;
 const ol_end_patern = /\n\s*\d\.\s*$/;
 
 export default class EditMarkdownContent extends Component {
-  state = { active: this.props.initialyActive };
+  state = { active: this.props.initiallyActive };
   textarea = createRef();
 
   static #prettierJobs = Promise.resolve();
