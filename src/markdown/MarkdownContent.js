@@ -9,18 +9,23 @@ export default class MarkdownContent extends Component {
   static #translationJobs = Promise.resolve();
 
   static translate(markdown) {
-    this.#translationJobs = this.#translationJobs.then(
-      () =>
-        new Promise((resolve, reject) => {
-          worker.onmessage = ({ data }) => {
-            resolve(data);
-          };
-          worker.onmessageerror = reject;
-          worker.onerror = reject;
-          worker.postMessage(markdown);
-        })
-    );
-    return this.#translationJobs;
+    let done;
+    const waitForFulfillment = new Promise(resolve => (done = resolve));
+    const job = this.#translationJobs
+      .then(
+        () =>
+          new Promise((resolve, reject) => {
+            worker.onmessage = ({ data }) => {
+              resolve(data);
+            };
+            worker.onmessageerror = reject;
+            worker.onerror = reject;
+            worker.postMessage(markdown);
+          })
+      )
+      .finally(done);
+    this.#translationJobs = waitForFulfillment;
+    return job;
   }
 
   componentDidMount() {

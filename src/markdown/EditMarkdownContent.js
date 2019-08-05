@@ -28,18 +28,22 @@ export default class EditMarkdownContent extends Component {
   static #prettierJobs = Promise.resolve();
 
   static makePrettier(markdown) {
-    const job = this.#prettierJobs.then(
-      () =>
-        new Promise((resolve, reject) => {
-          worker.onmessage = ({ data }) => {
-            resolve(data);
-          };
-          worker.onmessageerror = reject;
-          worker.onerror = reject;
-          worker.postMessage(markdown);
-        })
-    );
-    this.#prettierJobs = this.#prettierJobs.finally(job);
+    let done;
+    const waitForFulfillment = new Promise(resolve => (done = resolve));
+    const job = this.#prettierJobs
+      .then(
+        () =>
+          new Promise((resolve, reject) => {
+            worker.onmessage = ({ data }) => {
+              resolve(data);
+            };
+            worker.onmessageerror = reject;
+            worker.onerror = reject;
+            worker.postMessage(markdown);
+          })
+      )
+      .finally(done);
+    this.#prettierJobs = waitForFulfillment;
     return job;
   }
 
