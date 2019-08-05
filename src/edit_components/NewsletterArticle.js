@@ -1,6 +1,7 @@
 import { h, Component, createRef } from "preact";
 
 import OrderedList from "./OrderedList.js";
+import EditMarkdown from "../markdown/EditMarkdownContent.js";
 import registerDialogElement from "../polyfill/htmldialogelement.js";
 
 class EditIllustration extends Component {
@@ -42,7 +43,6 @@ class EditIllustration extends Component {
   }
 
   render() {
-    console.log(this.props);
     return (
       <fieldset>
         <legend>Illustration</legend>
@@ -146,7 +146,9 @@ export default class EditNewsletterArticle extends Component {
             .item(focusIndex[2])
         : current.querySelector(`[name=${focusSelector}]`);
 
-      requestAnimationFrame(() => focusElement?.focus());
+      if (focusElement) {
+        requestAnimationFrame(() => focusElement.focus());
+      }
     }
   }
 
@@ -172,7 +174,7 @@ export default class EditNewsletterArticle extends Component {
         href: href || "about:blank",
       }));
 
-    requestAnimationFrame(() => this.props.saveState(data));
+    requestIdleCallback(() => this.props.saveState(data));
   }
 
   handleReOrder(from, to) {
@@ -255,10 +257,11 @@ export default class EditNewsletterArticle extends Component {
             />
             <label>
               Text:&nbsp;
-              <textarea
+              <EditMarkdown
                 name="description"
                 value={this.state.description}
                 onChange={e => this.setState({ description: e.target.value })}
+                initialyActive={this.props.focus === "description"}
               />
             </label>
 
