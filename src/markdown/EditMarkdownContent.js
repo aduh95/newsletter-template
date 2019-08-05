@@ -2,17 +2,21 @@ import { h, Component, createRef } from "preact";
 import MarkdownContent from "./MarkdownContent";
 
 const commands = [
-  { label: "Bold", char: "**" },
-  { label: "Italic", char: "_" },
+  { label: "Bold", char: "**", shortcut: "b" },
+  { label: "Italic", char: "_", shortcut: "i" },
   {
     label: "Link",
     charBefore: "[",
     charAfter: "](https://)",
     selectionAfter: true,
     selectionOffset: [2, 1],
+    shortcut: "k",
   },
   { label: "List", charAfter: "\n\n * ", selectionAfter: true },
 ];
+
+const ul_patern = /\n(\s+)\*\s.+$/;
+const ul_end_patern = /\n(\s+)\*\s*$/;
 
 export default class EditMarkdownContent extends Component {
   state = { active: this.props.initialyActive };
@@ -73,17 +77,25 @@ export default class EditMarkdownContent extends Component {
   }
 
   helper(e) {
+    const { value, selectionStart, selectionEnd } = e.target;
     if (e.keyCode === 13) {
-      console.log("enter");
-      const { value, selectionStart, selectionEnd } = e.target;
-
-      if (/\n(\s+)\*\s.+$/.test(value)) {
+      // Enter
+      if (ul_patern.test(value)) {
         e.target.setRangeText("\n * ", selectionStart, selectionEnd, "end");
         e.preventDefault();
-      } else if (/\n(\s+)\*\s*$/.test(value)) {
+      } else if (ul_end_patern.test(value)) {
         e.target.setRangeText("\n", selectionStart - 4, selectionEnd, "end");
       }
-    }
+    } else if (e.keyCode === 9) {
+      // Tabulation
+      e.preventDefault();
+      if (ul_end_patern.test(value)) {
+        // const [_,spaces] = value.match(ul_end_patern)
+        e.target.setRangeText("  * ", selectionStart - 2, selectionEnd, "end");
+      } else {
+        e.target.setRangeText(" > ", selectionStart, selectionEnd, "end");
+      }
+    } else console.log(e.keyCode);
   }
 
   componentDidUpdate() {
@@ -110,12 +122,19 @@ export default class EditMarkdownContent extends Component {
           />
           [&nbsp;
           {commands.map(command => (
-            <button onClick={this.handleCommand(command)} type="button">
+            <button
+              onClick={this.handleCommand(command)}
+              accesskey={command.shortcut}
+              type="button"
+            >
               {command.label}
             </button>
           ))}
           &nbsp;]&nbsp;[
-          <button onClick={() => this.setState({ active: false })}>
+          <button
+            accesskey="s"
+            onClick={() => this.setState({ active: false })}
+          >
             Back to preview
           </button>
           &nbsp;]
@@ -124,7 +143,7 @@ export default class EditMarkdownContent extends Component {
           <textarea
             {...this.props}
             ref={this.textarea}
-            onKeyPress={this.helper.bind(this)}
+            onKeyDown={this.helper.bind(this)}
             rows="10"
             cols="50"
           />
