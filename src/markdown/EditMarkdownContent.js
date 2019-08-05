@@ -19,7 +19,10 @@ const commands = [
 ];
 
 const ul_patern = /\n\s*-\s.+$/;
-const ul_end_patern = /\n\s*-\s*$/;
+const ol_patern = /\n(\s*)(\d+)\.\s.+$/;
+const list_end_patern = /\n\s*(-|\d+\.)\s*$/;
+const ul_end_patern = /\n\s*(-|\*)\s*$/;
+const ol_end_patern = /\n\s*\d\.\s*$/;
 
 export default class EditMarkdownContent extends Component {
   state = { active: this.props.initialyActive };
@@ -114,16 +117,30 @@ export default class EditMarkdownContent extends Component {
     if (e.keyCode === 13) {
       // Enter
       if (ul_patern.test(currentLine)) {
-        e.target.setRangeText("\n- ", selectionStart, selectionEnd, "end");
         e.preventDefault();
-      } else if (ul_end_patern.test(currentLine)) {
+        e.target.setRangeText("\n- ", selectionStart, selectionEnd, "end");
+      } else if (ol_patern.test(currentLine)) {
+        e.preventDefault();
+        const [_, spaces, index] = currentLine.match(ol_patern);
+        e.target.setRangeText(
+          `\n${spaces}${Number(index) + 1}. `,
+          selectionStart,
+          selectionEnd,
+          "end"
+        );
+      } else if (list_end_patern.test(currentLine)) {
         e.target.setRangeText("\n", selectionStart - 3, selectionEnd, "end");
       }
     } else if (e.keyCode === 9) {
       // Tabulation
-      if (ul_end_patern.test(currentLine)) {
+      if (list_end_patern.test(currentLine)) {
         e.preventDefault();
-        e.target.setRangeText("  - ", selectionStart - 2, selectionEnd, "end");
+        e.target.setRangeText(
+          "  - ",
+          selectionStart - 2 - ol_end_patern.test(currentLine),
+          selectionEnd,
+          "end"
+        );
       } else if (currentLine.trim().length === 0) {
         e.preventDefault();
         e.target.setRangeText(" > ", selectionStart, selectionEnd, "end");
