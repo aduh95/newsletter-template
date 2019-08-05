@@ -1,5 +1,8 @@
 import { h, Component, createRef } from "preact";
 import MarkdownContent from "./MarkdownContent";
+import PrettierWorker from "./prettier.worker.js";
+
+const worker = new PrettierWorker();
 
 const commands = [
   { label: "Bold", char: "**", shortcut: "b" },
@@ -21,6 +24,24 @@ const ul_end_patern = /\n(\s+)\*\s*$/;
 export default class EditMarkdownContent extends Component {
   state = { active: this.props.initialyActive };
   textarea = createRef();
+
+  static #prettierJobs = Promise.resolve();
+
+  static makePrettier(markdown) {
+    const job = this.#prettierJobs.then(
+      () =>
+        new Promise((resolve, reject) => {
+          worker.onmessage = ({ data }) => {
+            resolve(data);
+          };
+          worker.onmessageerror = reject;
+          worker.onerror = reject;
+          worker.postMessage(markdown);
+        })
+    );
+    this.#prettierJobs = this.#prettierJobs.finally(job);
+    return job;
+  }
 
   getCaretPosition(e) {
     if (window.getSelection) {
@@ -98,6 +119,17 @@ export default class EditMarkdownContent extends Component {
     } else console.log(e.keyCode);
   }
 
+  makePrettier(e) {
+    const { current } = this.textarea;
+
+    const { value } = current;
+
+    this.constructor.makePrettier(value).then(prettyMarkdown => {
+      current.value = prettyMarkdown;
+      this.props.onChange({ target: current });
+    }, console.warn);
+  }
+
   componentDidUpdate() {
     if (this.focusPosition && this.textarea.current) {
       const { current } = this.textarea;
@@ -144,6 +176,7 @@ export default class EditMarkdownContent extends Component {
             {...this.props}
             ref={this.textarea}
             onKeyDown={this.helper.bind(this)}
+            onBlur={this.makePrettier.bind(this)}
             rows="10"
             cols="50"
           />
