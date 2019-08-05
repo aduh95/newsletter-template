@@ -26,8 +26,10 @@ export default class MarkdownContent extends Component {
   componentDidMount() {
     this.translate();
   }
-  componentDidUpdate() {
-    this.translate();
+  componentDidUpdate(prevProps) {
+    if (prevProps.content !== this.props.content) {
+      this.translate();
+    }
   }
   translate() {
     this.constructor
@@ -37,7 +39,11 @@ export default class MarkdownContent extends Component {
       })
       .catch(e => {
         console.error(e);
-        this.setState({ loading: false, html: "<div data-ignore>Error</div>" });
+        this.setState({
+          loading: false,
+          html:
+            "<div data-ignore class='error'>Error when rendering markdown content</div>",
+        });
       });
   }
 
