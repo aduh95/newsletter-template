@@ -167,12 +167,15 @@ export default class EditNewsletterArticle extends Component {
 
   handleSubmit() {
     const data = { ...this.state };
-    data.links = this.state.links
-      .filter(({ label, href }) => label || href)
-      .map(({ label, href }) => ({
-        label: label || "[Link]",
-        href: href || "about:blank",
-      }));
+
+    if (Array.isArray(this.state.links)) {
+      data.links = this.state.links
+        .filter(({ label, href }) => label || href)
+        .map(({ label, href }) => ({
+          label: label || "[Link]",
+          href: href || "about:blank",
+        }));
+    }
 
     requestIdleCallback(() => this.props.saveState(data));
   }
