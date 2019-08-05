@@ -151,12 +151,17 @@ export default class EditMarkdownContent extends Component {
   makePrettier(e) {
     const { current } = this.textarea;
 
-    const { value } = current;
+    if (current) {
+      const { value } = current;
 
-    this.constructor.makePrettier(value).then(prettyMarkdown => {
-      current.value = prettyMarkdown;
-      this.props.onChange({ target: current });
-    }, console.warn);
+      this.constructor
+        .makePrettier(value)
+        .then(prettyMarkdown => {
+          current.value = prettyMarkdown;
+          this.props.onChange({ target: current });
+        })
+        .catch(console.warn);
+    }
   }
 
   componentDidUpdate() {
