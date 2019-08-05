@@ -6,12 +6,17 @@
 }
 body {
   display: grid;
-  grid-template-rows: auto 1fr auto;
-  grid-template-columns: 300px 1fr;
-  grid-template-areas: "header header" "aside main" "footer footer";
   min-height: 100vh;
   width: 100vw;
   margin: 0;
+  grid-template-areas: "header" "main" "footer";
+}
+@media only screen and (min-width: 750px) {
+  body {
+    grid-template-rows: auto 1fr auto;
+    grid-template-columns: 300px 1fr;
+    grid-template-areas: "header header" "aside main" "footer footer";
+  }
 }
 
 header,
@@ -28,6 +33,12 @@ main {
 aside {
   grid-area: aside;
 }
+@media only screen and (max-width: 749px) {
+  aside {
+    display: none;
+  }
+}
+
 footer {
   grid-area: footer;
 }
