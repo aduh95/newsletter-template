@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[16],{34:function(e,n){Object.defineProperty(Blob.prototype,"text",{configurable:!0,enumerable:!0,writable:!0,value:function(){return new Response(this).text()}})}}]);
