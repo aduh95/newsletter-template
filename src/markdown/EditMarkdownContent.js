@@ -15,11 +15,11 @@ const commands = [
     selectionOffset: [2, 1],
     shortcut: "k",
   },
-  { label: "List", charAfter: "\n\n * ", selectionAfter: true },
+  { label: "List", charAfter: "\n\n- ", selectionAfter: true },
 ];
 
-const ul_patern = /\n(\s+)\*\s.+$/;
-const ul_end_patern = /\n(\s+)\*\s*$/;
+const ul_patern = /\n\s*-\s.+$/;
+const ul_end_patern = /\n\s*-\s*$/;
 
 export default class EditMarkdownContent extends Component {
   state = { active: this.props.initialyActive };
@@ -103,21 +103,29 @@ export default class EditMarkdownContent extends Component {
 
   helper(e) {
     const { value, selectionStart, selectionEnd } = e.target;
+
+    const previousLineReturn = value.lastIndexOf("\n", selectionStart - 1);
+    const nextLineReturn = value.indexOf("\n", selectionEnd - 1);
+    const currentLine = value.substring(
+      ~previousLineReturn ? previousLineReturn : 0,
+      ~nextLineReturn ? nextLineReturn : undefined
+    );
+
     if (e.keyCode === 13) {
       // Enter
-      if (ul_patern.test(value)) {
-        e.target.setRangeText("\n * ", selectionStart, selectionEnd, "end");
+      if (ul_patern.test(currentLine)) {
+        e.target.setRangeText("\n- ", selectionStart, selectionEnd, "end");
         e.preventDefault();
-      } else if (ul_end_patern.test(value)) {
-        e.target.setRangeText("\n", selectionStart - 4, selectionEnd, "end");
+      } else if (ul_end_patern.test(currentLine)) {
+        e.target.setRangeText("\n", selectionStart - 3, selectionEnd, "end");
       }
     } else if (e.keyCode === 9) {
       // Tabulation
-      e.preventDefault();
-      if (ul_end_patern.test(value)) {
-        // const [_,spaces] = value.match(ul_end_patern)
-        e.target.setRangeText("  * ", selectionStart - 2, selectionEnd, "end");
-      } else {
+      if (ul_end_patern.test(currentLine)) {
+        e.preventDefault();
+        e.target.setRangeText("  - ", selectionStart - 2, selectionEnd, "end");
+      } else if (currentLine.trim().length === 0) {
+        e.preventDefault();
         e.target.setRangeText(" > ", selectionStart, selectionEnd, "end");
       }
     } else console.log(e.keyCode);
