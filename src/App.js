@@ -118,12 +118,18 @@ export default class App extends Component {
           <SplashScreen title="Welcome" />
         )}
         <footer>
-          <a href="https://github.com/aduh95/newsletter-template">
-            View the code
-          </a>
-          <a href="https://github.com/aduh95/newsletter-template/issues">
-            Report a bug
-          </a>
+          <ul>
+            <li>
+              <a href="https://github.com/aduh95/newsletter-template">
+                View the code
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/aduh95/newsletter-template/issues">
+                Report a bug
+              </a>
+            </li>
+          </ul>
         </footer>
       </>
     );
