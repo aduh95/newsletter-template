@@ -18,6 +18,7 @@ export default class Editor extends Component {
    * @param {MutationObserver} observer
    */
   handleMutation(mutationList, observer) {
+    let rebuildDOM = false;
     const data = this.#DOMData;
     for (const mutation of mutationList) {
       const { target, type } = mutation;
@@ -75,12 +76,13 @@ export default class Editor extends Component {
               obj[key] = undefined;
             });
             Object.assign(obj, JSON.parse(target.dataset.json));
+            rebuildDOM = true;
           }
           break;
       }
     }
 
-    this.props.onChange(data.get(this), false);
+    this.props.onChange(data.get(this), rebuildDOM);
   }
 
   observeNode(node) {

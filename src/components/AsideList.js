@@ -9,8 +9,6 @@ export default class AsideList extends Component {
       writeMode: false,
       data: JSON.stringify(data),
     });
-
-    Object.assign(this.props, data);
   }
 
   render() {

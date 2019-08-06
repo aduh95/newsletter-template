@@ -52,8 +52,6 @@ export default class NewsletterArticle extends Component {
       writeMode: false,
       data: JSON.stringify(data),
     });
-
-    Object.assign(this.props, data);
   }
 
   render() {
