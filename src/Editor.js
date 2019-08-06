@@ -5,15 +5,12 @@ import Save from "./Save.js";
 
 export default class Editor extends Component {
   #observer = new window.MutationObserver(this.handleMutation.bind(this));
-  #childrenRefs = new WeakMap();
-
-  #beforeRef = createRef();
-  #afterRef = createRef();
+  #DOMData = new WeakMap();
 
   state = { hasError: false, showControls: false, reOrder: false };
 
   get data() {
-    return this.#childrenRefs.get(this);
+    return this.#DOMData.get(this);
   }
 
   /**
@@ -21,7 +18,7 @@ export default class Editor extends Component {
    * @param {MutationObserver} observer
    */
   handleMutation(mutationList, observer) {
-    const data = this.#childrenRefs;
+    const data = this.#DOMData;
     for (const mutation of mutationList) {
       const { target, type } = mutation;
       switch (type) {
@@ -64,16 +61,16 @@ export default class Editor extends Component {
           const { dataset, textContent } = parent;
           console.log(parent);
 
-          while (!this.#childrenRefs.has(parent)) {
+          while (!this.#DOMData.has(parent)) {
             parent = parent.parentElement;
           }
           console.log(parent);
-          this.#childrenRefs.get(parent)[dataset.key] = textContent;
+          this.#DOMData.get(parent)[dataset.key] = textContent;
           break;
 
         case "attributes":
           if (mutation.attributeName === "data-json") {
-            const obj = this.#childrenRefs.get(target);
+            const obj = this.#DOMData.get(target);
 
             Object.keys(obj).forEach(key => {
               obj[key] = undefined;
@@ -92,12 +89,12 @@ export default class Editor extends Component {
 
     if (json) {
       this.#observer.observe(node, { attributes: true });
-      return this.#childrenRefs.set(node, JSON.parse(json));
+      return this.#DOMData.set(node, JSON.parse(json));
     }
 
     if (type) {
       this.#observer.observe(node, { childList: true });
-      this.#childrenRefs.set(node, { type, content: [] });
+      this.#DOMData.set(node, { type, content: [] });
     }
 
     if (node.childElementCount) {
@@ -109,13 +106,11 @@ export default class Editor extends Component {
           Array.from(child.childNodes).forEach(el =>
             this.#observer.observe(el, { characterData: true })
           );
-          this.#childrenRefs.get(node)[key] = child.textContent;
+          this.#DOMData.get(node)[key] = child.textContent;
           child.contentEditable = true;
         } else {
           this.observeNode(child);
-          this.#childrenRefs
-            .get(node)
-            ?.content?.push(this.#childrenRefs.get(child));
+          this.#DOMData.get(node)?.content?.push(this.#DOMData.get(child));
         }
       });
     }
@@ -126,37 +121,27 @@ export default class Editor extends Component {
       return Array.from(node.children, this.observeNodeDeep.bind(this));
     }
     this.observeNode(node);
-    this.#childrenRefs.get(this)[node.dataset.type] = this.#childrenRefs.get(
+    this.#DOMData.get(this)[node.dataset.type] = this.#DOMData.get(
       node
     )?.content;
   }
 
   componentDidMount() {
-    this.#childrenRefs.set(this, {});
+    this.#DOMData.set(this, {});
     requestIdleCallback(this.checkForDOMChanges.bind(this));
   }
 
   checkForDOMChanges() {
     console.log("updated");
-    let node = this.#beforeRef.current?.nextElementSibling;
-    while (node && node !== this.#afterRef.current) {
-      if (!this.#childrenRefs.has(node)) {
+    for (const node of document.querySelectorAll("[data-watch]")) {
+      if (!this.#DOMData.has(node)) {
         this.observeNodeDeep(node);
       }
-
-      node = node.nextElementSibling;
     }
-
-    // requestIdleCallback(this.checkForDOMChanges.bind(this));
-  }
-
-  shouldComponentUpdate() {
-    console.log("should it?", this.props.children);
-    // requestIdleCallback(() => this.forceUpdate());
   }
 
   componentDidUpdate() {
-    requestIdleCallback(this.checkForDOMChanges.bind(this));
+    requestIdleCallback(() => this.checkForDOMChanges());
   }
 
   componentWillUnmount() {
@@ -169,16 +154,17 @@ export default class Editor extends Component {
   }
 
   render() {
+    for (const child of this.props.children) {
+      child.props["data-watch"] = true;
+    }
     return (
       <>
-        <header ref={this.#beforeRef}>
+        <header>
           <h1>{this.props.title}</h1>
+          <Save editor={this} />
         </header>
         {this.state.reOrder ? <ReOrderComponents /> : null}
         {this.props.children}
-        <footer ref={this.#afterRef}>
-          <Save editor={this} />
-        </footer>
       </>
     );
   }
