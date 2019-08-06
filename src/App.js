@@ -1,19 +1,19 @@
 import { h, Component, Fragment } from "preact";
 import { Suspense, lazy } from "preact/compat";
 
+import statePersistance from "./StatePersistance.js";
+
 import Error from "./Error.js";
 import Editor from "./Editor.js";
 import Loading from "./Loading.js";
 import DropZone from "./DropZone.js";
 import SplashScreen from "./SplashScreen.js";
 
-const CONTENT_KEY = "content";
-const LAST_SAVE_KEY = "lastSaveDate";
-
 const ASYNC_COMP = new Map();
 
 export default class App extends Component {
   state = { previewing: true, hasError: false };
+  #shouldUpdateDOM = true;
 
   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
@@ -22,13 +22,20 @@ export default class App extends Component {
   }
 
   componentWillMount() {
-    // localStorage.removeItem(CONTENT_KEY);
-    this.importJSONData(localStorage.getItem(CONTENT_KEY));
+    statePersistance.subscribe(this.update.bind(this));
+    const { currentState } = statePersistance;
+    if (currentState) {
+      this.update(currentState);
+    }
   }
 
-  importJSONData(data) {
+  componentWillUnmount() {
+    statePersistance.unsubscribe(this.update.bind(this));
+  }
+
+  update(data) {
     try {
-      let { main, aside } = JSON.parse(data);
+      let { main, aside } = data;
       if (!Array.isArray(main)) {
         main = undefined;
       }
@@ -42,10 +49,16 @@ export default class App extends Component {
     }
   }
 
-  saveState(data) {
-    console.log("state saved");
-    localStorage.setItem(CONTENT_KEY, JSON.stringify(data));
-    localStorage.setItem(LAST_SAVE_KEY, Date.now());
+  saveState(data, shouldUpdateDOM = true) {
+    statePersistance.currentState = data;
+    this.#shouldUpdateDOM = shouldUpdateDOM;
+  }
+
+  shouldComponentUpdate() {
+    if (!this.#shouldUpdateDOM) {
+      this.#shouldUpdateDOM = true;
+      return false;
+    }
   }
 
   getComponents(array) {
@@ -84,10 +97,10 @@ export default class App extends Component {
     ) : (
       <>
         <DropZone dataHandler={txt => this.importJSONData(txt)} />
-        {main || aside ? (
+        {main && aside ? (
           <Editor
             title="EcoXpert Newsletter template filling"
-            onChange={data => this.saveState(data)}
+            onChange={this.saveState.bind(this)}
           >
             <main data-type="main">
               <Suspense fallback={<Loading />}>
@@ -115,7 +128,10 @@ export default class App extends Component {
             </aside>
           </Editor>
         ) : (
-          <SplashScreen title="Welcome" />
+          <SplashScreen
+            title="Welcome"
+            previousStateDate={statePersistance.lastSavedStateDate}
+          />
         )}
         <footer>
           <ul>

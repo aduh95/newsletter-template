@@ -59,12 +59,11 @@ export default class Editor extends Component {
             parent = parent.parentElement;
           }
           const { dataset, textContent } = parent;
-          console.log(parent);
 
           while (!this.#DOMData.has(parent)) {
             parent = parent.parentElement;
           }
-          console.log(parent);
+
           this.#DOMData.get(parent)[dataset.key] = textContent;
           break;
 
@@ -80,8 +79,8 @@ export default class Editor extends Component {
           break;
       }
     }
-    console.log(data.get(this));
-    this.props.onChange(data.get(this));
+
+    this.props.onChange(data.get(this), false);
   }
 
   observeNode(node) {

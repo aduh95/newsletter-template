@@ -1,4 +1,5 @@
 import { h, Component, Fragment } from "preact";
+import statePersistance from "./StatePersistance.js";
 
 export default class SplashScreen extends Component {
   render() {
@@ -19,9 +20,21 @@ export default class SplashScreen extends Component {
               onChange={console.log}
             />
           </div>
-          <p>
-            Or continue where you lefted: <button>Recover last version</button>
-          </p>
+          {this.props.previousStateDate ? (
+            <>
+              <p>
+                Or continue where you lefted:{" "}
+                <button onClick={() => statePersistance.recoverSaveState()}>
+                  Recover last version
+                </button>
+                &nbsp;
+                <small>
+                  Saved on {this.props.previousStateDate.toLocaleString()}
+                </small>
+              </p>
+              <p></p>
+            </>
+          ) : null}
         </main>
       </>
     );
