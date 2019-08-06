@@ -5,8 +5,10 @@ import Error from "./Error.js";
 import Editor from "./Editor.js";
 import Loading from "./Loading.js";
 import DropZone from "./DropZone.js";
+import SplashScreen from "./SplashScreen.js";
 
 const CONTENT_KEY = "content";
+const LAST_SAVE_KEY = "lastSaveDate";
 
 const ASYNC_COMP = new Map();
 
@@ -20,6 +22,7 @@ export default class App extends Component {
   }
 
   componentWillMount() {
+    // localStorage.removeItem(CONTENT_KEY);
     this.importJSONData(localStorage.getItem(CONTENT_KEY));
   }
 
@@ -42,6 +45,7 @@ export default class App extends Component {
   saveState(data) {
     console.log("state saved");
     localStorage.setItem(CONTENT_KEY, JSON.stringify(data));
+    localStorage.setItem(LAST_SAVE_KEY, Date.now());
   }
 
   getComponents(array) {
@@ -80,35 +84,47 @@ export default class App extends Component {
     ) : (
       <>
         <DropZone dataHandler={txt => this.importJSONData(txt)} />
-        <Editor
-          title="EcoXpert Newsletter template filling"
-          onChange={data => this.saveState(data)}
-        >
-          <main data-type="main">
-            <Suspense fallback={<Loading />}>
-              {main ? (
-                this.getComponents(main)
-              ) : (
-                <p data-ignore>
-                  <em>Empty</em>
-                </p>
-              )}
-            </Suspense>
-          </main>
-          <aside data-type="aside" data-contents>
-            <section className="newsletter aside" data-type="aside">
+        {main || aside ? (
+          <Editor
+            title="EcoXpert Newsletter template filling"
+            onChange={data => this.saveState(data)}
+          >
+            <main data-type="main">
               <Suspense fallback={<Loading />}>
-                {aside ? (
-                  this.getComponents(aside)
+                {main ? (
+                  this.getComponents(main)
                 ) : (
                   <p data-ignore>
                     <em>Empty</em>
                   </p>
                 )}
               </Suspense>
-            </section>
-          </aside>
-        </Editor>
+            </main>
+            <aside data-type="aside" data-contents>
+              <section className="newsletter aside" data-type="aside">
+                <Suspense fallback={<Loading />}>
+                  {aside ? (
+                    this.getComponents(aside)
+                  ) : (
+                    <p data-ignore>
+                      <em>Empty</em>
+                    </p>
+                  )}
+                </Suspense>
+              </section>
+            </aside>
+          </Editor>
+        ) : (
+          <SplashScreen title="Welcome" />
+        )}
+        <footer>
+          <a href="https://github.com/aduh95/newsletter-template">
+            View the code
+          </a>
+          <a href="https://github.com/aduh95/newsletter-template/issues">
+            Report a bug
+          </a>
+        </footer>
       </>
     );
   }
