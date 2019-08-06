@@ -1,0 +1,23 @@
+main.splash {
+  grid-area: unset;
+  grid-column: span 2;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  line-height: 2rem;
+  button {
+    font-size: large;
+  }
+  details {
+    font-size: smaller;
+    line-height: 1rem;
+    &[open] {
+      border: 1px solid #000;
+      padding: 1rem;
+      padding-top: 0;
+    }
+    summary {
+      outline: none;
+    }
+  }
+}

@@ -129,7 +129,7 @@ export default class App extends Component {
           </Editor>
         ) : (
           <SplashScreen
-            title="Welcome"
+            title="Newsletter template builder"
             dataHandler={txt => this.saveState(txt)}
             previousStateDate={statePersistance.lastSavedStateDate}
           />

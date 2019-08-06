@@ -130,5 +130,6 @@ export default new (class StatePersistance {
 
   clearRecoverState() {
     localStorage.removeItem(CONTENT_KEY);
+    this.#observers.forEach(o => o({}));
   }
 })();
