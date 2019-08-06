@@ -96,7 +96,7 @@ export default class App extends Component {
       />
     ) : (
       <>
-        <DropZone dataHandler={txt => this.importJSONData(txt)} />
+        <DropZone dataHandler={txt => this.saveState(txt)} />
         {main && aside ? (
           <Editor
             title="EcoXpert Newsletter template filling"
@@ -130,6 +130,7 @@ export default class App extends Component {
         ) : (
           <SplashScreen
             title="Welcome"
+            dataHandler={txt => this.saveState(txt)}
             previousStateDate={statePersistance.lastSavedStateDate}
           />
         )}

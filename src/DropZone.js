@@ -28,11 +28,15 @@ export default class DropZone extends Component {
           file
             .getAsFile()
             .text()
+            .then(JSON.parse)
             .then(dataHandler);
         } else if (file.kind === "string") {
-          file.getAsString(dataHandler);
+          console.warn("File was expected, received string", file);
         } else {
-          file.text().then(dataHandler);
+          file
+            .text()
+            .then(JSON.parse)
+            .then(dataHandler);
         }
       }
 
