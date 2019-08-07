@@ -9,6 +9,7 @@ const doNotNeedPolyfill = "HTMLDialogElement" in window;
 export default dialog =>
   doNotNeedPolyfill
     ? Promise.resolve()
-    : import("dialog-polyfill").then(module =>
-        module.default.registerDialog(dialog)
-      );
+    : Promise.all([
+        import("dialog-polyfill"),
+        import("dialog-polyfill/dist/dialog-polyfill.css"),
+      ]).then(module => module[0].default.registerDialog(dialog));
