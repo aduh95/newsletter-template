@@ -1,6 +1,6 @@
 import { h, Component, Fragment } from "preact";
 import { FontAwesomeIcon } from "@aduh95/preact-fontawesome";
-import { faHistory, faRedo } from "@fortawesome/free-solid-svg-icons";
+import { faUndo, faRedo } from "@fortawesome/free-solid-svg-icons";
 
 import statePersistance from "../StatePersistance.js";
 
@@ -32,8 +32,8 @@ export default class HistoryControl extends Component {
           disabled={!this.state.hasPreviousState}
           title="Cancel last action"
         >
-          <FontAwesomeIcon icon={faHistory} />
-          &nbsp;Cancel
+          <FontAwesomeIcon icon={faUndo} />
+          &nbsp;Undo
         </button>
         <button
           onClick={() => statePersistance.forwardToNextState()}
