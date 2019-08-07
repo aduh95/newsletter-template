@@ -3,10 +3,6 @@ import { setGlobalDragOverListener } from "./createDragHandler.js";
 
 import "./DropZone.scss";
 
-if (!("text" in Blob.prototype)) {
-  import("./polyfill/blob-text.js");
-}
-
 const DRAG_CLASS_NAME = "dragover";
 const DROP_ZONE_ID = "drop-zone";
 
