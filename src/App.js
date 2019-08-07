@@ -3,7 +3,7 @@ import { Suspense, lazy } from "preact/compat";
 
 import statePersistance from "./StatePersistance.js";
 
-import Error from "./Error.js";
+import Error from "./AppError.js";
 import Editor from "./editor/Editor.js";
 import Loading from "./Loading.js";
 import DropZone from "./DropZone.js";
@@ -46,6 +46,7 @@ export default class App extends Component {
       this.setState({ main, aside });
     } catch (e) {
       console.warn(e, data);
+      this.setState({ hasError: true });
     }
   }
 
@@ -86,14 +87,8 @@ export default class App extends Component {
 
   render() {
     const { main, aside } = this.state;
-    console.log("render");
     return this.state.hasError ? (
-      <Error
-        resetState={() => {
-          localStorage.removeItem(CONTENT_KEY);
-          this.setState({ main: [], aside: [], hasError: false });
-        }}
-      />
+      <Error resetState={() => this.setState({ hasError: false })} />
     ) : (
       <>
         <DropZone dataHandler={txt => this.saveState(txt)} />

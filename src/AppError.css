@@ -1,0 +1,23 @@
+main.error {
+  grid-area: unset;
+  grid-column: span 2;
+  display: flex;
+  flex-direction: column;
+  place-content: center;
+  place-items: center;
+  text-align: center;
+  line-height: 2rem;
+  background-color: #000a;
+  height: 100vh;
+}
+
+main.error a {
+  color: #42b4e6;
+  text-decoration: none;
+}
+main.error a:last-of-type:hover {
+  color: #e47f00;
+}
+main.error a:hover {
+  text-decoration: underline;
+}
