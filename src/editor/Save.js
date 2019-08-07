@@ -1,6 +1,6 @@
 import { h, Component, Fragment } from "preact";
 import { FontAwesomeIcon } from "@aduh95/preact-fontawesome";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
+import { faSave, faFileExport } from "@fortawesome/free-solid-svg-icons";
 
 export default class Save extends Component {
   exportHTML(node) {
@@ -18,10 +18,20 @@ export default class Save extends Component {
     return node.outerHTML;
   }
 
-  clickHandler() {
-    const fileName = "editorialCalendar.json";
+  exportJSONFile() {
+    this.#exportFile(
+      "editorialCalendar.json",
+      JSON.stringify(this.props.editor.data)
+    );
+  }
+
+  exportHTMLFile() {
+    this.#exportFile("editorialCalendar.html", "TODO");
+  }
+
+  #exportFile(fileName, fileContent) {
     const a = document.createElement("a");
-    const file = new File([JSON.stringify(this.props.editor.data)], fileName, {
+    const file = new File([fileContent], fileName, {
       type: "application/json",
     });
     a.href = URL.createObjectURL(file);
@@ -33,11 +43,19 @@ export default class Save extends Component {
       a.remove();
     });
   }
+
   render() {
     return (
-      <button onClick={() => this.clickHandler()}>
-        <FontAwesomeIcon icon={faSave} />
-      </button>
+      <>
+        <button onClick={() => this.exportJSONFile()} title="Export as JSON">
+          <FontAwesomeIcon icon={faSave} />
+          &nbsp;Save
+        </button>
+        <button onClick={() => this.exportHTMLFile()} title="Export as HTML">
+          <FontAwesomeIcon icon={faFileExport} />
+          &nbsp;Export
+        </button>
+      </>
     );
   }
 }

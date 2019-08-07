@@ -1,6 +1,7 @@
 import { h, Component, Fragment } from "preact";
 
 import Save from "./Save.js";
+import HistoryControl from "./HistoryControl.js";
 
 export default class MenuBar extends Component {
   componentDidMount() {}
@@ -9,6 +10,7 @@ export default class MenuBar extends Component {
     return (
       <>
         <Save editor={this.props.editor} />
+        <HistoryControl />
       </>
     );
   }
