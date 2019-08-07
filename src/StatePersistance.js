@@ -44,6 +44,9 @@ export default new (class StatePersistance {
     return parsedState;
   }
 
+  /**
+   * @throws {Error} when sessionStorage is full/disabled
+   */
   #pushNewHistoryEntry(data) {
     const currentStateID = sessionStorage.getItem(CURRENT_STATE_ID);
     const id = currentStateID === null ? 0 : Number(currentStateID) + 1;
