@@ -1,29 +1,6 @@
 import { h, Component, Fragment } from "preact";
-
-if (!("requestIdleCallback" in window)) {
-  import("./polyfill/window-requestIdleCallback.js");
-}
-
-class MultiChoiceMenu extends Component {
-  render() {
-    return (
-      <form>
-        <p>{this.props.childen.map(child => child)}</p>
-      </form>
-    );
-  }
-}
-
-class Option extends Component {
-  render() {
-    return (
-      <label>
-        <input type="radio" name={this.props.name} />
-        {this.props.label}
-      </label>
-    );
-  }
-}
+import { FontAwesomeIcon } from "@aduh95/preact-fontawesome";
+import { faSave } from "@fortawesome/free-solid-svg-icons";
 
 export default class Save extends Component {
   exportHTML(node) {
@@ -57,6 +34,10 @@ export default class Save extends Component {
     });
   }
   render() {
-    return <button onClick={() => this.clickHandler()}>Download JSON</button>;
+    return (
+      <button onClick={() => this.clickHandler()}>
+        <FontAwesomeIcon icon={faSave} />
+      </button>
+    );
   }
 }

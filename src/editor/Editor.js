@@ -1,7 +1,7 @@
-import { h, Component, Fragment, createRef } from "preact";
+import { h, Component, Fragment } from "preact";
 
 import ReOrderComponents from "./ReOrderComponents.js";
-import Save from "./Save.js";
+import MenuBar from "./MenuBar.js";
 
 export default class Editor extends Component {
   #observer = new window.MutationObserver(this.handleMutation.bind(this));
@@ -162,7 +162,7 @@ export default class Editor extends Component {
       <>
         <header>
           <h1>{this.props.title}</h1>
-          <Save editor={this} />
+          <MenuBar editor={this} />
         </header>
         {this.state.reOrder ? <ReOrderComponents /> : null}
         {this.props.children}
