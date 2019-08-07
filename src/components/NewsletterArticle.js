@@ -18,6 +18,7 @@ class VideoPlayer extends Component {
         allow="autoplay; fullscreen; picture-in-picture"
         allowfullscreen
         loading="lazy"
+        data-key="src"
       />
     );
   }
@@ -25,7 +26,14 @@ class VideoPlayer extends Component {
 
 class FixedImage extends Component {
   render() {
-    return <img alt={this.props.alt} src={this.props.src} loading="lazy" />;
+    return (
+      <img
+        alt={this.props.alt}
+        src={this.props.src}
+        loading="lazy"
+        data-key="src"
+      />
+    );
   }
 }
 
@@ -33,9 +41,9 @@ class Illustration extends Component {
   render() {
     return this.props.src ? (
       this.props.isVideo ? (
-        <FixedImage {...this.props} />
-      ) : (
         <VideoPlayer {...this.props} />
+      ) : (
+        <FixedImage {...this.props} />
       )
     ) : null;
   }
