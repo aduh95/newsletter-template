@@ -16,8 +16,12 @@ export default class HistoryControl extends Component {
 
   update() {
     const { hasPreviousState, hasNextState } = statePersistance;
-    console.log({ hasPreviousState, hasNextState });
-    this.setState({ hasPreviousState, hasNextState });
+    if (
+      hasPreviousState !== this.state.hasPreviousState ||
+      hasNextState !== this.state.hasNextState
+    ) {
+      this.setState({ hasPreviousState, hasNextState });
+    }
   }
 
   render() {
@@ -32,7 +36,7 @@ export default class HistoryControl extends Component {
           &nbsp;Cancel
         </button>
         <button
-          onClick={() => this.exportHTMLFile()}
+          onClick={() => statePersistance.forwardToNextState()}
           disabled={!this.state.hasNextState}
           title="Redo last action"
         >

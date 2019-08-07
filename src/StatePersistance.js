@@ -8,6 +8,7 @@ const LAST_SAVE_KEY = "lastSaveDate";
 export default new (class StatePersistance {
   #nbOfNextStates = 0;
   #observers = new Set();
+  #ignoreHistoryChange = false;
 
   subscribe(obj) {
     this.#observers.add(obj);
@@ -19,23 +20,24 @@ export default new (class StatePersistance {
 
   rewindToPreviousState() {
     const id = Number(sessionStorage.getItem(CURRENT_STATE_ID)) - 1;
-    const state = sessionStorage.getItem(HISTORY_ENTRY_PREFIX + id);
     this.#nbOfNextStates++;
-    return this.#popStateFromHistory(state);
+    return this.#popStateFromHistory(id);
   }
 
   forwardToNextState() {
     const id = Number(sessionStorage.getItem(CURRENT_STATE_ID)) + 1;
-    const state = sessionStorage.getItem(HISTORY_ENTRY_PREFIX + id);
     this.#nbOfNextStates--;
-    return this.#popStateFromHistory(state);
+    return this.#popStateFromHistory(id);
   }
 
-  #popStateFromHistory(state) {
+  #popStateFromHistory(id) {
     const parsedState = {};
     try {
+      const state = sessionStorage.getItem(HISTORY_ENTRY_PREFIX + id);
       Object.assign(parsedState, JSON.parse(state));
       this.#setPersistantState(state);
+      this.#ignoreHistoryChange = true;
+      sessionStorage.setItem(CURRENT_STATE_ID, id);
     } catch {
     } finally {
       this.#observers.forEach(o => o(parsedState));
@@ -68,6 +70,7 @@ export default new (class StatePersistance {
       sessionStorage.setItem(OLDEST_STATE_INDEX, oldestStateIndex + 1);
       sessionStorage.setItem(HISTORY_ENTRY_PREFIX + id, data);
     }
+    sessionStorage.setItem(CURRENT_STATE_ID, id);
   }
 
   get hasPreviousState() {
@@ -84,7 +87,11 @@ export default new (class StatePersistance {
     try {
       const stringData = JSON.stringify(data);
       this.#setPersistantState(stringData);
-      this.#pushNewHistoryEntry(stringData);
+      if (this.#ignoreHistoryChange) {
+        this.#ignoreHistoryChange = false;
+      } else {
+        this.#pushNewHistoryEntry(stringData);
+      }
     } catch {
     } finally {
       this.#observers.forEach(o => o(data));
