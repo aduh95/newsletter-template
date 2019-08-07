@@ -1,7 +1,7 @@
 import { h, Component, Fragment } from "preact";
 
 import "./ReOrderComponents.scss";
-import createDragHandler from "./createDragHandler.js";
+import createDragHandler from "../createDragHandler.js";
 
 const DROP_ZONE_ID = "re-order-elements";
 const CHECK_CHILDREN_ELEMENT = "re-order-elements-check-children";

@@ -4,7 +4,7 @@ import { Suspense, lazy } from "preact/compat";
 import statePersistance from "./StatePersistance.js";
 
 import Error from "./Error.js";
-import Editor from "./Editor.js";
+import Editor from "./editor/Editor.js";
 import Loading from "./Loading.js";
 import DropZone from "./DropZone.js";
 import SplashScreen from "./SplashScreen.js";
