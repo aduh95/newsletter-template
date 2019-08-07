@@ -6,6 +6,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const HtmlWebPackPlugin = require("html-webpack-plugin");
+const OfflinePlugin = require("offline-plugin");
 
 module.exports = {
   mode: "production",
@@ -75,5 +76,6 @@ module.exports = {
         removeStyleLinkTypeAttributes: true,
       },
     }),
+    new OfflinePlugin(),
   ],
 };
