@@ -4,10 +4,9 @@ import { Suspense, lazy } from "preact/compat";
 import statePersistance from "./StatePersistance.js";
 
 import Error from "./AppError.js";
-import Editor from "./editor/Editor.js";
 import Loading from "./Loading.js";
-import DropZone from "./DropZone.js";
-import SplashScreen from "./SplashScreen.js";
+
+const APP_TITLE = "Newsletter template builder";
 
 const ASYNC_COMP = new Map();
 
@@ -87,48 +86,58 @@ export default class App extends Component {
 
   render() {
     const { main, aside } = this.state;
+
+    const DropZone = lazy(() => import("./DropZone.js"));
+
+    const appReadyForEditor = main && aside;
+    const Editor = appReadyForEditor
+      ? lazy(() => import("./editor/Editor.js"))
+      : null;
+    const SplashScreen = appReadyForEditor
+      ? null
+      : lazy(() => import("./SplashScreen.js"));
+
     return this.state.hasError ? (
       <Error resetState={() => this.setState({ hasError: false })} />
     ) : (
       <>
-        <DropZone dataHandler={txt => this.saveState(txt)} />
-        {main && aside ? (
-          <Editor
-            title="EcoXpert Newsletter template filling"
-            onChange={this.saveState.bind(this)}
-          >
-            <main data-type="main">
-              <Suspense fallback={<Loading />}>
-                {main ? (
-                  this.getComponents(main)
-                ) : (
-                  <p data-ignore>
-                    <em>Empty</em>
-                  </p>
-                )}
-              </Suspense>
-            </main>
-            <aside data-type="aside" data-contents>
-              <section className="newsletter aside" data-type="aside">
+        <Suspense fallback={<Loading />}>
+          <DropZone dataHandler={txt => this.saveState(txt)} />
+          {appReadyForEditor ? (
+            <Editor title={APP_TITLE} onChange={this.saveState.bind(this)}>
+              <main data-type="main">
                 <Suspense fallback={<Loading />}>
-                  {aside ? (
-                    this.getComponents(aside)
+                  {main ? (
+                    this.getComponents(main)
                   ) : (
                     <p data-ignore>
                       <em>Empty</em>
                     </p>
                   )}
                 </Suspense>
-              </section>
-            </aside>
-          </Editor>
-        ) : (
-          <SplashScreen
-            title="Newsletter template builder"
-            dataHandler={txt => this.saveState(txt)}
-            previousStateDate={statePersistance.lastSavedStateDate}
-          />
-        )}
+              </main>
+              <aside data-type="aside" data-contents>
+                <section className="newsletter aside" data-type="aside">
+                  <Suspense fallback={<Loading />}>
+                    {aside ? (
+                      this.getComponents(aside)
+                    ) : (
+                      <p data-ignore>
+                        <em>Empty</em>
+                      </p>
+                    )}
+                  </Suspense>
+                </section>
+              </aside>
+            </Editor>
+          ) : (
+            <SplashScreen
+              title={APP_TITLE}
+              dataHandler={txt => this.saveState(txt)}
+              previousStateDate={statePersistance.lastSavedStateDate}
+            />
+          )}
+        </Suspense>
         <footer>
           <ul>
             <li>
