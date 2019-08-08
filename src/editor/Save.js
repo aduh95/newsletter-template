@@ -1,6 +1,6 @@
 import { h, Component, Fragment } from "preact";
 import { FontAwesomeIcon } from "@aduh95/preact-fontawesome";
-import { faSave, faFileExport } from "@fortawesome/free-solid-svg-icons";
+import { faDownload, faFileExport } from "@fortawesome/free-solid-svg-icons";
 
 export default class Save extends Component {
   exportHTML(node) {
@@ -48,7 +48,7 @@ export default class Save extends Component {
     return (
       <>
         <button onClick={() => this.exportJSONFile()} title="Export as JSON">
-          <FontAwesomeIcon icon={faSave} />
+          <FontAwesomeIcon icon={faDownload} />
           &nbsp;Save
         </button>
         <button onClick={() => this.exportHTMLFile()} title="Export as HTML">
