@@ -40,7 +40,12 @@ export default class UpdateAsideList extends Component {
         : current.querySelector(`input[name=${focusSelector}]`);
 
       if (focusElement) {
-        requestAnimationFrame(() => focusElement.focus());
+        requestAnimationFrame(() => {
+          if (this.props.focusOffset) {
+            focusElement.setSelectionRange(...this.props.focusOffset);
+          }
+          focusElement.focus();
+        });
       }
     }
   }

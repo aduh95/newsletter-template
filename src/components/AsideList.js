@@ -4,6 +4,33 @@ import Edit from "../edit_components/lazy-edit-compomponent.js";
 export default class AsideList extends Component {
   state = { writeMode: false, data: JSON.stringify(this.props) };
 
+  clickHandler(e) {
+    if (!e.ctrlKey) {
+      e.preventDefault();
+
+      const [el] = e.composedPath();
+
+      el.contentEditable = "true";
+      setTimeout(() => {
+        el.contentEditable = "false";
+      }, 300);
+    }
+  }
+
+  dblClickHandler(e) {
+    const focusOffset = [];
+    e.preventDefault();
+    if (window.getSelection) {
+      const { anchorOffset, focusOffset: end } = getSelection();
+      focusOffset.push(anchorOffset, end);
+    }
+    this.setState({
+      writeMode: true,
+      focus: e.composedPath()[0]?.dataset?.key,
+      focusOffset,
+    });
+  }
+
   update(data) {
     this.setState({
       writeMode: false,
@@ -18,18 +45,8 @@ export default class AsideList extends Component {
       <article
         data-type="AsideList"
         data-json={this.state.data}
-        onClick={e => {
-          if (!e.ctrlKey) {
-            e.preventDefault();
-          }
-        }}
-        onDblclick={e => {
-          e.preventDefault();
-          this.setState({
-            writeMode: true,
-            focus: e.composedPath()[0]?.dataset?.key,
-          });
-        }}
+        onClick={this.clickHandler.bind(this)}
+        onDblclick={this.dblClickHandler.bind(this)}
       >
         <h4 data-key="title">{this.props.title}</h4>
 
@@ -54,6 +71,7 @@ export default class AsideList extends Component {
           props={{
             ...this.props,
             focus: this.state.focus,
+            focusOffset: this.state.focusOffset,
             saveState: this.update.bind(this),
             resetState: () => this.setState({ writeMode: false }),
           }}

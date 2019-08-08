@@ -147,7 +147,20 @@ export default class EditNewsletterArticle extends Component {
         : current.querySelector(`[name=${focusSelector}]`);
 
       if (focusElement) {
-        requestAnimationFrame(() => focusElement.focus());
+        requestAnimationFrame(() => {
+          if (this.props.focusOffset) {
+            let offset = this.props.focusText
+              ? focusElement.value.indexOf(
+                  this.props.focusText,
+                  this.props.focusOffset[0]
+                ) - this.props.focusOffset[0]
+              : 0;
+            focusElement.setSelectionRange(
+              ...this.props.focusOffset.map(e => e + offset)
+            );
+          }
+          focusElement.focus();
+        });
       }
     }
   }
