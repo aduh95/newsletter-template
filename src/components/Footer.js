@@ -26,6 +26,7 @@ export default class Footer extends Component {
         <MarkdownContent
           content={this.props.text}
           attributes={{
+            ["data-key"]: true,
             ["data-ignore"]: true,
           }}
         />
