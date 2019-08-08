@@ -39,7 +39,9 @@ export default class UpdateAsideList extends Component {
             .item(focusIndex[2])
         : current.querySelector(`input[name=${focusSelector}]`);
 
-      focusElement?.focus();
+      if (focusElement) {
+        requestAnimationFrame(() => focusElement.focus());
+      }
     }
   }
 

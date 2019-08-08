@@ -69,12 +69,18 @@ export default class NewsletterArticle extends Component {
         data-type="NewsletterArticle"
         data-json={this.state.data}
         onClick={e => {
+          if (!e.ctrlKey) {
+            e.preventDefault();
+          }
+        }}
+        onDblclick={e => {
           e.preventDefault();
+          const path = e.composedPath();
           let i = 0;
-          while (e.path[i] && undefined === e.path[i].dataset?.key) {
+          while (path[i] && undefined === path[i].dataset?.key) {
             i++;
           }
-          this.setState({ writeMode: true, focus: e.path[i]?.dataset?.key });
+          this.setState({ writeMode: true, focus: path[i]?.dataset?.key });
         }}
       >
         <h4 data-key="title">{this.props.title}</h4>

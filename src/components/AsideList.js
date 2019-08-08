@@ -19,8 +19,16 @@ export default class AsideList extends Component {
         data-type="AsideList"
         data-json={this.state.data}
         onClick={e => {
+          if (!e.ctrlKey) {
+            e.preventDefault();
+          }
+        }}
+        onDblclick={e => {
           e.preventDefault();
-          this.setState({ writeMode: true, focus: e.toElement?.dataset?.key });
+          this.setState({
+            writeMode: true,
+            focus: e.composedPath()[0]?.dataset?.key,
+          });
         }}
       >
         <h4 data-key="title">{this.props.title}</h4>
