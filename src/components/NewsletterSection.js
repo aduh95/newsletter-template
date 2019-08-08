@@ -14,6 +14,12 @@ export default class NewsletterSection extends Component {
         <output hidden data-key="id">
           {this.props.id}
         </output>
+        <output hidden data-key="illustration">
+          {this.props.illustration}
+        </output>
+        <output hidden data-key="illustrationDescription">
+          {this.props.illustrationDescription}
+        </output>
 
         <h2 className="newsletter" data-key="title">
           {this.props.title}
