@@ -71,8 +71,6 @@ const flushEventListeners = () => {
 };
 
 export default class ReOrderComponents extends Component {
-  state = { previewing: true, content: null };
-
   componentDidMount() {
     Array.from(
       document.querySelectorAll(`#${DROP_ZONE_ID}~[data-type]`)
