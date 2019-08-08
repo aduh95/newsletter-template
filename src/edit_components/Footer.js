@@ -1,6 +1,5 @@
 import { h, Component, createRef } from "preact";
 
-import OrderedList from "./OrderedList.js";
 import EditMarkdown from "../markdown/EditMarkdownContent.js";
 import registerDialogElement from "../polyfill/htmldialogelement.js";
 
@@ -57,6 +56,7 @@ export default class EditFooter extends Component {
                 name="description"
                 value={this.state.text}
                 onChange={e => this.setState({ text: e.target.value })}
+                initialFocus={this.props.focusPosition}
                 initiallyActive={true}
               />
             </label>

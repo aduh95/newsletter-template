@@ -35,6 +35,7 @@ const ol_end_patern = /\n\s*\d\.\s*$/;
 
 export default class EditMarkdownContent extends Component {
   state = { active: this.props.initiallyActive };
+  focusPosition = this.props.focusPosition;
   textarea = createRef();
 
   static #prettierJobs = Promise.resolve();
@@ -170,6 +171,17 @@ export default class EditMarkdownContent extends Component {
           this.props.onChange({ target: current });
         })
         .catch(console.warn);
+    }
+  }
+
+  componentDidMount() {
+    if (this.props.initiallyActive && this.props.initialFocus) {
+      const { current } = this.textarea;
+      const { text, start, end } = this.props.initialFocus;
+      const posOffset = current.value.indexOf(text, start) - start;
+      current.setSelectionRange(posOffset + start, posOffset + end);
+
+      requestAnimationFrame(() => current.focus());
     }
   }
 

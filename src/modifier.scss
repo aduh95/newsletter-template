@@ -23,6 +23,7 @@
 [data-link-to-create] {
   @include hoverEditHint("Click to add a new element");
 }
+[data-type="Footer"],
 [data-json] {
   @include hoverEditHint("Double click to edit");
   [data-key][data-contents] > *,

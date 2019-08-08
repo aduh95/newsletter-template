@@ -5,6 +5,55 @@ import MarkdownContent from "../markdown/MarkdownContent.js";
 export default class Footer extends Component {
   state = { writeMode: false };
 
+  clickHandler(e) {
+    if (!this.state.writeMode && !e.ctrlKey) {
+      e.preventDefault();
+
+      const [el] = e.composedPath();
+
+      el.contentEditable = "true";
+      setTimeout(() => {
+        el.contentEditable = "false";
+      }, 300);
+    }
+  }
+
+  dblClickHandler(e) {
+    if (!this.state.writeMode) {
+      const focusPosition = [];
+      const path = e.composedPath();
+      let i = 0;
+      while (path[i] && undefined === path[i].dataset?.key) {
+        i++;
+      }
+
+      e.preventDefault();
+      if (path[i] && window.getSelection) {
+        let nodeOffset = 0;
+        const selection = getSelection();
+        const { anchorOffset, focusOffset: end } = selection;
+        if (i > 0) {
+          let node = path[0];
+          do {
+            const { previousSibling } = node;
+            nodeOffset += previousSibling?.textContent?.length || 0;
+            node = previousSibling || node.parentNode;
+          } while (node && node !== path[i]);
+          this.setState({ focusText: selection.toString() });
+        }
+        Object.assign(focusPosition, {
+          start: nodeOffset + anchorOffset,
+          end: nodeOffset + end,
+          text: selection.toString(),
+        });
+      }
+      this.setState({
+        writeMode: true,
+        focusPosition,
+      });
+    }
+  }
+
   update({ text }) {
     this.setState({ writeMode: false });
     Object.assign(this.props, { text });
@@ -15,10 +64,8 @@ export default class Footer extends Component {
       <section
         className="newsletter-footer"
         data-type="Footer"
-        onClick={e => {
-          e.preventDefault();
-          this.setState({ writeMode: true });
-        }}
+        onClick={this.clickHandler.bind(this)}
+        onDblclick={this.dblClickHandler.bind(this)}
       >
         <output hidden data-key="text">
           {this.props.text}
@@ -36,6 +83,7 @@ export default class Footer extends Component {
           active={this.state.writeMode}
           props={{
             ...this.props,
+            focusPosition: this.state.focusPosition,
             saveState: this.update.bind(this),
             resetState: () => this.setState({ writeMode: false }),
           }}
