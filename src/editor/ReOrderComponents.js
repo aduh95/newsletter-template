@@ -5,7 +5,7 @@ import createDragHandler from "../createDragHandler.js";
 
 const DROP_ZONE_ID = "re-order-elements";
 const CHECK_CHILDREN_ELEMENT = "re-order-elements-check-children";
-const RE_ORDERING_CLASS_NAME = "re-order-elements-reordering";
+const CURRENTLY_RE_ORDERING_ID = "re-order-elements-reordering";
 
 /**
  * @type {HTMLElement[]}
@@ -15,15 +15,16 @@ const observees = [];
 const clickHandler = e => {
   e.preventDefault();
   const { target } = e;
+  const { id: originalID } = target;
   target.id = CHECK_CHILDREN_ELEMENT;
   const subElements = target.querySelectorAll(
     `#${CHECK_CHILDREN_ELEMENT}>[data-type]`
   );
 
   if (subElements.length) {
-    document.getElementById(RE_ORDERING_CLASS_NAME)?.removeAttribute("id");
+    document.getElementById(CURRENTLY_RE_ORDERING_ID)?.removeAttribute("id");
 
-    target.setAttribute("id", RE_ORDERING_CLASS_NAME);
+    target.setAttribute("id", CURRENTLY_RE_ORDERING_ID);
     target.prepend(document.getElementById(DROP_ZONE_ID));
 
     flushEventListeners();
@@ -35,6 +36,8 @@ const clickHandler = e => {
     } else {
       target.scrollIntoViewIfNeeded();
     }
+  } else if (originalID) {
+    target.id = originalID;
   } else {
     target.removeAttribute("id");
   }
@@ -74,6 +77,12 @@ export default class ReOrderComponents extends Component {
     Array.from(
       document.querySelectorAll(`#${DROP_ZONE_ID}~[data-type]`)
     ).forEach(addEventListener);
+  }
+
+  componentWillUnmount() {
+    flushEventListeners();
+    document.getElementById(CURRENTLY_RE_ORDERING_ID)?.removeAttribute("id");
+    document.getElementById(DROP_ZONE_ID).remove();
   }
 
   render() {
