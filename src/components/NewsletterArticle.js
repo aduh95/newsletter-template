@@ -92,9 +92,7 @@ export default class NewsletterArticle extends Component {
         let node = path[0];
         do {
           const { previousSibling } = node;
-          if (previousSibling) {
-            nodeOffset += previousSibling.textContent.length;
-          }
+          nodeOffset += previousSibling?.textContent?.length || 0;
           node = previousSibling || node.parentNode;
         } while (node && node !== path[i]);
         this.setState({ focusText: selection.toString() });
