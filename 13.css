@@ -1,0 +1,1 @@
+main.splash{grid-area:unset;grid-column:span 2;display:grid;place-content:center;text-align:center;line-height:2rem}main.splash button{font-size:large}main.splash details{font-size:smaller;line-height:1rem}main.splash details[open]{border:1px solid #000;padding:0 1rem 1rem}main.splash details summary{outline:none}
