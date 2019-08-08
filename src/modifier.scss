@@ -32,6 +32,9 @@
       content: none;
     }
   }
+  [contenteditable="true"]:focus {
+    outline: none;
+  }
 }
 
 output.editable-markdown-preview[data-contents] {
