@@ -71,6 +71,11 @@ export default class NewsletterArticle extends Component {
       el.contentEditable = "true";
       setTimeout(() => {
         el.contentEditable = "false";
+        if (!this.state.writeMode && el.nodeName === "A") {
+          import("../notify")
+            .then(m => m.default)
+            .then(notify => notify("Use Ctrl+Click to open the link"));
+        }
       }, 300);
     }
   }
