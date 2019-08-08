@@ -63,7 +63,7 @@ export default class NewsletterArticle extends Component {
   }
 
   clickHandler(e) {
-    if (!e.ctrlKey) {
+    if (!this.state.writeMode && !e.ctrlKey) {
       e.preventDefault();
 
       const [el] = e.composedPath();
@@ -76,34 +76,36 @@ export default class NewsletterArticle extends Component {
   }
 
   dblClickHandler(e) {
-    const focusOffset = [];
-    const path = e.composedPath();
-    let i = 0;
-    while (path[i] && undefined === path[i].dataset?.key) {
-      i++;
-    }
-
-    e.preventDefault();
-    if (window.getSelection) {
-      let nodeOffset = 0;
-      const selection = getSelection();
-      const { anchorOffset, focusOffset: end } = selection;
-      if (i > 0) {
-        let node = path[0];
-        do {
-          const { previousSibling } = node;
-          nodeOffset += previousSibling?.textContent?.length || 0;
-          node = previousSibling || node.parentNode;
-        } while (node && node !== path[i]);
-        this.setState({ focusText: selection.toString() });
+    if (!this.state.writeMode) {
+      const focusOffset = [];
+      const path = e.composedPath();
+      let i = 0;
+      while (path[i] && undefined === path[i].dataset?.key) {
+        i++;
       }
-      focusOffset.push(nodeOffset + anchorOffset, nodeOffset + end);
+
+      e.preventDefault();
+      if (window.getSelection) {
+        let nodeOffset = 0;
+        const selection = getSelection();
+        const { anchorOffset, focusOffset: end } = selection;
+        if (i > 0) {
+          let node = path[0];
+          do {
+            const { previousSibling } = node;
+            nodeOffset += previousSibling?.textContent?.length || 0;
+            node = previousSibling || node.parentNode;
+          } while (node && node !== path[i]);
+          this.setState({ focusText: selection.toString() });
+        }
+        focusOffset.push(nodeOffset + anchorOffset, nodeOffset + end);
+      }
+      this.setState({
+        writeMode: true,
+        focus: path[i]?.dataset?.key,
+        focusOffset,
+      });
     }
-    this.setState({
-      writeMode: true,
-      focus: path[i]?.dataset?.key,
-      focusOffset,
-    });
   }
 
   render() {

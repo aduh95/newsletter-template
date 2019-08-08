@@ -5,7 +5,7 @@ export default class AsideList extends Component {
   state = { writeMode: false, data: JSON.stringify(this.props) };
 
   clickHandler(e) {
-    if (!e.ctrlKey) {
+    if (!this.state.writeMode && !e.ctrlKey) {
       e.preventDefault();
 
       const [el] = e.composedPath();
@@ -18,17 +18,19 @@ export default class AsideList extends Component {
   }
 
   dblClickHandler(e) {
-    const focusOffset = [];
-    e.preventDefault();
-    if (window.getSelection) {
-      const { anchorOffset, focusOffset: end } = getSelection();
-      focusOffset.push(anchorOffset, end);
+    if (!this.state.writeMode) {
+      const focusOffset = [];
+      e.preventDefault();
+      if (window.getSelection) {
+        const { anchorOffset, focusOffset: end } = getSelection();
+        focusOffset.push(anchorOffset, end);
+      }
+      this.setState({
+        writeMode: true,
+        focus: e.composedPath()[0]?.dataset?.key,
+        focusOffset,
+      });
     }
-    this.setState({
-      writeMode: true,
-      focus: e.composedPath()[0]?.dataset?.key,
-      focusOffset,
-    });
   }
 
   update(data) {
