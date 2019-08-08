@@ -8,6 +8,7 @@ main.error {
   text-align: center;
   line-height: 2rem;
   background-color: #000a;
+  color: #fff;
   height: 100vh;
 }
 
