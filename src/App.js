@@ -18,6 +18,7 @@ const ASYNC_COMP = new Map();
 export default class App extends Component {
   state = { previewing: true, hasError: false };
   #shouldUpdateDOM = true;
+  #idleCallback = null;
 
   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
@@ -71,9 +72,18 @@ export default class App extends Component {
     }
   }
 
-  saveState(data, shouldUpdateDOM = true) {
-    statePersistance.currentState = data;
-    this.#shouldUpdateDOM = shouldUpdateDOM;
+  saveState(state, shouldUpdateDOM = true) {
+    if (this.#idleCallback) {
+      // cancel previous callback as its state is outdated
+      cancelIdleCallback(this.#idleCallback);
+    }
+    // Wait for idle to save state to collapse successive changes
+    // into one history entry
+    this.#idleCallback = requestIdleCallback(() => {
+      this.#idleCallback = null;
+      statePersistance.currentState = state;
+      this.#shouldUpdateDOM = shouldUpdateDOM;
+    });
   }
 
   shouldComponentUpdate() {

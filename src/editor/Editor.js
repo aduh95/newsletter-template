@@ -19,6 +19,7 @@ export default class Editor extends Component {
    */
   handleMutation(mutationList, observer) {
     let rebuildDOM = false;
+    let hasAnythingChanged = false;
     const data = this.#DOMData;
     for (const mutation of mutationList) {
       const { target, type } = mutation;
@@ -27,6 +28,9 @@ export default class Editor extends Component {
           const { addedNodes, removedNodes, nextSibling } = mutation;
           if (addedNodes.length) {
             Array.from(addedNodes).forEach(node => {
+              if (node.dataset.ignore) {
+                return;
+              }
               console.log("add", node);
               if (!data.has(node)) {
                 this.observeNode(node);
@@ -40,16 +44,21 @@ export default class Editor extends Component {
               } else {
                 data.get(target)?.content.push(data.get(node));
               }
+              hasAnythingChanged = true;
             });
           }
           if (removedNodes.length) {
             Array.from(removedNodes).forEach(node => {
+              if (node.dataset.ignore) {
+                return;
+              }
               console.log("remove", node);
               const content = data.get(target)?.content;
               const index = content?.indexOf(data.get(node));
               if (content && index !== -1) {
                 content.splice(index, 1);
               }
+              hasAnythingChanged = true;
             });
           }
           break;
@@ -66,6 +75,7 @@ export default class Editor extends Component {
           }
 
           this.#DOMData.get(parent)[dataset.key] = textContent;
+          hasAnythingChanged = true;
           break;
 
         case "attributes":
@@ -76,17 +86,24 @@ export default class Editor extends Component {
               obj[key] = undefined;
             });
             Object.assign(obj, JSON.parse(target.dataset.json));
+            hasAnythingChanged = true;
             rebuildDOM = true;
           }
           break;
       }
     }
 
-    this.props.onChange(data.get(this), rebuildDOM);
+    if (hasAnythingChanged) {
+      this.props.onChange(data.get(this), rebuildDOM);
+    }
   }
 
   observeNode(node) {
-    const { type, json } = node.dataset;
+    const { ignore, type, json } = node.dataset;
+
+    if (ignore) {
+      return;
+    }
 
     if (json) {
       this.#observer.observe(node, { attributes: true });
