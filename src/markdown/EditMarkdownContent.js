@@ -1,21 +1,30 @@
 import { h, Component, createRef } from "preact";
+import { FontAwesomeIcon } from "@aduh95/preact-fontawesome";
+import {
+  faBold,
+  faItalic,
+  faLink,
+  faListUl,
+  faPrint,
+} from "@fortawesome/free-solid-svg-icons";
+
 import MarkdownContent from "./MarkdownContent";
 import PrettierWorker from "./prettier.worker.js";
 
 const worker = new PrettierWorker();
 
 const commands = [
-  { label: "Bold", char: "**", shortcut: "b" },
-  { label: "Italic", char: "_", shortcut: "i" },
+  { label: faBold, char: "**", shortcut: "b" },
+  { label: faItalic, char: "_", shortcut: "i" },
+  { label: faListUl, charAfter: "\n\n- ", selectionAfter: true },
   {
-    label: "Link",
+    label: faLink,
     charBefore: "[",
     charAfter: "](https://)",
     selectionAfter: true,
     selectionOffset: [2, 1],
     shortcut: "k",
   },
-  { label: "List", charAfter: "\n\n- ", selectionAfter: true },
 ];
 
 const ul_patern = /\n\s*-\s.+$/;
@@ -145,7 +154,7 @@ export default class EditMarkdownContent extends Component {
         e.preventDefault();
         e.target.setRangeText(" > ", selectionStart, selectionEnd, "end");
       }
-    } else console.log(e.keyCode);
+    }
   }
 
   makePrettier(e) {
@@ -178,7 +187,7 @@ export default class EditMarkdownContent extends Component {
 
   render() {
     return this.state.active ? (
-      <fidelset className="markdown-editor">
+      <fieldset className="markdown-editor">
         <legend>Markdown editor</legend>
         <p>
           <button
@@ -186,24 +195,23 @@ export default class EditMarkdownContent extends Component {
             type="button"
             onClick={() => this.textarea.current?.focus()}
           />
-          [&nbsp;
           {commands.map(command => (
             <button
               onClick={this.handleCommand(command)}
               accesskey={command.shortcut}
               type="button"
             >
-              {command.label}
+              <FontAwesomeIcon icon={command.label} />
             </button>
           ))}
-          &nbsp;]&nbsp;[
+          &nbsp;|&nbsp;
           <button
             accesskey="s"
             onClick={() => this.setState({ active: false })}
           >
-            Back to preview
+            <FontAwesomeIcon icon={faPrint} />
+            &nbsp;Preview
           </button>
-          &nbsp;]
         </p>
         <p>
           <textarea
@@ -215,7 +223,7 @@ export default class EditMarkdownContent extends Component {
             cols="50"
           />
         </p>
-      </fidelset>
+      </fieldset>
     ) : (
       <MarkdownContent
         content={this.props.value}

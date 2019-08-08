@@ -271,15 +271,13 @@ export default class EditNewsletterArticle extends Component {
                 })
               }
             />
-            <label>
-              Text:&nbsp;
-              <EditMarkdown
-                name="description"
-                value={this.state.description}
-                onChange={e => this.setState({ description: e.target.value })}
-                initiallyActive={this.props.focus === "description"}
-              />
-            </label>
+            <label>Text:&nbsp;</label>
+            <EditMarkdown
+              name="description"
+              value={this.state.description}
+              onChange={e => this.setState({ description: e.target.value })}
+              initiallyActive={this.props.focus === "description"}
+            />
 
             <OrderedList
               content={this.state.links}
