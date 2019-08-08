@@ -167,12 +167,20 @@ export default class App extends Component {
         <footer>
           <ul>
             <li>
-              <a href="https://github.com/aduh95/newsletter-template">
+              <a
+                target="_blank"
+                rel="noopener"
+                href="https://github.com/aduh95/newsletter-template"
+              >
                 View the code
               </a>
             </li>
             <li>
-              <a href="https://github.com/aduh95/newsletter-template/issues">
+              <a
+                target="_blank"
+                rel="noopener"
+                href="https://github.com/aduh95/newsletter-template/issues"
+              >
                 Report a bug
               </a>
             </li>
