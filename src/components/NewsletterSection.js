@@ -27,6 +27,17 @@ export default class NewsletterSection extends Component {
         {articles.map(article => (
           <NewsletterArticle {...article} />
         ))}
+        <button
+          data-ignore
+          style="grid-column: span var(--nb-of-columns)"
+          onClick={e =>
+            import("../notify")
+              .then(m => m.default)
+              .then(notify => notify("Not implemented yet"))
+          }
+        >
+          Add a new article
+        </button>
       </section>
     );
   }
