@@ -1,16 +1,36 @@
-[data-json]:hover {
-  position: relative;
-  outline: 1px solid #42b4e6;
+@mixin hoverEditHint($message) {
+  &:hover:not(:focus) {
+    position: relative;
+    outline: 1px solid #42b4e6;
+    &::before {
+      content: $message;
+      position: absolute;
+      top: 0;
+      left: 0;
+      padding: 0.1em 0.5em;
+      color: #fff;
+      background-color: #42b4e6;
+      border-bottom-right-radius: 0.5em;
+      font-size: small;
+    }
+  }
 }
-[data-json]:hover::before {
-  content: "Double click to edit";
-  position: absolute;
-  top: 0;
-  left: 0;
-  padding: 0.1em 0.5em;
-  background-color: #42b4e6;
-  border-bottom-right-radius: 0.5em;
-  font-size: small;
+[data-key],
+[data-key][data-contents] > *,
+[data-link-to-edit] {
+  @include hoverEditHint("Click to edit");
+}
+[data-link-to-create] {
+  @include hoverEditHint("Click to add a new element");
+}
+[data-json] {
+  @include hoverEditHint("Double click to edit");
+  [data-key][data-contents] > *,
+  [data-key] {
+    &:hover::before {
+      content: none;
+    }
+  }
 }
 
 dialog {
