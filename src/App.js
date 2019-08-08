@@ -1,3 +1,8 @@
+import {
+  install as installOfflineApp,
+  applyUpdate as updateOfflineApp,
+} from "offline-plugin/runtime";
+
 import { h, Component, Fragment } from "preact";
 import { Suspense, lazy } from "preact/compat";
 
@@ -26,6 +31,23 @@ export default class App extends Component {
     if (currentState) {
       this.update(currentState);
     }
+
+    installOfflineApp({
+      onUpdating: console.log,
+      onUpdateReady: () => {
+        this.updateReady = true;
+      },
+      onInstalled: () => {
+        import("./notify.js")
+          .then(module => module.default)
+          .then(notify => notify("Ready to work offline"));
+      },
+      onUpdated: () => {
+        import("./notify.js")
+          .then(module => module.default)
+          .then(notify => notify("Updated to last version"));
+      },
+    });
   }
 
   componentWillUnmount() {
@@ -85,6 +107,10 @@ export default class App extends Component {
   }
 
   render() {
+    if (this.updateReady) {
+      updateOfflineApp();
+    }
+
     const { main, aside } = this.state;
 
     const DropZone = lazy(() => import("./DropZone.js"));

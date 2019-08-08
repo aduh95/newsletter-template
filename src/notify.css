@@ -1,0 +1,19 @@
+.notification {
+  position: fixed;
+  bottom: 1rem;
+  right: 50vw;
+  transform: translateX(50%);
+  background-color: #000a;
+  padding: 1rem;
+  color: #fff;
+  animation: fadeIn 1s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

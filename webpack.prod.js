@@ -76,6 +76,13 @@ module.exports = {
         removeStyleLinkTypeAttributes: true,
       },
     }),
-    new OfflinePlugin(),
+    new OfflinePlugin({
+      ServiceWorker: {
+        events: true,
+      },
+      AppCache: {
+        events: true,
+      },
+    }),
   ],
 };
