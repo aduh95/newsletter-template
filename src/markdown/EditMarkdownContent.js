@@ -229,7 +229,7 @@ export default class EditMarkdownContent extends Component {
         content={this.props.value}
         attributes={{
           contenteditable: "true",
-          style: "display:initial",
+          className: "editable-markdown-preview",
           onBlur: this.getCaretPosition.bind(this),
           onClick: e => {
             e.stopImmediatePropagation();

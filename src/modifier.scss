@@ -33,6 +33,14 @@
   }
 }
 
+output.editable-markdown-preview[data-contents] {
+  display: block;
+  appearance: textarea;
+  -webkit-appearance: textarea;
+  cursor: text;
+  padding: 2px;
+}
+
 dialog {
   // border: none;
   padding: 2rem;
