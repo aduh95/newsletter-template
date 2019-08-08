@@ -224,7 +224,7 @@ export default class EditMarkdownContent extends Component {
           />
         </p>
       </fieldset>
-    ) : (
+    ) : this.props.value ? (
       <MarkdownContent
         content={this.props.value}
         attributes={{
@@ -237,6 +237,17 @@ export default class EditMarkdownContent extends Component {
           },
         }}
       />
+    ) : (
+      <p
+        onClick={e => {
+          e.stopImmediatePropagation();
+          this.setState({ active: true });
+        }}
+      >
+        <em style={{ fontSize: "smaller" }}>
+          Empty section, click to add content.
+        </em>
+      </p>
     );
   }
 }
