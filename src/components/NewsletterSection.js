@@ -3,13 +3,34 @@ import NewsletterArticle from "./NewsletterArticle";
 import NewArticle from "../edit_components/lazy-edit-component.js";
 
 export default class NewsletterSection extends Component {
+  state = { tempArticles: [] };
+
+  addNewArticle(data) {
+    const { tempArticles } = this.state;
+    tempArticles.push(data);
+    this.setState({ tempArticles });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.content.length !== this.props.content.length) {
+      this.setState({ tempArticles: [] });
+    }
+  }
+
   render() {
-    const articles = this.props.content || [];
+    const articles = (this.props.content || []).concat(this.state.tempArticles);
+    const nbOfNonMainArticles = articles.filter(({ isMain }) => !isMain).length;
+    const nbOfColumns =
+      nbOfNonMainArticles % 2 === 0
+        ? 2
+        : nbOfNonMainArticles % 3 === 0 || (nbOfNonMainArticles - 1) % 3 === 0
+        ? 3
+        : 2;
     return (
       <section
         className="newsletter"
         data-type="NewsletterSection"
-        style={{ ["--nb-of-articles"]: articles.length }}
+        style={{ ["--nb-of-columns"]: nbOfColumns }}
         id={this.props.id}
       >
         <output hidden data-key="id">
@@ -39,10 +60,7 @@ export default class NewsletterSection extends Component {
           componentName="NewsletterArticle"
           active={this.state.openNewArticleDialog}
           props={{
-            saveState: () =>
-              import("../notify.js").then(m =>
-                m.default("Not implemented yet")
-              ),
+            saveState: this.addNewArticle.bind(this),
             resetState: () => this.setState({ openNewArticleDialog: false }),
           }}
         />
