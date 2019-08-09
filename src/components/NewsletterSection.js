@@ -1,5 +1,6 @@
 import { h, Component } from "preact";
 import NewsletterArticle from "./NewsletterArticle";
+import NewArticle from "../edit_components/lazy-edit-compomponent.js";
 
 export default class NewsletterSection extends Component {
   render() {
@@ -30,14 +31,21 @@ export default class NewsletterSection extends Component {
         <button
           data-ignore
           style="grid-column: span var(--nb-of-columns)"
-          onClick={e =>
-            import("../notify")
-              .then(m => m.default)
-              .then(notify => notify("Not implemented yet"))
-          }
+          onClick={e => this.setState({ openNewArticleDialog: true })}
         >
           Add a new article
         </button>
+        <NewArticle
+          componentName="NewsletterArticle"
+          active={this.state.openNewArticleDialog}
+          props={{
+            saveState: () =>
+              import("../notify.js").then(m =>
+                m.default("Not implemented yet")
+              ),
+            resetState: () => this.setState({ openNewArticleDialog: false }),
+          }}
+        />
       </section>
     );
   }
