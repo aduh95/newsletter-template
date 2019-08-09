@@ -118,7 +118,7 @@ export default class EditNewsletterArticle extends Component {
       isVideo: !!this.props.isVideo,
       illustration: this.props.illustration || null,
       illustrationDescription: this.props.illustrationDescription,
-      links,
+      links: Array.isArray(links) ? links : [],
     });
   }
 
@@ -242,6 +242,7 @@ export default class EditNewsletterArticle extends Component {
               Title:&nbsp;
               <input
                 name="title"
+                required
                 value={this.state.title}
                 onChange={e => this.setState({ title: e.target.value })}
               />
