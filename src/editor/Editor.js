@@ -31,17 +31,18 @@ export default class Editor extends Component {
               if (node.dataset.ignore) {
                 return;
               }
-              console.log("add", node);
               if (!data.has(node)) {
                 this.observeNode(node);
               }
-              if (nextSibling) {
+              if (nextSibling && data.has(nextSibling)) {
+                console.log("add in between", node);
                 const content = data.get(target)?.content;
                 const index = content?.indexOf(data.get(nextSibling));
                 if (content && index !== -1) {
                   content.splice(index, 0, data.get(node));
                 }
               } else {
+                console.log("append", node);
                 data.get(target)?.content.push(data.get(node));
               }
               hasAnythingChanged = true;
