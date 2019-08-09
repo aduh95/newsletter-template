@@ -26,7 +26,9 @@ export default class AsideList extends Component {
       const [el] = e.composedPath();
 
       if (el.nodeName === "A") {
+        el.contentEditable = "true";
         setTimeout(() => {
+          el.contentEditable = "false";
           if (!this.state.writeMode) {
             import("../notify")
               .then(m => m.default)
