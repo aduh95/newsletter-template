@@ -1,28 +1,57 @@
 import { h, Component } from "preact";
-import Nav from "./FeatureStoriesNav.js";
 
+import Edit from "../edit_components/lazy-edit-component.js";
+import Nav from "./FeatureStoriesNav.js";
 import NewsletterSection from "./NewsletterSection.js";
 
+const SECTION_TYPE = "NewsletterSection";
+
 export default class FeatureStories extends Component {
+  state = { tempSections: [] };
+
   addSection(e) {
     e.preventDefault();
-    import("../notify.js").then(module =>
-      module.default("Not implemented yet")
-    );
+    this.setState({
+      edit: {
+        type: SECTION_TYPE,
+        saveState: newSectionData =>
+          this.setState(state => {
+            const tempSections = state.tempSections.concat([newSectionData]);
+            return { tempSections };
+          }),
+      },
+    });
   }
 
   editSection(section) {
     return e => {
       e.preventDefault();
-      import("../notify.js").then(module =>
-        module.default("Not implemented yet")
-      );
-      console.log("edit", section);
+
+      this.setState({
+        edit: {
+          ...section,
+          saveState: updatedData => {
+            const { id } = section;
+            const sectionNode = document.getElementById(id);
+
+            sectionNode.id = updatedData.id;
+            Object.entries(updatedData).forEach(([key, value]) => {
+              const node = sectionNode.querySelector(`[data-key='${key}']`);
+              while (node && node.firstChild.nextSibling) {
+                node.removeChild(node.firstChild);
+              }
+              if (node) {
+                node.firstChild.textContent = value;
+              }
+            });
+          },
+        },
+      });
     };
   }
 
   render() {
-    const sections = this.props.content || [];
+    const sections = (this.props.content || []).concat(this.state.tempSections);
 
     return (
       <section class="newsletter" data-type="FeatureStories">
@@ -34,6 +63,15 @@ export default class FeatureStories extends Component {
           sections={sections}
           addSection={this.addSection.bind(this)}
           editSection={this.editSection.bind(this)}
+        />
+
+        <Edit
+          componentName={SECTION_TYPE}
+          active={!!this.state.edit}
+          props={{
+            ...this.state.edit,
+            resetState: () => this.setState({ edit: null }),
+          }}
         />
 
         {sections.map(section => (

@@ -6,7 +6,7 @@ export default class EditNewsletterSection extends Component {
   dialog = createRef();
 
   componentWillMount() {
-    const { type, title, illustrationDescription } = this.props;
+    const { type, title, id, illustrationDescription } = this.props;
     this.setState({
       type,
       title,
@@ -37,10 +37,24 @@ export default class EditNewsletterSection extends Component {
     this.setState({ [name]: value });
   }
 
-  handleSubmit() {
+  handleIDChange(e) {
+    const idInputField = e.target;
+
+    if (
+      this.props.id !== this.state.id &&
+      document.getElementById(idInputField.value)
+    ) {
+      idInputField.setCustomValidity("ID already taken");
+    } else {
+      idInputField.setCustomValidity("");
+    }
+    this.handleChange(e);
+  }
+
+  handleSubmit(e) {
     const data = { ...this.state };
 
-    requestIdleCallback(() => this.props.saveState(data));
+    requestAnimationFrame(() => this.props.saveState(data));
   }
 
   onReset(e) {
@@ -62,16 +76,18 @@ export default class EditNewsletterSection extends Component {
               Title:&nbsp;
               <input
                 name="title"
+                required
                 value={this.state.title}
-                onChange={e => this.setState({ title: e.target.value })}
+                onChange={this.handleChange.bind(this)}
               />
             </label>
             <label>
               ID:&nbsp;
               <input
-                name="title"
+                name="id"
+                required
                 value={this.state.id}
-                onChange={e => this.setState({ id: e.target.value })}
+                onChange={this.handleIDChange.bind(this)}
               />
             </label>
 
@@ -79,16 +95,16 @@ export default class EditNewsletterSection extends Component {
               Image URL:&nbsp;
               <input
                 onChange={this.handleChange.bind(this)}
-                name="src"
+                name="illustration"
                 type="url"
-                value={this.props.src}
+                value={this.state.illustration}
               />
               <label>
                 Image description:&nbsp;
                 <input
                   onChange={this.handleChange.bind(this)}
-                  name="alt"
-                  value={this.props.alt}
+                  name="illustrationDescription"
+                  value={this.state.illustrationDescription}
                   placeholder="Mandatory description of the image"
                   required
                 />
