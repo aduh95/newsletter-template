@@ -1,5 +1,5 @@
 import { h, Component, Fragment } from "preact";
-import Edit from "../edit_components/lazy-edit-compomponent.js";
+import Edit from "../edit_components/lazy-edit-component.js";
 
 export default class AsideList extends Component {
   state = { writeMode: false, data: JSON.stringify(this.props) };

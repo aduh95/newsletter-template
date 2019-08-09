@@ -1,6 +1,6 @@
 import { h, Component } from "preact";
 import NewsletterArticle from "./NewsletterArticle";
-import NewArticle from "../edit_components/lazy-edit-compomponent.js";
+import NewArticle from "../edit_components/lazy-edit-component.js";
 
 export default class NewsletterSection extends Component {
   render() {

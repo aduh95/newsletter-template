@@ -1,5 +1,5 @@
 import { h, Component } from "preact";
-import Edit from "../edit_components/lazy-edit-compomponent.js";
+import Edit from "../edit_components/lazy-edit-component.js";
 import MarkdownContent from "../markdown/MarkdownContent.js";
 
 export default class Footer extends Component {

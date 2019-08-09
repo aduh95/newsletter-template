@@ -1,6 +1,6 @@
 import { h, Component, Fragment } from "preact";
 import MarkdownContent from "../markdown/MarkdownContent.js";
-import Edit from "../edit_components/lazy-edit-compomponent.js";
+import Edit from "../edit_components/lazy-edit-component.js";
 
 const getArray = obj => (obj ? (Array.isArray(obj) ? obj : [obj]) : []);
 
