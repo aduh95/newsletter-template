@@ -91,6 +91,7 @@ export default new (class StatePersistance {
         this.#ignoreHistoryChange = false;
       } else {
         this.#pushNewHistoryEntry(stringData);
+        console.log("new state entry", data);
       }
     } catch {
     } finally {

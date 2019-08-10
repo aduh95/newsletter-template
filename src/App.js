@@ -58,14 +58,12 @@ export default class App extends Component {
 
   update(data) {
     try {
-      let { main, aside } = data;
-      if (!Array.isArray(main)) {
-        main = undefined;
-      }
-      if (!Array.isArray(aside)) {
-        aside = undefined;
-      }
-      console.log("import", { main, aside });
+      const main = Array.isArray(data.main)
+        ? this.getComponents(data.main)
+        : this.state.main || null;
+      const aside = Array.isArray(data.aside)
+        ? this.getComponents(data.aside)
+        : this.state.aside || null;
       this.setState({ main, aside });
     } catch (e) {
       console.warn(e, data);
@@ -138,27 +136,11 @@ export default class App extends Component {
           {appReadyForEditor ? (
             <Editor title={APP_TITLE} onChange={this.#saveState}>
               <main data-type="main">
-                <Suspense fallback={<Loading />}>
-                  {main ? (
-                    this.getComponents(main)
-                  ) : (
-                    <p data-ignore>
-                      <em>Empty</em>
-                    </p>
-                  )}
-                </Suspense>
+                <Suspense fallback={<Loading />}>{main}</Suspense>
               </main>
               <aside data-type="aside" data-contents>
                 <section className="newsletter aside" data-type="aside">
-                  <Suspense fallback={<Loading />}>
-                    {aside ? (
-                      this.getComponents(aside)
-                    ) : (
-                      <p data-ignore>
-                        <em>Empty</em>
-                      </p>
-                    )}
-                  </Suspense>
+                  <Suspense fallback={<Loading />}>{aside}</Suspense>
                 </section>
               </aside>
             </Editor>
