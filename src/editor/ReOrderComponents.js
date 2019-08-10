@@ -34,7 +34,7 @@ const clickHandler = e => {
       // If there's just 1 Element, try to travers as there's nothing to reorder
       subElements[0].click();
     } else {
-      target.scrollIntoViewIfNeeded();
+      target.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   } else if (originalID) {
     target.id = originalID;
@@ -84,6 +84,6 @@ export default class ReOrderComponents extends Component {
   }
 
   render() {
-    return <div id={DROP_ZONE_ID} />;
+    return <div data-ignore data-do-not-export id={DROP_ZONE_ID} />;
   }
 }
