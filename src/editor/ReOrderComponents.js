@@ -22,9 +22,11 @@ const clickHandler = e => {
   );
 
   if (subElements.length) {
-    document.getElementById(CURRENTLY_RE_ORDERING_ID)?.removeAttribute("id");
+    Array.from(
+      document.getElementsByClassName(CURRENTLY_RE_ORDERING_ID)
+    ).forEach(el => el.classList.remove(CURRENTLY_RE_ORDERING_ID));
 
-    target.setAttribute("id", CURRENTLY_RE_ORDERING_ID);
+    target.classList.add(CURRENTLY_RE_ORDERING_ID);
     target.prepend(document.getElementById(DROP_ZONE_ID));
 
     flushEventListeners();
@@ -79,7 +81,9 @@ export default class ReOrderComponents extends Component {
 
   componentWillUnmount() {
     flushEventListeners();
-    document.getElementById(CURRENTLY_RE_ORDERING_ID)?.removeAttribute("id");
+    Array.from(
+      document.getElementsByClassName(CURRENTLY_RE_ORDERING_ID)
+    ).forEach(el => el.classList.remove(CURRENTLY_RE_ORDERING_ID));
     document.getElementById(DROP_ZONE_ID).remove();
   }
 

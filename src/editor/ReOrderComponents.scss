@@ -10,7 +10,7 @@
   align-items: center;
 
   background-color: #fffa;
-  border: 3px dashed #000;
+  border: 1px dashed #000;
 
   pointer-events: auto;
 }
@@ -35,13 +35,13 @@
   }
 }
 
-#re-order-elements-reordering {
-  outline: 5px solid blue;
+.re-order-elements-reordering {
+  display: flex !important;
+  flex-direction: column;
+  gap: 0;
   > [data-type] {
     position: relative;
-    display: flex !important;
-    flex-direction: column;
-    outline: 1px dashed #000a;
+    margin: 0;
     min-height: 1rem;
     max-height: 12.5vh;
     overflow: hidden;
@@ -88,9 +88,14 @@
   }
 
   & > .to-be-deleted {
+    position: relative;
     &,
     & > input {
       background-color: red;
+    }
+    &:hover::after {
+      @extend %maskForAction;
+      content: "Drop to delete";
     }
   }
 }
