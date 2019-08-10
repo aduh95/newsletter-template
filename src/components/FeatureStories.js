@@ -7,7 +7,7 @@ import NewsletterSection from "./NewsletterSection.js";
 const SECTION_TYPE = "NewsletterSection";
 
 export default class FeatureStories extends Component {
-  state = { tempSections: [] };
+  state = { newSection: null };
 
   #addSection = this.addSection.bind(this);
   #editSection = this.editSection.bind(this);
@@ -17,11 +17,17 @@ export default class FeatureStories extends Component {
     this.setState({
       edit: {
         type: SECTION_TYPE,
-        saveState: newSectionData =>
-          this.setState(state => {
-            const tempSections = state.tempSections.concat([newSectionData]);
-            return { tempSections };
-          }),
+        saveState: newSectionData => {
+          this.setState({
+            edit: null,
+            newSection: (
+              <output
+                data-request-render
+                data-json={JSON.stringify(newSectionData)}
+              />
+            ),
+          });
+        },
       },
     });
   }
@@ -61,7 +67,7 @@ export default class FeatureStories extends Component {
   }
 
   render() {
-    const sections = (this.props.content || []).concat(this.state.tempSections);
+    const sections = this.props.content || [];
 
     return (
       <section class="newsletter" data-type="FeatureStories">
@@ -87,6 +93,7 @@ export default class FeatureStories extends Component {
         {sections.map(section => (
           <NewsletterSection {...section} />
         ))}
+        {this.state.newSection}
       </section>
     );
   }

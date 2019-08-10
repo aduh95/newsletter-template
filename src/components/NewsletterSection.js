@@ -3,7 +3,7 @@ import NewsletterArticle from "./NewsletterArticle";
 import NewArticle from "../edit_components/lazy-edit-component.js";
 
 export default class NewsletterSection extends Component {
-  state = { tempArticles: [] };
+  state = { newArticle: null };
 
   #createNewArticle = this.setState.bind(this, { openNewArticleDialog: true });
   #newArticleProps = {
@@ -12,9 +12,10 @@ export default class NewsletterSection extends Component {
   };
 
   addNewArticle(data) {
-    const { tempArticles } = this.state;
-    tempArticles.push(data);
-    this.setState({ tempArticles });
+    this.setState({
+      newArticle: <output data-request-render data-json={data} />,
+      openNewArticleDialog: false,
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -24,7 +25,7 @@ export default class NewsletterSection extends Component {
   }
 
   render() {
-    const articles = (this.props.content || []).concat(this.state.tempArticles);
+    const articles = this.props.content || [];
     const nbOfNonMainArticles = articles.filter(({ isMain }) => !isMain).length;
     const nbOfColumns =
       nbOfNonMainArticles % 2 === 0
@@ -68,6 +69,7 @@ export default class NewsletterSection extends Component {
           active={this.state.openNewArticleDialog}
           props={this.#newArticleProps}
         />
+        {this.state.newArticle}
       </section>
     );
   }

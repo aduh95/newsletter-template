@@ -46,6 +46,9 @@ export default class Editor extends Component {
                 data.get(target)?.content.push(data.get(node));
               }
               hasAnythingChanged = true;
+              if (node.dataset.requestRender) {
+                rebuildDOM = true;
+              }
             });
           }
           if (removedNodes.length) {
@@ -160,7 +163,7 @@ export default class Editor extends Component {
   }
 
   componentDidUpdate() {
-    requestIdleCallback(() => this.checkForDOMChanges());
+    requestIdleCallback(this.checkForDOMChanges.bind(this));
   }
 
   componentWillUnmount() {
