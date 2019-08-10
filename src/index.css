@@ -6,6 +6,22 @@
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   font-size: 20px;
 }
+
+#fallback-message {
+  animation: fadeInAfterDelay 3s;
+}
+@keyframes fadeInAfterDelay {
+  0% {
+    opacity: 0;
+  }
+  75% {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 body {
   display: grid;
   min-height: 100vh;
