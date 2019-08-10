@@ -18,7 +18,7 @@ export default class NewsletterSection extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.content.length !== this.props.content.length) {
+    if (prevProps.content?.length !== this.props.content?.length) {
       this.setState({ tempArticles: [] });
     }
   }
