@@ -212,7 +212,7 @@ export default class EditNewsletterArticle extends Component {
         }));
     }
 
-    requestIdleCallback(() => this.props.saveState(data));
+    requestAnimationFrame(() => this.props.saveState(data));
   }
 
   handleListReOrder(from, to) {
