@@ -89,6 +89,8 @@ export default new (class StatePersistance {
       this.#setPersistantState(stringData);
       if (this.#ignoreHistoryChange) {
         this.#ignoreHistoryChange = false;
+      } else if (stringData === this.#getCurrentStateAsString()) {
+        console.log("ignore similar state");
       } else {
         this.#pushNewHistoryEntry(stringData);
         console.log("new state entry", data);
@@ -100,10 +102,12 @@ export default new (class StatePersistance {
   }
 
   get currentState() {
-    return JSON.parse(
-      sessionStorage.getItem(
-        HISTORY_ENTRY_PREFIX + sessionStorage.getItem(CURRENT_STATE_ID)
-      )
+    return JSON.parse(this.#getCurrentStateAsString());
+  }
+
+  #getCurrentStateAsString() {
+    return sessionStorage.getItem(
+      HISTORY_ENTRY_PREFIX + sessionStorage.getItem(CURRENT_STATE_ID)
     );
   }
 
