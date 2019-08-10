@@ -44,6 +44,13 @@ export default class FeatureStories extends Component {
                 node.firstChild.textContent = value;
               }
             });
+
+            const navLink = sectionNode.parentElement.querySelector(
+              `nav>a[href="#${id}"]`
+            );
+            navLink.href = "#" + updatedData.id;
+            navLink.firstElementChild.src = updatedData.illustration;
+            navLink.firstElementChild.alt = updatedData.illustrationDescription;
           },
         },
       });
@@ -70,7 +77,7 @@ export default class FeatureStories extends Component {
           active={!!this.state.edit}
           props={{
             ...this.state.edit,
-            resetState: () => this.setState({ edit: null }),
+            resetState: Function.prototype,
           }}
         />
 

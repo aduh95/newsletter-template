@@ -54,7 +54,7 @@ export default class EditNewsletterSection extends Component {
   handleSubmit(e) {
     const data = { ...this.state };
 
-    requestAnimationFrame(() => this.props.saveState(data));
+    this.props.saveState(data);
   }
 
   onReset(e) {
