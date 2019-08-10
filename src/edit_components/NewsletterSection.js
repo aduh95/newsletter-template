@@ -46,6 +46,8 @@ export default class EditNewsletterSection extends Component {
   handleIDChange(e) {
     const idInputField = e.target;
 
+    idInputField.value = idInputField.value.replace(/\s/g, "-");
+
     if (
       this.props.id !== this.state.id &&
       document.getElementById(idInputField.value)
@@ -60,7 +62,7 @@ export default class EditNewsletterSection extends Component {
   handleSubmit(e) {
     const data = { ...this.state };
 
-    this.props.saveState(data);
+    requestAnimationFrame(() => this.props.saveState(data));
   }
 
   render() {
