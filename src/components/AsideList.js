@@ -1,59 +1,18 @@
 import { h, Component, Fragment } from "preact";
-import Edit from "../edit_components/lazy-edit-component.js";
 
-const LEFT_CLICK_BUTTON = 1;
-const DOUBLE_CLICK_TIMEOUT = 300;
-const lastTouchDate = new WeakMap();
+import {
+  clickHandler,
+  dblClickHandler,
+  touchHandler,
+} from "./eventHandlers.js";
+import Edit from "../edit_components/lazy-edit-component.js";
 
 export default class AsideList extends Component {
   state = { writeMode: false, data: JSON.stringify(this.props) };
 
-  touchHandler(e) {
-    const [el] = e.composedPath();
-    const lastTouchTimestamp = lastTouchDate.get(el) || 0;
-    const currentTouchTimestamp = e.timeStamp || Date.now();
-    lastTouchDate.set(el, currentTouchTimestamp);
-
-    if (currentTouchTimestamp - lastTouchTimestamp < DOUBLE_CLICK_TIMEOUT) {
-      this.dblClickHandler(e);
-    }
-  }
-
-  clickHandler(e) {
-    if (!this.state.writeMode && !e.ctrlKey && e.which === LEFT_CLICK_BUTTON) {
-      e.preventDefault();
-
-      const [el] = e.composedPath();
-
-      if (el.nodeName === "A") {
-        el.contentEditable = "true";
-        setTimeout(() => {
-          el.contentEditable = "false";
-          if (!this.state.writeMode) {
-            import("../notify")
-              .then(m => m.default)
-              .then(notify => notify("Use Ctrl+Click to open the link"));
-          }
-        }, DOUBLE_CLICK_TIMEOUT);
-      }
-    }
-  }
-
-  dblClickHandler(e) {
-    if (!this.state.writeMode) {
-      const focusOffset = [];
-      e.preventDefault();
-      if (window.getSelection) {
-        const { anchorOffset, focusOffset: end } = getSelection();
-        focusOffset.push(anchorOffset, end);
-      }
-      this.setState({
-        writeMode: true,
-        focus: e.composedPath()[0]?.dataset?.key,
-        focusOffset,
-      });
-    }
-  }
+  #clickHandler = clickHandler.bind(this);
+  #dblClickHandler = dblClickHandler.bind(this);
+  #touchHandler = touchHandler.bind(this);
 
   update(data) {
     this.setState({
@@ -69,9 +28,9 @@ export default class AsideList extends Component {
       <article
         data-type="AsideList"
         data-json={this.state.data}
-        onClick={this.clickHandler.bind(this)}
-        onDblclick={this.dblClickHandler.bind(this)}
-        onTouchEnd={this.touchHandler.bind(this)}
+        onClick={this.#clickHandler}
+        onDblclick={this.#dblClickHandler}
+        onTouchEnd={this.#touchHandler}
       >
         <h4 data-key="title">{this.props.title}</h4>
 
