@@ -3,8 +3,14 @@ import { h, Component, createRef } from "preact";
 import OrderedList from "./OrderedList.js";
 import registerDialogElement from "../polyfill/htmldialogelement.js";
 
+const doNotPropagateEvent = event => event.stopPropagation();
+
 export default class UpdateAsideList extends Component {
   dialog = createRef();
+
+  #handleReOrder = this.handleReOrder.bind(this);
+  #handleChange = this.handleChange.bind(this);
+  #handleSubmit = this.handleSubmit.bind(this);
 
   componentWillMount() {
     const { type, title, content } = this.props;
@@ -105,20 +111,15 @@ export default class UpdateAsideList extends Component {
     }
   }
 
-  onReset(e) {
-    e.stopPropagation();
-    this.props.resetState();
-  }
-
   render() {
     return (
       <dialog
         data-ignore
-        onClose={this.onReset.bind(this)}
-        onClick={e => e.stopPropagation()}
+        onClose={this.props.resetState}
+        onClick={doNotPropagateEvent}
         ref={this.dialog}
       >
-        <form method="dialog" onSubmit={this.handleSubmit.bind(this)}>
+        <form method="dialog" onSubmit={this.#handleSubmit}>
           <div>
             <label>
               Title:&nbsp;
@@ -131,12 +132,12 @@ export default class UpdateAsideList extends Component {
 
             <OrderedList
               content={this.state.content}
-              handleChange={this.handleChange.bind(this)}
-              handleReOrder={this.handleReOrder.bind(this)}
+              handleChange={this.#handleChange}
+              handleReOrder={this.#handleReOrder}
             />
 
             <button type="submit">Save</button>
-            <button type="reset" onClick={this.onReset.bind(this)}>
+            <button type="reset" onClick={this.props.resetState}>
               Cancel
             </button>
           </div>

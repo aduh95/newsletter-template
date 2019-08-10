@@ -2,8 +2,14 @@ import { h, Component, createRef } from "preact";
 
 import registerDialogElement from "../polyfill/htmldialogelement.js";
 
+const doNotPropagateEvent = event => event.stopPropagation();
+
 export default class EditNewsletterSection extends Component {
   dialog = createRef();
+
+  #handleSubmit = this.handleSubmit.bind(this);
+  #handleChange = this.handleChange.bind(this);
+  #handleIDChange = this.handleIDChange.bind(this);
 
   componentWillMount() {
     const { type, title, id, illustrationDescription } = this.props;
@@ -57,20 +63,15 @@ export default class EditNewsletterSection extends Component {
     this.props.saveState(data);
   }
 
-  onReset(e) {
-    e.stopPropagation();
-    this.props.resetState();
-  }
-
   render() {
     return (
       <dialog
         data-ignore
-        onClose={this.onReset.bind(this)}
-        onClick={e => e.stopPropagation()}
+        onClose={this.props.resetState}
+        onClick={doNotPropagateEvent}
         ref={this.dialog}
       >
-        <form method="dialog" onSubmit={this.handleSubmit.bind(this)}>
+        <form method="dialog" onSubmit={this.#handleSubmit}>
           <div>
             <label>
               Title:&nbsp;
@@ -78,7 +79,7 @@ export default class EditNewsletterSection extends Component {
                 name="title"
                 required
                 value={this.state.title}
-                onChange={this.handleChange.bind(this)}
+                onChange={this.#handleChange}
               />
             </label>
             <label>
@@ -87,14 +88,14 @@ export default class EditNewsletterSection extends Component {
                 name="id"
                 required
                 value={this.state.id}
-                onChange={this.handleIDChange.bind(this)}
+                onChange={this.#handleIDChange}
               />
             </label>
 
             <label>
               Image URL:&nbsp;
               <input
-                onChange={this.handleChange.bind(this)}
+                onChange={this.#handleChange}
                 name="illustration"
                 type="url"
                 value={this.state.illustration}
@@ -102,7 +103,7 @@ export default class EditNewsletterSection extends Component {
               <label>
                 Image description:&nbsp;
                 <input
-                  onChange={this.handleChange.bind(this)}
+                  onChange={this.#handleChange}
                   name="illustrationDescription"
                   value={this.state.illustrationDescription}
                   placeholder="Mandatory description of the image"
@@ -112,7 +113,7 @@ export default class EditNewsletterSection extends Component {
             </label>
 
             <button type="submit">Save</button>
-            <button type="reset" onClick={this.onReset.bind(this)}>
+            <button type="reset" onClick={this.props.resetState}>
               Cancel
             </button>
           </div>

@@ -40,6 +40,41 @@ export default class EditMarkdownContent extends Component {
 
   static #prettierJobs = Promise.resolve();
 
+  #helper = this.helper.bind(this);
+  #makePrettier = this.makePrettier.bind(this);
+  #markdownContentAttributes = {
+    contenteditable: "true",
+    className: "editable-markdown-preview",
+    onBlur: this.getCaretPosition.bind(this),
+    onClick: e => {
+      e.stopImmediatePropagation();
+      this.setState({ active: true });
+    },
+  };
+  #actionBar = (
+    <p>
+      <button
+        hidden
+        type="button"
+        onClick={() => this.textarea.current?.focus()}
+      />
+      {commands.map(command => (
+        <button
+          onClick={this.handleCommand(command)}
+          accesskey={command.shortcut}
+          type="button"
+        >
+          <FontAwesomeIcon icon={command.label} />
+        </button>
+      ))}
+      &nbsp;|&nbsp;
+      <button accesskey="s" onClick={() => this.setState({ active: false })}>
+        <FontAwesomeIcon icon={faPrint} />
+        &nbsp;Preview
+      </button>
+    </p>
+  );
+
   static makePrettier(markdown) {
     let done;
     const waitForFulfillment = new Promise(resolve => (done = resolve));
@@ -201,36 +236,13 @@ export default class EditMarkdownContent extends Component {
     return this.state.active ? (
       <fieldset className="markdown-editor">
         <legend>Markdown editor</legend>
-        <p>
-          <button
-            hidden
-            type="button"
-            onClick={() => this.textarea.current?.focus()}
-          />
-          {commands.map(command => (
-            <button
-              onClick={this.handleCommand(command)}
-              accesskey={command.shortcut}
-              type="button"
-            >
-              <FontAwesomeIcon icon={command.label} />
-            </button>
-          ))}
-          &nbsp;|&nbsp;
-          <button
-            accesskey="s"
-            onClick={() => this.setState({ active: false })}
-          >
-            <FontAwesomeIcon icon={faPrint} />
-            &nbsp;Preview
-          </button>
-        </p>
+        {this.#actionBar}
         <p>
           <textarea
             {...this.props}
             ref={this.textarea}
-            onKeyDown={this.helper.bind(this)}
-            onBlur={this.makePrettier.bind(this)}
+            onKeyDown={this.#helper}
+            onBlur={this.#makePrettier}
             rows="10"
             cols="50"
           />
@@ -239,15 +251,7 @@ export default class EditMarkdownContent extends Component {
     ) : this.props.value ? (
       <MarkdownContent
         content={this.props.value}
-        attributes={{
-          contenteditable: "true",
-          className: "editable-markdown-preview",
-          onBlur: this.getCaretPosition.bind(this),
-          onClick: e => {
-            e.stopImmediatePropagation();
-            this.setState({ active: true });
-          },
-        }}
+        attributes={this.#markdownContentAttributes}
       />
     ) : (
       <p

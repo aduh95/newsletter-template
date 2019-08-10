@@ -4,7 +4,7 @@ import statePersistance from "./StatePersistance.js";
 import "./SplashScreen.scss";
 
 export default class SplashScreen extends Component {
-  handleFile(e) {
+  handleFile = e => {
     const { target } = e;
 
     target.setCustomValidity("");
@@ -21,7 +21,7 @@ export default class SplashScreen extends Component {
           target.form.reportValidity();
         });
     }
-  }
+  };
 
   render() {
     return (
@@ -43,7 +43,7 @@ export default class SplashScreen extends Component {
                 <input
                   type="file"
                   accept="application/json"
-                  onChange={this.handleFile.bind(this)}
+                  onChange={this.handleFile}
                 />
               </label>
             </p>

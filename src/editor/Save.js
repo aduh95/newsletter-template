@@ -18,15 +18,17 @@ export default class Save extends Component {
     return node.outerHTML;
   }
 
-  exportJSONFile() {
+  exportJSONFile = () =>
     this.#exportFile(
       "editorialCalendar.json",
       JSON.stringify(this.props.editor.data)
     );
-  }
 
-  exportHTMLFile() {
-    this.#exportFile("editorialCalendar.html", "TODO");
+  exportHTMLFile = () =>
+    this.#exportFile("editorialCalendar.html", this.#getHTML());
+
+  #getHTML() {
+    return "TODO";
   }
 
   #exportFile(fileName, fileContent) {
@@ -47,11 +49,11 @@ export default class Save extends Component {
   render() {
     return (
       <>
-        <button onClick={() => this.exportJSONFile()} title="Export as JSON">
+        <button onClick={this.exportJSONFile} title="Export as JSON">
           <FontAwesomeIcon icon={faDownload} />
           &nbsp;Save
         </button>
-        <button onClick={() => this.exportHTMLFile()} title="Export as HTML">
+        <button onClick={this.exportHTMLFile} title="Export as HTML">
           <FontAwesomeIcon icon={faFileExport} />
           &nbsp;Export
         </button>

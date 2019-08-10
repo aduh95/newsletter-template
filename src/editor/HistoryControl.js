@@ -4,6 +4,9 @@ import { faUndo, faRedo } from "@fortawesome/free-solid-svg-icons";
 
 import statePersistance from "../StatePersistance.js";
 
+const undo = statePersistance.rewindToPreviousState.bind(statePersistance);
+const redo = statePersistance.forwardToNextState.bind(statePersistance);
+
 export default class HistoryControl extends Component {
   componentWillMount() {
     statePersistance.subscribe(this.update.bind(this));
@@ -28,7 +31,7 @@ export default class HistoryControl extends Component {
     return (
       <>
         <button
-          onClick={() => statePersistance.rewindToPreviousState()}
+          onClick={undo}
           disabled={!this.state.hasPreviousState}
           title="Cancel last action"
         >
@@ -36,7 +39,7 @@ export default class HistoryControl extends Component {
           &nbsp;Undo
         </button>
         <button
-          onClick={() => statePersistance.forwardToNextState()}
+          onClick={redo}
           disabled={!this.state.hasNextState}
           title="Redo last action"
         >

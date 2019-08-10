@@ -19,6 +19,7 @@ export default class App extends Component {
   state = { previewing: true, hasError: false };
   #shouldUpdateDOM = true;
   #idleCallback = null;
+  #saveState = this.saveState.bind(this);
 
   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
@@ -122,25 +123,20 @@ export default class App extends Component {
     }
 
     const { main, aside } = this.state;
+    const appReadyForEditor = main && aside;
 
     const DropZone = lazy(() => import("./DropZone.js"));
-
-    const appReadyForEditor = main && aside;
-    const Editor = appReadyForEditor
-      ? lazy(() => import("./editor/Editor.js"))
-      : null;
-    const SplashScreen = appReadyForEditor
-      ? null
-      : lazy(() => import("./SplashScreen.js"));
+    const Editor = lazy(() => import("./editor/Editor.js"));
+    const SplashScreen = lazy(() => import("./SplashScreen.js"));
 
     return this.state.hasError ? (
       <Error resetState={() => this.setState({ hasError: false })} />
     ) : (
       <>
         <Suspense fallback={<Loading />}>
-          <DropZone dataHandler={txt => this.saveState(txt)} />
+          <DropZone dataHandler={this.#saveState} />
           {appReadyForEditor ? (
-            <Editor title={APP_TITLE} onChange={this.saveState.bind(this)}>
+            <Editor title={APP_TITLE} onChange={this.#saveState}>
               <main data-type="main">
                 <Suspense fallback={<Loading />}>
                   {main ? (
@@ -169,7 +165,7 @@ export default class App extends Component {
           ) : (
             <SplashScreen
               title={APP_TITLE}
-              dataHandler={txt => this.saveState(txt)}
+              dataHandler={this.#saveState}
               previousStateDate={statePersistance.lastSavedStateDate}
             />
           )}

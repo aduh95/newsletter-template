@@ -1,22 +1,19 @@
 import { h, Component } from "preact";
+
+import {
+  clickHandler,
+  dblClickHandler,
+  touchHandler,
+} from "./eventHandlers.js";
 import Edit from "../edit_components/lazy-edit-component.js";
 import MarkdownContent from "../markdown/MarkdownContent.js";
 
 export default class Footer extends Component {
   state = { writeMode: false };
 
-  clickHandler(e) {
-    if (!this.state.writeMode && !e.ctrlKey) {
-      e.preventDefault();
-
-      const [el] = e.composedPath();
-
-      el.contentEditable = "true";
-      setTimeout(() => {
-        el.contentEditable = "false";
-      }, 300);
-    }
-  }
+  #touchHandler = touchHandler.bind(this);
+  #clickHandler = clickHandler.bind(this);
+  #dblClickHandler = this.dblClickHandler.bind(this);
 
   dblClickHandler(e) {
     if (!this.state.writeMode) {
@@ -64,8 +61,9 @@ export default class Footer extends Component {
       <section
         className="newsletter-footer"
         data-type="Footer"
-        onClick={this.clickHandler.bind(this)}
-        onDblclick={this.dblClickHandler.bind(this)}
+        onTouchEnd={this.#touchHandler}
+        onClick={this.#clickHandler}
+        onDblclick={this.#dblClickHandler}
       >
         <output hidden data-key="text">
           {this.props.text}

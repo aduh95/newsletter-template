@@ -5,6 +5,12 @@ import NewArticle from "../edit_components/lazy-edit-component.js";
 export default class NewsletterSection extends Component {
   state = { tempArticles: [] };
 
+  #createNewArticle = this.setState.bind(this, { openNewArticleDialog: true });
+  #newArticleProps = {
+    saveState: this.addNewArticle.bind(this),
+    resetState: () => this.setState({ openNewArticleDialog: false }),
+  };
+
   addNewArticle(data) {
     const { tempArticles } = this.state;
     tempArticles.push(data);
@@ -52,17 +58,14 @@ export default class NewsletterSection extends Component {
         <button
           data-ignore
           style="grid-column: span var(--nb-of-columns)"
-          onClick={e => this.setState({ openNewArticleDialog: true })}
+          onClick={this.#createNewArticle}
         >
           Add a new article
         </button>
         <NewArticle
           componentName="NewsletterArticle"
           active={this.state.openNewArticleDialog}
-          props={{
-            saveState: this.addNewArticle.bind(this),
-            resetState: () => this.setState({ openNewArticleDialog: false }),
-          }}
+          props={this.#newArticleProps}
         />
       </section>
     );

@@ -3,8 +3,12 @@ import { h, Component, createRef } from "preact";
 import EditMarkdown from "../markdown/EditMarkdownContent.js";
 import registerDialogElement from "../polyfill/htmldialogelement.js";
 
+const doNotPropagateEvent = event => event.stopPropagation();
+
 export default class EditFooter extends Component {
   dialog = createRef();
+
+  #handleSubmit = this.handleSubmit.bind(this);
 
   componentWillMount() {
     const { type, text } = this.props;
@@ -35,20 +39,15 @@ export default class EditFooter extends Component {
     requestIdleCallback(() => this.props.saveState(data));
   }
 
-  onReset(e) {
-    e.stopPropagation();
-    this.props.resetState();
-  }
-
   render() {
     return (
       <dialog
         data-ignore
-        onClose={this.onReset.bind(this)}
-        onClick={e => e.stopPropagation()}
+        onClose={this.props.resetState}
+        onClick={doNotPropagateEvent}
         ref={this.dialog}
       >
-        <form method="dialog" onSubmit={this.handleSubmit.bind(this)}>
+        <form method="dialog" onSubmit={this.#handleSubmit}>
           <div>
             <label>
               Footer:&nbsp;
@@ -62,7 +61,7 @@ export default class EditFooter extends Component {
             </label>
 
             <button type="submit">Save</button>
-            <button type="reset" onClick={this.onReset.bind(this)}>
+            <button type="reset" onClick={this.props.resetState}>
               Cancel
             </button>
           </div>

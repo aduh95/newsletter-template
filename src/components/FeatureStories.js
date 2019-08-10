@@ -9,6 +9,9 @@ const SECTION_TYPE = "NewsletterSection";
 export default class FeatureStories extends Component {
   state = { tempSections: [] };
 
+  #addSection = this.addSection.bind(this);
+  #editSection = this.editSection.bind(this);
+
   addSection(e) {
     e.preventDefault();
     this.setState({
@@ -68,8 +71,8 @@ export default class FeatureStories extends Component {
 
         <Nav
           sections={sections}
-          addSection={this.addSection.bind(this)}
-          editSection={this.editSection.bind(this)}
+          addSection={this.#addSection}
+          editSection={this.#editSection}
         />
 
         <Edit

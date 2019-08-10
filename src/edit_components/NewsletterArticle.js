@@ -4,10 +4,24 @@ import OrderedList from "./OrderedList.js";
 import EditMarkdown from "../markdown/EditMarkdownContent.js";
 import registerDialogElement from "../polyfill/htmldialogelement.js";
 
+const doNotPropagateEvent = event => event.stopPropagation();
+
+function handleChange(onChange, e) {
+  const { target } = e;
+  const { name, value } = target;
+
+  onChange({ ...this.props, [name]: value });
+}
+
 class EditIllustration extends Component {
   static getDerivedStateFromProps({ src }) {
     return { noIllustration: !src };
   }
+
+  #handleChange = handleChange.bind(this, this.props.onChange);
+  #disableIllustration = this.disableIllustration.bind(this);
+  #switchToImage = this.switchToImage.bind(this);
+  #switchToVideo = this.switchToVideo.bind(this);
 
   disableIllustration(e) {
     this.props.onChange({
@@ -35,13 +49,6 @@ class EditIllustration extends Component {
     requestAnimationFrame(() => e.target.form.elements["src"].focus());
   }
 
-  handleChange(e) {
-    const { target } = e;
-    const { name, value } = target;
-
-    this.props.onChange({ ...this.props, [name]: value });
-  }
-
   render() {
     return (
       <fieldset>
@@ -49,7 +56,7 @@ class EditIllustration extends Component {
         Illustration type:&nbsp;
         <label>
           <input
-            onChange={this.disableIllustration.bind(this)}
+            onChange={this.#disableIllustration}
             name="isVideo"
             type="radio"
             value="noIllustration"
@@ -59,7 +66,7 @@ class EditIllustration extends Component {
         </label>
         <label>
           <input
-            onChange={this.switchToImage.bind(this)}
+            onChange={this.#switchToImage}
             name="isVideo"
             type="radio"
             value="false"
@@ -69,7 +76,7 @@ class EditIllustration extends Component {
         </label>
         <label>
           <input
-            onChange={this.switchToVideo.bind(this)}
+            onChange={this.#switchToVideo}
             name="isVideo"
             type="radio"
             value="true"
@@ -81,7 +88,7 @@ class EditIllustration extends Component {
           <label>
             {this.props.isVideo ? "Video" : "Image"} URL:&nbsp;
             <input
-              onChange={this.handleChange.bind(this)}
+              onChange={this.#handleChange}
               name="src"
               type="url"
               value={this.props.src}
@@ -92,7 +99,7 @@ class EditIllustration extends Component {
           <label>
             Image description:&nbsp;
             <input
-              onChange={this.handleChange.bind(this)}
+              onChange={this.#handleChange}
               name="alt"
               value={this.props.alt}
               placeholder="Mandatory description of the image"
@@ -107,6 +114,21 @@ class EditIllustration extends Component {
 
 export default class EditNewsletterArticle extends Component {
   dialog = createRef();
+
+  #handleChange = handleChange.bind(this, this.setState.bind(this));
+  #handleSubmit = this.handleSubmit.bind(this);
+  #handleListChange = this.handleListChange.bind(this);
+  #handleListReOrder = this.handleListReOrder.bind(this);
+  #handleIllustrationChange = ({
+    isVideo,
+    src: illustration,
+    alt: illustrationDescription,
+  }) =>
+    this.setState({
+      isVideo,
+      illustration,
+      illustrationDescription,
+    });
 
   componentWillMount() {
     const { type, title, description, links } = this.props;
@@ -165,7 +187,7 @@ export default class EditNewsletterArticle extends Component {
     }
   }
 
-  handleChange(event, index) {
+  handleListChange(event, index) {
     const { name, value } = event.target;
     const { links } = this.state;
 
@@ -193,7 +215,7 @@ export default class EditNewsletterArticle extends Component {
     requestIdleCallback(() => this.props.saveState(data));
   }
 
-  handleReOrder(from, to) {
+  handleListReOrder(from, to) {
     const currentContent = this.state.links;
     let links = [];
 
@@ -223,20 +245,15 @@ export default class EditNewsletterArticle extends Component {
     }
   }
 
-  onReset(e) {
-    e.stopPropagation();
-    this.props.resetState();
-  }
-
   render() {
     return (
       <dialog
         data-ignore
-        onClose={this.onReset.bind(this)}
-        onClick={e => e.stopPropagation()}
+        onClose={this.props.resetState}
+        onClick={doNotPropagateEvent}
         ref={this.dialog}
       >
-        <form method="dialog" onSubmit={this.handleSubmit.bind(this)}>
+        <form method="dialog" onSubmit={this.#handleSubmit}>
           <div>
             <label>
               Title:&nbsp;
@@ -244,7 +261,7 @@ export default class EditNewsletterArticle extends Component {
                 name="title"
                 required
                 value={this.state.title}
-                onChange={e => this.setState({ title: e.target.value })}
+                onChange={this.#handleChange}
               />
             </label>
             <label>
@@ -253,43 +270,33 @@ export default class EditNewsletterArticle extends Component {
                 name="isMain"
                 checked={this.state.isMain}
                 type="checkbox"
-                onChange={e => this.setState({ isMain: e.target.checked })}
+                onChange={this.#handleChange}
               />
             </label>
             <EditIllustration
               isVideo={this.state.isVideo}
               src={this.state.illustration}
               alt={this.state.illustrationDescription}
-              onChange={({
-                isVideo,
-                src: illustration,
-                alt: illustrationDescription,
-              }) =>
-                this.setState({
-                  isVideo,
-                  illustration,
-                  illustrationDescription,
-                })
-              }
+              onChange={this.#handleIllustrationChange}
             />
             <label>
               Text:&nbsp;
               <EditMarkdown
                 name="description"
                 value={this.state.description}
-                onChange={e => this.setState({ description: e.target.value })}
+                onChange={this.#handleChange}
                 initiallyActive={this.props.focus === "description"}
               />
             </label>
 
             <OrderedList
               content={this.state.links}
-              handleChange={this.handleChange.bind(this)}
-              handleReOrder={this.handleReOrder.bind(this)}
+              handleChange={this.#handleListChange}
+              handleReOrder={this.#handleListReOrder}
             />
 
             <button type="submit">Save</button>
-            <button type="reset" onClick={this.onReset.bind(this)}>
+            <button type="reset" onClick={this.props.resetState}>
               Cancel
             </button>
           </div>
