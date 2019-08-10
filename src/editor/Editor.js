@@ -13,6 +13,10 @@ export default class Editor extends Component {
     return this.#DOMData.get(this);
   }
 
+  commitChanges() {
+    this.props.onChange(this.data);
+  }
+
   /**
    * @param {MutationRecord[]} mutationList
    * @param {MutationObserver} observer

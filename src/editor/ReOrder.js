@@ -4,8 +4,13 @@ import { faSort } from "@fortawesome/free-solid-svg-icons";
 
 export default class ReOrder extends Component {
   #toggleReOrder = () =>
-    this.props.editor.setState({
-      reOrder: !this.props.editor.state.reOrder,
+    this.props.editor.setState(state => {
+      if (state.reOrder) {
+        this.props.editor.commitChanges();
+        // return { reOrder: false }; // this would cancel all recent modifs
+      } else {
+        return { reOrder: true };
+      }
     });
 
   render() {
