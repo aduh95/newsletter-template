@@ -114,6 +114,7 @@ export default class UpdateAsideList extends Component {
   render() {
     return (
       <dialog
+        data-do-not-export
         data-ignore
         onClose={this.props.resetState}
         onClick={doNotPropagateEvent}

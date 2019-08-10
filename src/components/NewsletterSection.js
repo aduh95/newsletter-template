@@ -57,6 +57,7 @@ export default class NewsletterSection extends Component {
         ))}
         <button
           data-ignore
+          data-do-not-export
           style="grid-column: span var(--nb-of-columns)"
           onClick={this.#createNewArticle}
         >

@@ -7,7 +7,7 @@ export default function EditComponent(props) {
   return (
     <Suspense
       fallback={
-        <dialog open data-ignore>
+        <dialog data-do-not-export open data-ignore>
           Loading...
         </dialog>
       }

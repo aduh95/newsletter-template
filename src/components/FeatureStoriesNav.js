@@ -30,6 +30,7 @@ export default function FeatureStoriesNav({
           color: "black",
         }}
         data-link-to-create
+        data-do-not-export
         onClick={addSection}
       >
         <FontAwesomeIcon icon={faFolderPlus} size="2x" />
