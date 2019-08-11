@@ -93,9 +93,9 @@
     & > input {
       background-color: red;
     }
-    &:hover::after {
+    &::after {
       @extend %maskForAction;
-      content: "Drop to delete";
+      content: "Drop to delete" !important;
     }
   }
 }
