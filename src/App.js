@@ -65,8 +65,7 @@ export default class App extends Component {
         ? this.getComponents(data.aside)
         : null;
       const customCSS = data.css ? <style data-export>{data.css}</style> : null;
-      const { hostname } = data;
-      this.setState({ aside, main, customCSS, hostname });
+      this.setState({ aside, main, customCSS });
     } catch (e) {
       console.warn(e, data);
       this.setState({ hasError: true });
@@ -137,10 +136,10 @@ export default class App extends Component {
           <DropZone dataHandler={this.#saveState} />
           {appReadyForEditor ? (
             <Editor title={APP_TITLE} onChange={this.#saveState}>
-              <main data-type="main">
+              <main data-export data-type="main">
                 <Suspense fallback={<Loading />}>{main}</Suspense>
               </main>
-              <aside data-type="aside" data-contents>
+              <aside data-export data-type="aside" data-contents>
                 <section className="newsletter aside" data-type="aside">
                   <Suspense fallback={<Loading />}>{aside}</Suspense>
                 </section>

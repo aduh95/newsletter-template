@@ -1,6 +1,9 @@
 import { h, Component, Fragment } from "preact";
+
 import { FontAwesomeIcon } from "@aduh95/preact-fontawesome";
 import { faDownload, faFileExport } from "@fortawesome/free-solid-svg-icons";
+
+import { getHostNameRegExp } from "../currentStateHostName";
 
 /**
  *
@@ -41,9 +44,12 @@ export default class Save extends Component {
     this.#exportFile("editorialCalendar.html", "text/html", this.#getHTML());
 
   #getHTML() {
-    const exportedElements = document.querySelectorAll("[data-watch]");
+    const exportedElements = document.querySelectorAll("[data-export]");
+    const hostname = getHostNameRegExp();
 
-    return Array.from(exportedElements, cleanHTML).map(el => el.outerHTML);
+    return Array.from(exportedElements, cleanHTML).map(el =>
+      el.outerHTML.replace(hostname, "/")
+    );
   }
 
   #exportFile(fileName, type, fileContent) {
