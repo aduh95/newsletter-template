@@ -1,6 +1,16 @@
 {
   "presets": [
-    ["@babel/env", { "targets": "last 2 Chrome versions" }],
+    [
+      "@babel/env",
+      {
+        "targets": [
+          "last 2 Chrome versions",
+          "last 1 Safari version",
+          "last 1 Firefox version"
+        ],
+        "modules": false
+      }
+    ],
     "@babel/react"
   ],
   "plugins": [
