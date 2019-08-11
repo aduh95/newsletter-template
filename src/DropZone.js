@@ -6,16 +6,26 @@ import "./DropZone.scss";
 const DRAG_CLASS_NAME = "dragover";
 const DROP_ZONE_ID = "drop-zone";
 
+const dragStart = e => {
+  e.preventDefault();
+  document.documentElement.classList.add(DRAG_CLASS_NAME);
+};
+const dragEnd = e => {
+  e.preventDefault();
+  document.documentElement.classList.remove(DRAG_CLASS_NAME);
+};
+
 export default class DropZone extends Component {
   state = { previewing: true, content: null };
-
   componentDidMount() {
-    setGlobalDragOverListener(e => {
-      e.preventDefault();
-      document.documentElement.classList.add(DRAG_CLASS_NAME);
-    });
+    setGlobalDragOverListener(dragStart);
+
+    document
+      .getElementById(DROP_ZONE_ID)
+      .addEventListener("dragleave", dragEnd);
+    document.getElementById(DROP_ZONE_ID).addEventListener("click", dragEnd);
     document.getElementById(DROP_ZONE_ID).addEventListener("drop", e => {
-      e.preventDefault();
+      dragEnd(e);
 
       const { dataHandler } = this.props;
 
@@ -35,12 +45,6 @@ export default class DropZone extends Component {
             .then(dataHandler);
         }
       }
-
-      document.documentElement.classList.remove(DRAG_CLASS_NAME);
-    });
-    document.getElementById(DROP_ZONE_ID).addEventListener("dragleave", e => {
-      e.preventDefault();
-      document.documentElement.classList.remove(DRAG_CLASS_NAME);
     });
   }
 
