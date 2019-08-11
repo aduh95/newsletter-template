@@ -115,6 +115,7 @@ export default class UpdateAsideList extends Component {
               Title:&nbsp;
               <input
                 name="title"
+                required
                 value={this.state.title}
                 onChange={e => this.setState({ title: e.target.value })}
               />
