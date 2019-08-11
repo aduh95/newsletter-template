@@ -60,10 +60,10 @@ export default class App extends Component {
     try {
       const main = Array.isArray(data.main)
         ? this.getComponents(data.main)
-        : this.state.main || null;
+        : null;
       const aside = Array.isArray(data.aside)
         ? this.getComponents(data.aside)
-        : this.state.aside || null;
+        : null;
       this.setState({ main, aside });
     } catch (e) {
       console.warn(e, data);
