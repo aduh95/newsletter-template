@@ -1,1 +1,1 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[26],{22:function(n,a){window.requestIdleCallback=requestAnimationFrame,window.cancelIdleCallback=cancelAnimationFrame}}]);
+(window.webpackJsonp=window.webpackJsonp||[]).push([[26],{32:function(e,n){Object.defineProperty(Blob.prototype,"text",{configurable:!0,enumerable:!0,writable:!0,value:function(){return new Response(this).text()}})}}]);
