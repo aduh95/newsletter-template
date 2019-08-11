@@ -4,7 +4,7 @@ import {
 } from "offline-plugin/runtime";
 
 import { h, Component, Fragment } from "preact";
-import { Suspense, lazy } from "preact/compat";
+import { Suspense, lazy, createPortal } from "preact/compat";
 
 import statePersistance from "./StatePersistance.js";
 
@@ -64,7 +64,9 @@ export default class App extends Component {
       const aside = Array.isArray(data.aside)
         ? this.getComponents(data.aside)
         : null;
-      this.setState({ main, aside });
+      const customCSS = data.css ? <style data-export>{data.css}</style> : null;
+      const { hostname } = data;
+      this.setState({ aside, main, customCSS, hostname });
     } catch (e) {
       console.warn(e, data);
       this.setState({ hasError: true });
@@ -120,7 +122,7 @@ export default class App extends Component {
       updateOfflineApp();
     }
 
-    const { main, aside } = this.state;
+    const { main, aside, customCSS } = this.state;
     const appReadyForEditor = main && aside;
 
     const DropZone = lazy(() => import("./DropZone.js"));
@@ -143,6 +145,7 @@ export default class App extends Component {
                   <Suspense fallback={<Loading />}>{aside}</Suspense>
                 </section>
               </aside>
+              {createPortal(customCSS, document.head)}
             </Editor>
           ) : (
             <SplashScreen
