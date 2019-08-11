@@ -11,6 +11,7 @@ export default class FeatureStories extends Component {
 
   #addSection = this.addSection.bind(this);
   #editSection = this.editSection.bind(this);
+  #resetState = () => this.setState({ edit: null });
 
   addSection(e) {
     e.preventDefault();
@@ -86,7 +87,7 @@ export default class FeatureStories extends Component {
           active={!!this.state.edit}
           props={{
             ...this.state.edit,
-            resetState: Function.prototype,
+            resetState: this.#resetState,
           }}
         />
 

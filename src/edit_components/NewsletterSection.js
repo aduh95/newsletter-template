@@ -53,7 +53,7 @@ export default class EditNewsletterSection extends Component {
 
   render() {
     return (
-      <Modal onClose={this.props.resetState}>
+      <Modal onClose={Function.prototype}>
         <form method="dialog" onSubmit={this.#handleSubmit}>
           <div>
             <label>
