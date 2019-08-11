@@ -64,7 +64,11 @@ export default class App extends Component {
       const aside = Array.isArray(data.aside)
         ? this.getComponents(data.aside)
         : null;
-      const customCSS = data.css ? <style data-export>{data.css}</style> : null;
+      const customCSS = data.css ? (
+        <style data-export data-type="css">
+          {data.css}
+        </style>
+      ) : null;
       this.setState({ aside, main, customCSS });
     } catch (e) {
       console.warn(e, data);

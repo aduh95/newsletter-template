@@ -1,4 +1,4 @@
-import { h, Component, Fragment, toChildArray } from "preact";
+import { h, Component, Fragment } from "preact";
 
 import ReOrderComponents from "./ReOrderComponents.js";
 import MenuBar from "./MenuBar.js";
@@ -146,10 +146,14 @@ export default class Editor extends Component {
     if (node.dataset.contents) {
       return Array.from(node.children, this.observeNodeDeep.bind(this));
     }
-    this.observeNode(node);
-    this.#DOMData.get(this)[node.dataset.type] = this.#DOMData.get(
-      node
-    )?.content;
+    if (node.nodeName === "STYLE") {
+      this.#DOMData.get(this)[node.dataset.type] = node.textContent;
+    } else {
+      this.observeNode(node);
+      this.#DOMData.get(this)[node.dataset.type] = this.#DOMData.get(
+        node
+      )?.content;
+    }
   }
 
   componentDidMount() {
@@ -159,7 +163,7 @@ export default class Editor extends Component {
 
   checkForDOMChanges() {
     console.log("updated");
-    for (const node of document.querySelectorAll("[data-watch]")) {
+    for (const node of document.querySelectorAll("[data-export]")) {
       if (!this.#DOMData.has(node)) {
         this.observeNodeDeep(node);
       }
@@ -180,10 +184,6 @@ export default class Editor extends Component {
   }
 
   render() {
-    const children = toChildArray(this.props.children);
-    for (const child of children) {
-      child.props["data-watch"] = true;
-    }
     return (
       <>
         <header>
@@ -191,7 +191,7 @@ export default class Editor extends Component {
           <MenuBar editor={this} />
         </header>
         {this.state.reOrder ? <ReOrderComponents /> : null}
-        {children}
+        {this.props.children}
       </>
     );
   }
