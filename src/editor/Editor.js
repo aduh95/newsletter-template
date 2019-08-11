@@ -1,4 +1,4 @@
-import { h, Component, Fragment } from "preact";
+import { h, Component, Fragment, toChildArray } from "preact";
 
 import ReOrderComponents from "./ReOrderComponents.js";
 import MenuBar from "./MenuBar.js";
@@ -180,7 +180,8 @@ export default class Editor extends Component {
   }
 
   render() {
-    for (const child of this.props.children) {
+    const children = toChildArray(this.props.children);
+    for (const child of children) {
       child.props["data-watch"] = true;
     }
     return (
@@ -190,7 +191,7 @@ export default class Editor extends Component {
           <MenuBar editor={this} />
         </header>
         {this.state.reOrder ? <ReOrderComponents /> : null}
-        {this.props.children}
+        {children}
       </>
     );
   }
