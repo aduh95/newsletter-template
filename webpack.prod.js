@@ -20,10 +20,6 @@ module.exports = {
       {
         oneOf: [
           {
-            test: /\.render\.js$/,
-            use: ["file-loader"],
-          },
-          {
             test: /\.worker\.js$/,
             use: { loader: "worker-loader" },
           },
@@ -32,6 +28,9 @@ module.exports = {
             include: path.resolve(__dirname, "./src"),
             use: {
               loader: "babel-loader",
+              options: {
+                envName: "prod",
+              },
             },
           },
           {

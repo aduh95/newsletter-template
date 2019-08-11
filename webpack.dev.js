@@ -15,10 +15,6 @@ module.exports = {
       {
         oneOf: [
           {
-            test: /\.render\.js$/,
-            use: { loader: "file-loader" },
-          },
-          {
             test: /\.worker\.js$/,
             use: { loader: "worker-loader" },
           },
@@ -53,16 +49,7 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin({ IS_BROWSER: true }),
-    new HtmlWebPackPlugin({
-      template: "./src/index.html",
-      minify: {
-        collapseWhitespace: true,
-        removeComments: true,
-        removeRedundantAttributes: true,
-        removeScriptTypeAttributes: true,
-        removeStyleLinkTypeAttributes: true,
-      },
-    }),
+    new HtmlWebPackPlugin({ template: "./src/index.html" }),
   ],
   devtool: "inline-source-map",
   devServer: {
