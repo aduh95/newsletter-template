@@ -1,4 +1,4 @@
-import { h, Component, Fragment } from "preact";
+import { h, Component } from "preact";
 import { FontAwesomeIcon } from "@aduh95/preact-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
