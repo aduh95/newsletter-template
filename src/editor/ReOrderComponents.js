@@ -4,8 +4,7 @@ import "./ReOrderComponents.scss";
 import createDragHandler from "../createDragHandler.js";
 
 const DROP_ZONE_ID = "re-order-elements";
-const CHECK_CHILDREN_ELEMENT = "re-order-elements-check-children";
-const CURRENTLY_RE_ORDERING_ID = "re-order-elements-reordering";
+const CURRENTLY_RE_ORDERING_CLASS_NAME = "re-order-elements-reordering";
 
 /**
  * @type {HTMLElement[]}
@@ -15,18 +14,16 @@ const observees = [];
 const clickHandler = e => {
   e.preventDefault();
   const { target } = e;
-  const { id: originalID } = target;
-  target.id = CHECK_CHILDREN_ELEMENT;
-  const subElements = target.querySelectorAll(
-    `#${CHECK_CHILDREN_ELEMENT}>[data-type]`
+  const subElements = Array.from(target.children).filter(el =>
+    el.hasAttribute("data-type")
   );
 
   if (subElements.length) {
     Array.from(
-      document.getElementsByClassName(CURRENTLY_RE_ORDERING_ID)
-    ).forEach(el => el.classList.remove(CURRENTLY_RE_ORDERING_ID));
+      document.getElementsByClassName(CURRENTLY_RE_ORDERING_CLASS_NAME)
+    ).forEach(el => el.classList.remove(CURRENTLY_RE_ORDERING_CLASS_NAME));
 
-    target.classList.add(CURRENTLY_RE_ORDERING_ID);
+    target.classList.add(CURRENTLY_RE_ORDERING_CLASS_NAME);
     target.prepend(document.getElementById(DROP_ZONE_ID));
 
     flushEventListeners();
@@ -35,13 +32,12 @@ const clickHandler = e => {
     if (subElements.length === 1) {
       // If there's just 1 Element, try to travers as there's nothing to reorder
       subElements[0].click();
-    } else {
-      target.scrollIntoView({ behavior: "smooth", block: "center" });
     }
-  } else if (originalID) {
-    target.id = originalID;
+    target.scrollIntoViewIfNeeded({ behavior: "smooth", block: "center" });
   } else {
-    target.removeAttribute("id");
+    import("../notify.js")
+      .then(module => module.default)
+      .then(notify => notify("No content to reorder"));
   }
 };
 
@@ -82,8 +78,8 @@ export default class ReOrderComponents extends Component {
   componentWillUnmount() {
     flushEventListeners();
     Array.from(
-      document.getElementsByClassName(CURRENTLY_RE_ORDERING_ID)
-    ).forEach(el => el.classList.remove(CURRENTLY_RE_ORDERING_ID));
+      document.getElementsByClassName(CURRENTLY_RE_ORDERING_CLASS_NAME)
+    ).forEach(el => el.classList.remove(CURRENTLY_RE_ORDERING_CLASS_NAME));
     document.getElementById(DROP_ZONE_ID).remove();
   }
 
