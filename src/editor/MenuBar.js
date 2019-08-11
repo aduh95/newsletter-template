@@ -1,9 +1,10 @@
 import { h, Component, Fragment } from "preact";
 
-import Save from "./Save.js";
-import ReOrder from "./ReOrder.js";
 import HistoryControl from "./HistoryControl.js";
 import Quit from "./Quit.js";
+import ReOrder from "./ReOrder.js";
+import Save from "./Save.js";
+import TemplateSettings from "./TemplateSettings.js";
 
 export default class MenuBar extends Component {
   componentDidMount() {}
@@ -14,6 +15,7 @@ export default class MenuBar extends Component {
         <Save editor={this.props.editor} />
         <HistoryControl />
         &nbsp;|&nbsp;
+        <TemplateSettings editor={this.props.editor} />
         <ReOrder editor={this.props.editor} />
         &nbsp;|&nbsp;
         <Quit />
