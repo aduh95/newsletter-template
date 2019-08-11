@@ -10,6 +10,7 @@ import statePersistance from "./StatePersistance.js";
 
 import Error from "./AppError.js";
 import Loading from "./Loading.js";
+import AddNewComponent from "./edit_components/AddComponent.js";
 
 const APP_TITLE = "Newsletter template builder";
 
@@ -142,10 +143,23 @@ export default class App extends Component {
             <Editor title={APP_TITLE} onChange={this.#saveState}>
               <main data-export data-type="main">
                 <Suspense fallback={<Loading />}>{main}</Suspense>
+                <AddNewComponent
+                  components={[
+                    "Footer",
+                    "FeatureStories",
+                    "Hero",
+                    "HotTopics",
+                    "NewsletterSection",
+                    "Separator",
+                  ]}
+                />
               </main>
               <aside data-export data-type="aside" data-contents>
                 <section className="newsletter aside" data-type="aside">
                   <Suspense fallback={<Loading />}>{aside}</Suspense>
+                  <AddNewComponent
+                    components={["AsideList", "NewsletterArticle", "Separator"]}
+                  />
                 </section>
               </aside>
               {createPortal(customCSS, document.head)}
