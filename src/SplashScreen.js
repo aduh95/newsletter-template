@@ -56,6 +56,7 @@ export default class SplashScreen extends Component {
                     <large>
                       <button
                         onClick={() => statePersistance.recoverSaveState()}
+                        type="button"
                         autofocus
                       >
                         Continue where you left
@@ -74,7 +75,10 @@ export default class SplashScreen extends Component {
                     <br />
                     Make sure you have backup all the useful data.
                   </p>
-                  <button onClick={() => statePersistance.clearRecoverState()}>
+                  <button
+                    onClick={() => statePersistance.clearRecoverState()}
+                    type="button"
+                  >
                     Delete saved version
                   </button>
                 </details>
