@@ -7,7 +7,11 @@ import { faDownload, faFileExport } from "@fortawesome/free-solid-svg-icons";
  * @param {HTMLElement} node
  */
 const cleanHTML = node => {
-  if (node.nodeName === "OUTPUT" || node.hasAttribute("data-do-not-export")) {
+  if (
+    node.nodeName === "OUTPUT" ||
+    ("function" === typeof node.hasAttribute &&
+      node.hasAttribute("data-do-not-export"))
+  ) {
     return document.createDocumentFragment();
   }
 
@@ -29,12 +33,12 @@ const cleanHTML = node => {
 
 export default class Save extends Component {
   exportJSONFile = () =>
-    this.#exportFile("editorialCalendar.json", [
+    this.#exportFile("editorialCalendar.json", "application/json", [
       JSON.stringify(this.props.editor.data),
     ]);
 
   exportHTMLFile = () =>
-    this.#exportFile("editorialCalendar.html", this.#getHTML());
+    this.#exportFile("editorialCalendar.html", "text/html", this.#getHTML());
 
   #getHTML() {
     const exportedElements = document.querySelectorAll("[data-watch]");
@@ -42,11 +46,9 @@ export default class Save extends Component {
     return Array.from(exportedElements, cleanHTML).map(el => el.outerHTML);
   }
 
-  #exportFile(fileName, fileContent) {
+  #exportFile(fileName, type, fileContent) {
     const a = document.createElement("a");
-    const file = new File(fileContent, fileName, {
-      type: "application/json",
-    });
+    const file = new File(fileContent, fileName, { type });
     a.href = URL.createObjectURL(file);
     a.download = fileName;
     document.body.append(a);
