@@ -2,10 +2,8 @@ import { h, Component, createRef } from "preact";
 
 import OrderedList from "./OrderedList.js";
 import EditMarkdown from "../markdown/EditMarkdownContent.js";
-import registerDialogElement from "../polyfill/htmldialogelement.js";
+import Modal from "../editor/Modal.js";
 import normalizeURL from "./normalizeURL.js";
-
-const doNotPropagateEvent = event => event.stopPropagation();
 
 function handleChange(onChange, e) {
   const { target } = e;
@@ -114,7 +112,7 @@ class EditIllustration extends Component {
 }
 
 export default class EditNewsletterArticle extends Component {
-  dialog = createRef();
+  form = createRef();
 
   #handleChange = handleChange.bind(this, this.setState.bind(this));
   #handleSubmit = this.handleSubmit.bind(this);
@@ -153,11 +151,7 @@ export default class EditNewsletterArticle extends Component {
   }
 
   update(prevProps = {}) {
-    const { current } = this.dialog;
-
-    registerDialogElement(current).then(
-      () => current && !current.open && current.showModal()
-    );
+    const { current } = this.form;
 
     if (current && prevProps.focus !== this.props.focus) {
       const focusSelector = this.props.focus;
@@ -252,14 +246,8 @@ export default class EditNewsletterArticle extends Component {
 
   render() {
     return (
-      <dialog
-        data-do-not-export
-        data-ignore
-        onClose={this.props.resetState}
-        onClick={doNotPropagateEvent}
-        ref={this.dialog}
-      >
-        <form method="dialog" onSubmit={this.#handleSubmit}>
+      <Modal onClose={this.props.resetState}>
+        <form method="dialog" ref={this.form} onSubmit={this.#handleSubmit}>
           <div>
             <label>
               Title:&nbsp;
@@ -307,7 +295,7 @@ export default class EditNewsletterArticle extends Component {
             </button>
           </div>
         </form>
-      </dialog>
+      </Modal>
     );
   }
 }

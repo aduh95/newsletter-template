@@ -1,13 +1,11 @@
-import { h, Component, createRef } from "preact";
+import { h, Component } from "preact";
 
 import EditMarkdown from "../markdown/EditMarkdownContent.js";
-import registerDialogElement from "../polyfill/htmldialogelement.js";
+import Modal from "../editor/Modal.js";
 
 const doNotPropagateEvent = event => event.stopPropagation();
 
 export default class EditFooter extends Component {
-  dialog = createRef();
-
   #handleSubmit = this.handleSubmit.bind(this);
 
   componentWillMount() {
@@ -18,21 +16,6 @@ export default class EditFooter extends Component {
     });
   }
 
-  componentDidMount() {
-    this.update();
-  }
-  componentDidUpdate(prevProps) {
-    this.update(prevProps);
-  }
-
-  update(prevProps = {}) {
-    const { current } = this.dialog;
-
-    registerDialogElement(current).then(
-      () => current && !current.open && current.showModal()
-    );
-  }
-
   handleSubmit() {
     const data = { ...this.state };
 
@@ -41,13 +24,7 @@ export default class EditFooter extends Component {
 
   render() {
     return (
-      <dialog
-        data-do-not-export
-        data-ignore
-        onClose={this.props.resetState}
-        onClick={doNotPropagateEvent}
-        ref={this.dialog}
-      >
+      <Modal onClose={this.props.resetState}>
         <form method="dialog" onSubmit={this.#handleSubmit}>
           <div>
             <label>
@@ -67,7 +44,7 @@ export default class EditFooter extends Component {
             </button>
           </div>
         </form>
-      </dialog>
+      </Modal>
     );
   }
 }
