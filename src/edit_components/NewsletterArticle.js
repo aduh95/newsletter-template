@@ -3,6 +3,7 @@ import { h, Component, createRef } from "preact";
 import OrderedList from "./OrderedList.js";
 import EditMarkdown from "../markdown/EditMarkdownContent.js";
 import registerDialogElement from "../polyfill/htmldialogelement.js";
+import normalizeURL from "./normalizeURL.js";
 
 const doNotPropagateEvent = event => event.stopPropagation();
 
@@ -208,9 +209,13 @@ export default class EditNewsletterArticle extends Component {
         .filter(({ label, href }) => label || href)
         .map(({ label, href }) => ({
           label: label || "[Link]",
-          href: href || "about:blank",
+          href: normalizeURLL(href) || "about:blank",
         }));
     }
+
+    data.illustration = data.illustration
+      ? normalizeURL(data.illustration)
+      : undefined;
 
     requestAnimationFrame(() => this.props.saveState(data));
   }

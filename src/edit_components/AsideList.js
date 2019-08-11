@@ -2,6 +2,7 @@ import { h, Component, createRef } from "preact";
 
 import OrderedList from "./OrderedList.js";
 import registerDialogElement from "../polyfill/htmldialogelement.js";
+import normalizeURL from "./normalizeURL.js";
 
 const doNotPropagateEvent = event => event.stopPropagation();
 
@@ -75,7 +76,7 @@ export default class UpdateAsideList extends Component {
       .filter(({ label, href }) => label || href)
       .map(({ label, href }) => ({
         label: label || "[Link]",
-        href: href || "about:blank",
+        href: normalizeURL(href) || "about:blank",
       }));
 
     requestAnimationFrame(() => this.props.saveState(data));

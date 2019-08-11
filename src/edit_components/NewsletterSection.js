@@ -1,6 +1,7 @@
 import { h, Component, createRef } from "preact";
 
 import registerDialogElement from "../polyfill/htmldialogelement.js";
+import normalizeURL from "./normalizeURL.js";
 
 const doNotPropagateEvent = event => event.stopPropagation();
 
@@ -61,6 +62,10 @@ export default class EditNewsletterSection extends Component {
 
   handleSubmit(e) {
     const data = { ...this.state };
+
+    data.illustration = data.illustration
+      ? normalizeURL(data.illustration)
+      : "about:blank";
 
     requestAnimationFrame(() => this.props.saveState(data));
   }
