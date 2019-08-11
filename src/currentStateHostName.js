@@ -9,5 +9,5 @@ statePersistance.subscribe(cacheHostName);
 cacheHostName();
 
 export const getHostName = () => hostname;
-export const getHostNameRegExp = () =>
-  new RegExp(`(https?:)?//${hostName}/?`, "g");
+export const getHostNameRegExp = flags =>
+  new RegExp(`(https?:)?//${hostName}/?`, flags);

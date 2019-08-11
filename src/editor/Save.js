@@ -45,7 +45,7 @@ export default class Save extends Component {
 
   #getHTML() {
     const exportedElements = document.querySelectorAll("[data-export]");
-    const hostname = getHostNameRegExp();
+    const hostname = getHostNameRegExp("g");
 
     return Array.from(exportedElements, cleanHTML).map(el =>
       el.outerHTML.replace(hostname, "/")
