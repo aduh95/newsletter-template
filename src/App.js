@@ -10,14 +10,20 @@ import statePersistance from "./StatePersistance.js";
 
 import Error from "./AppError.js";
 import Loading from "./Loading.js";
-import AddNewComponent from "./edit_components/AddComponent.js";
 
 const APP_TITLE = "Newsletter template builder";
 
-const ASYNC_COMP = new Map();
+const DropZone = lazy(() => import("./DropZone.js"));
+const Editor = lazy(() => import("./editor/Editor.js"));
+const AddNewComponent = lazy(() => import("./edit_components/AddComponent.js"));
+const SplashScreen = lazy(() => import("./SplashScreen.js"));
+const GenerateComponents = lazy(() =>
+  import("./components/generateComponents.js")
+);
 
 export default class App extends Component {
   state = { previewing: true, hasError: false };
+
   #shouldUpdateDOM = true;
   #idleCallback = null;
   #saveState = this.saveState.bind(this);
@@ -36,7 +42,6 @@ export default class App extends Component {
     }
 
     installOfflineApp({
-      onUpdating: console.log,
       onUpdateReady: () => {
         this.updateReady = true;
       },
@@ -59,12 +64,12 @@ export default class App extends Component {
 
   update(data) {
     try {
-      const main = Array.isArray(data.main)
-        ? this.getComponents(data.main)
-        : null;
-      const aside = Array.isArray(data.aside)
-        ? this.getComponents(data.aside)
-        : null;
+      const main = Array.isArray(data.main) ? (
+        <GenerateComponents data={data.main} />
+      ) : null;
+      const aside = Array.isArray(data.aside) ? (
+        <GenerateComponents data={data.aside} />
+      ) : null;
       const customCSS = data.css ? (
         <style data-export data-type="css">
           {data.css}
@@ -98,29 +103,6 @@ export default class App extends Component {
     }
   }
 
-  getComponents(array) {
-    return array.map((props, i) => {
-      try {
-        const { type } = props;
-        if (!ASYNC_COMP.has(type)) {
-          console.log("try loading component", type);
-          ASYNC_COMP.set(
-            type,
-            lazy(() =>
-              /[^\w]/.test(type)
-                ? Promise.reject(new Error("Invalid component name"))
-                : import(`./components/${type}.js`)
-            )
-          );
-        }
-        const Component = ASYNC_COMP.get(type);
-        return props ? <Component key={i} {...props} /> : null;
-      } catch {
-        return <div data-ignore>Invalid component</div>;
-      }
-    });
-  }
-
   render() {
     if (this.updateReady) {
       updateOfflineApp();
@@ -129,49 +111,51 @@ export default class App extends Component {
     const { main, aside, customCSS } = this.state;
     const appReadyForEditor = main && aside;
 
-    const DropZone = lazy(() => import("./DropZone.js"));
-    const Editor = lazy(() => import("./editor/Editor.js"));
-    const SplashScreen = lazy(() => import("./SplashScreen.js"));
-
-    return this.state.hasError ? (
-      <Error resetState={() => this.setState({ hasError: false })} />
-    ) : (
+    return (
       <>
-        <Suspense fallback={<Loading />}>
-          <DropZone dataHandler={this.#saveState} />
-          {appReadyForEditor ? (
-            <Editor title={APP_TITLE} onChange={this.#saveState}>
-              <main data-export data-type="main">
-                <Suspense fallback={<Loading />}>{main}</Suspense>
-                <AddNewComponent
-                  components={[
-                    "Footer",
-                    "FeatureStories",
-                    "Hero",
-                    "HotTopics",
-                    "NewsletterSection",
-                    "Separator",
-                  ]}
-                />
-              </main>
-              <aside data-export data-type="aside" data-contents>
-                <section className="newsletter aside" data-type="aside">
-                  <Suspense fallback={<Loading />}>{aside}</Suspense>
+        {this.state.hasError ? (
+          <Error resetState={() => this.setState({ hasError: false })} />
+        ) : (
+          <Suspense fallback={<Loading />}>
+            <DropZone dataHandler={this.#saveState} />
+            {appReadyForEditor ? (
+              <Editor title={APP_TITLE} onChange={this.#saveState}>
+                <main data-export data-type="main">
+                  <Suspense fallback={<Loading />}>{main}</Suspense>
                   <AddNewComponent
-                    components={["AsideList", "NewsletterArticle", "Separator"]}
+                    components={[
+                      "Footer",
+                      "FeatureStories",
+                      "Hero",
+                      "HotTopics",
+                      "NewsletterSection",
+                      "Separator",
+                    ]}
                   />
-                </section>
-              </aside>
-              {createPortal(customCSS, document.head)}
-            </Editor>
-          ) : (
-            <SplashScreen
-              title={APP_TITLE}
-              dataHandler={this.#saveState}
-              previousStateDate={statePersistance.lastSavedStateDate}
-            />
-          )}
-        </Suspense>
+                </main>
+                <aside data-export data-type="aside" data-contents>
+                  <section className="newsletter aside" data-type="aside">
+                    <Suspense fallback={<Loading />}>{aside}</Suspense>
+                    <AddNewComponent
+                      components={[
+                        "AsideList",
+                        "NewsletterArticle",
+                        "Separator",
+                      ]}
+                    />
+                  </section>
+                </aside>
+                {createPortal(customCSS, document.head)}
+              </Editor>
+            ) : (
+              <SplashScreen
+                title={APP_TITLE}
+                dataHandler={this.#saveState}
+                previousStateDate={statePersistance.lastSavedStateDate}
+              />
+            )}
+          </Suspense>
+        )}
         <footer>
           <ul>
             <li>
