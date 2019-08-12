@@ -49,6 +49,7 @@ class EditIllustration extends Component {
   }
 
   render() {
+    console.log("render");
     return (
       <fieldset>
         <legend>Illustration</legend>
@@ -245,6 +246,7 @@ export default class EditNewsletterArticle extends Component {
   }
 
   render() {
+    console.log("render");
     return (
       <Modal onClose={this.props.resetState}>
         <form method="dialog" ref={this.form} onSubmit={this.#handleSubmit}>

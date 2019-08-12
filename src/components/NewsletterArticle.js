@@ -14,6 +14,7 @@ const filterLink = href => href;
 
 class VideoPlayer extends Component {
   render() {
+    console.log("render", this.constructor.name);
     return (
       <iframe
         src={this.props.src}
@@ -32,6 +33,7 @@ class VideoPlayer extends Component {
 
 class FixedImage extends Component {
   render() {
+    console.log("render", this.constructor.name);
     return (
       <img
         alt={this.props.alt}
@@ -45,6 +47,7 @@ class FixedImage extends Component {
 
 class Illustration extends Component {
   render() {
+    console.log("render", this.constructor.name);
     return this.props.src ? (
       this.props.isVideo ? (
         <VideoPlayer {...this.props} />
@@ -73,6 +76,7 @@ export default class NewsletterArticle extends Component {
   }
 
   render() {
+    console.log("render", this.constructor.name);
     return (
       <article
         className={this.props.isMain ? "main" : undefined}

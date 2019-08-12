@@ -1,4 +1,5 @@
-import { h, Component } from "preact";
+import { h } from "preact";
+import { PureComponent } from "preact/compat";
 import { FontAwesomeIcon } from "@aduh95/preact-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
@@ -7,8 +8,9 @@ const closeCurrentSession = statePersistance.clearCurrentSession.bind(
   statePersistance
 );
 
-export default class Quit extends Component {
+export default class Quit extends PureComponent {
   render() {
+    console.log("render");
     return (
       <button onClick={closeCurrentSession} title="Close current template">
         <FontAwesomeIcon icon={faTimes} />

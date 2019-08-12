@@ -2,6 +2,7 @@ import { h, Component } from "preact";
 
 export default class Hero extends Component {
   render() {
+    console.log("render");
     return (
       <section className="newsletter-hero" data-type="Hero">
         <h1 data-key="title">{this.props.title || "[[Title]]"}</h1>

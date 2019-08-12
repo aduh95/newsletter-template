@@ -57,6 +57,7 @@ export default class Footer extends Component {
   }
 
   render() {
+    console.log("render");
     return (
       <section
         className="newsletter-footer"

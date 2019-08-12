@@ -1,7 +1,6 @@
 import { h, Component } from "preact";
 import Worker from "./marked.worker.js";
 
-const FROM_MARKDOWN_CLASS_NAME = "from-markdown-content";
 const worker = new Worker();
 
 export default class MarkdownContent extends Component {
@@ -53,6 +52,7 @@ export default class MarkdownContent extends Component {
   }
 
   render() {
+    console.log("render");
     return this.state.loading ? (
       <p data-ignore>Loading...</p>
     ) : (

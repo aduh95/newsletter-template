@@ -4,6 +4,7 @@ import { lazy } from "preact/compat";
 const ASYNC_COMP = new Map();
 
 export default function generateComponents({ data }) {
+  console.log("render");
   return data.map((props, i) => {
     try {
       const { type } = props;

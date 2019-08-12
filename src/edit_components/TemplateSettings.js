@@ -9,6 +9,7 @@ export default class TemplateSettings extends Component {
   };
 
   render() {
+    console.log("render");
     return (
       <Modal onClose={this.props.resetState}>
         <form method="dialog" onSubmit={this.#handleSubmit}>

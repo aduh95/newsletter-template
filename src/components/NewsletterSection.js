@@ -25,6 +25,7 @@ export default class NewsletterSection extends Component {
   }
 
   render() {
+    console.log("render");
     const articles = this.props.content || [];
     const nbOfNonMainArticles = articles.filter(({ isMain }) => !isMain).length;
     const nbOfColumns =

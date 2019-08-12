@@ -10,6 +10,7 @@ export default class MenuBar extends Component {
   componentDidMount() {}
 
   render() {
+    console.log("render");
     return (
       <>
         <Save editor={this.props.editor} />

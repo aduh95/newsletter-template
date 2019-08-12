@@ -1,11 +1,11 @@
-import { h, Component } from "preact";
+import { h } from "preact";
+import { memo } from "preact/compat";
 
-export default class Loading extends Component {
-  render() {
-    return (
-      <div data-ignore className="loading">
-        Loading...
-      </div>
-    );
-  }
-}
+export default memo(function Loading() {
+  console.log("render");
+  return (
+    <div data-ignore className="loading">
+      Loading...
+    </div>
+  );
+});

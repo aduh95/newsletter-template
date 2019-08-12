@@ -14,6 +14,7 @@ export default function Error(props) {
     statePersistance.clearCurrentSession();
     props.resetState();
   };
+  console.log("render");
   return (
     <main data-ignore className="error">
       <h2>Oops!</h2>

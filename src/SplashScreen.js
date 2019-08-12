@@ -24,6 +24,7 @@ export default class SplashScreen extends Component {
   };
 
   render() {
+    console.log("render");
     return (
       <>
         <header>

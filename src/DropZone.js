@@ -53,6 +53,7 @@ export default class DropZone extends Component {
   }
 
   render() {
+    console.log("render");
     return (
       <div
         id={DROP_ZONE_ID}

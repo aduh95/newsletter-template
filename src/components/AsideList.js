@@ -22,6 +22,7 @@ export default class AsideList extends Component {
   }
 
   render() {
+    console.log("render");
     const list = this.props.content || [];
 
     return (

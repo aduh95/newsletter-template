@@ -1,4 +1,5 @@
-import { h, Component, Fragment } from "preact";
+import { h, Fragment } from "preact";
+import { PureComponent } from "preact/compat";
 
 import { FontAwesomeIcon } from "@aduh95/preact-fontawesome";
 import { faDownload, faFileExport } from "@fortawesome/free-solid-svg-icons";
@@ -34,7 +35,7 @@ const cleanHTML = node => {
   return clone;
 };
 
-export default class Save extends Component {
+export default class Save extends PureComponent {
   exportJSONFile = () =>
     this.#exportFile("editorialCalendar.json", "application/json", [
       JSON.stringify(this.props.editor.data),
@@ -66,6 +67,7 @@ export default class Save extends Component {
   }
 
   render() {
+    console.log("render");
     return (
       <>
         <button onClick={this.exportJSONFile} title="Export as JSON">

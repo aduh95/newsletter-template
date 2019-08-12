@@ -52,6 +52,7 @@ export default class EditNewsletterSection extends Component {
   }
 
   render() {
+    console.log("render");
     return (
       <Modal onClose={Function.prototype}>
         <form method="dialog" onSubmit={this.#handleSubmit}>

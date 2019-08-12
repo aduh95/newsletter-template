@@ -24,6 +24,7 @@ export default class Modal extends Component {
   }
 
   render() {
+    console.log("render");
     return createPortal(
       <dialog
         data-do-not-export

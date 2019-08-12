@@ -184,6 +184,7 @@ export default class Editor extends Component {
   }
 
   render() {
+    console.log("render");
     return (
       <>
         <header>

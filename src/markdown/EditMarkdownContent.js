@@ -233,6 +233,7 @@ export default class EditMarkdownContent extends Component {
   }
 
   render() {
+    console.log("render");
     return this.state.active ? (
       <fieldset className="markdown-editor">
         <legend>Markdown editor</legend>

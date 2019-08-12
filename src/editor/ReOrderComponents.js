@@ -84,6 +84,7 @@ export default class ReOrderComponents extends Component {
   }
 
   render() {
+    console.log("render");
     return <div data-ignore data-do-not-export id={DROP_ZONE_ID} />;
   }
 }

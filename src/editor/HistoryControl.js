@@ -28,6 +28,7 @@ export default class HistoryControl extends Component {
   }
 
   render() {
+    console.log("render");
     return (
       <>
         <button

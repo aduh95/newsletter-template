@@ -13,6 +13,7 @@ export default class OrderedList extends Component {
   }
 
   render() {
+    console.log("render");
     const list = this.props.content || [];
 
     return (

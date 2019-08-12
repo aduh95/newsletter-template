@@ -1,8 +1,9 @@
-import { h, Component } from "preact";
+import { h } from "preact";
+import { PureComponent } from "preact/compat";
 import { FontAwesomeIcon } from "@aduh95/preact-fontawesome";
 import { faSort } from "@fortawesome/free-solid-svg-icons";
 
-export default class ReOrder extends Component {
+export default class ReOrder extends PureComponent {
   #toggleReOrder = () =>
     this.props.editor.setState(state => {
       if (state.reOrder) {
@@ -14,6 +15,7 @@ export default class ReOrder extends Component {
     });
 
   render() {
+    console.log("render");
     return (
       <button
         onClick={this.#toggleReOrder}

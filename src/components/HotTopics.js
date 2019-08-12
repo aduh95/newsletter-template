@@ -19,6 +19,7 @@ export default class HotTopics extends Component {
   }
 
   render() {
+    console.log("render");
     const articles = this.props.content || [];
 
     return (

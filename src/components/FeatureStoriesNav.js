@@ -7,6 +7,7 @@ export default function FeatureStoriesNav({
   editSection,
   sections,
 }) {
+  console.log("render");
   return (
     <nav class="newsletter" data-ignore>
       {sections.map(section => (

@@ -1,6 +1,7 @@
-import { h, Component, Fragment } from "preact";
+import { h, Fragment } from "preact";
+import { PureComponent } from "preact/compat";
 
-export default class AddNewComponent extends Component {
+export default class AddNewComponent extends PureComponent {
   state = { newComponent: null };
   #handleChange = this.handleChange.bind(this);
 
@@ -35,6 +36,7 @@ export default class AddNewComponent extends Component {
   }
 
   render() {
+    console.log("render");
     return (
       <>
         <select

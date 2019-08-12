@@ -1,9 +1,10 @@
-import { h, Component } from "preact";
+import { h } from "preact";
+import { PureComponent } from "preact/compat";
 import { FontAwesomeIcon } from "@aduh95/preact-fontawesome";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
 import EditTemplateSettings from "../edit_components/lazy-edit-component";
 
-export default class TemplateSettingsAction extends Component {
+export default class TemplateSettingsAction extends PureComponent {
   state = { editTemplate: null };
 
   #editTemplate = () => this.setState({ editTemplate: true });
@@ -12,6 +13,7 @@ export default class TemplateSettingsAction extends Component {
   };
 
   render() {
+    console.log("render");
     return (
       <button onClick={this.#editTemplate} title="Edit template settings">
         <FontAwesomeIcon icon={faCog} />

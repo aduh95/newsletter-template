@@ -68,6 +68,7 @@ export default class FeatureStories extends Component {
   }
 
   render() {
+    console.log("render");
     const sections = this.props.content || [];
 
     return (
