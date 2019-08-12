@@ -1,11 +1,15 @@
 const DRAG_CLASS_NAME = "drop-candidate-for-reordering";
 const TO_BE_DELETED_CLASS_NAME = "to-be-deleted";
 
-const globalDragOverListeners = [];
+const globalDragOverListeners = new Set();
 
 export const setGlobalDragOverListener = listener => {
   document.body.addEventListener("dragover", listener);
-  globalDragOverListeners.push(listener);
+  globalDragOverListeners.add(listener);
+};
+export const removeGlobalDragOverListener = listener => {
+  document.body.removeEventListener("dragover", listener);
+  globalDragOverListeners.delete(listener);
 };
 
 /**
