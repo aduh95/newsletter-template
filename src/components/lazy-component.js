@@ -22,7 +22,11 @@ export default function generateComponents({ data }) {
       const Component = ASYNC_COMP.get(type);
       return props ? <Component key={i} {...props} /> : null;
     } catch {
-      return <div data-ignore>Invalid component</div>;
+      return (
+        <div data-ignore data-do-not-export>
+          Invalid component
+        </div>
+      );
     }
   });
 }
