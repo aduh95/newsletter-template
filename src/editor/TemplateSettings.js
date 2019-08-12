@@ -1,18 +1,26 @@
 import { h, Component } from "preact";
 import { FontAwesomeIcon } from "@aduh95/preact-fontawesome";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
+import EditTemplateSettings from "../edit_components/lazy-edit-component";
 
-const openSettings = () =>
-  import("../notify.js")
-    .then(module => module.default)
-    .then(notify => notify("Not implmented yet"));
+export default class TemplateSettingsAction extends Component {
+  state = { editTemplate: null };
 
-export default class Quit extends Component {
+  #editTemplate = () => this.setState({ editTemplate: true });
+  #editTemplateProps = {
+    resetState: () => this.setState({ editTemplate: false }),
+  };
+
   render() {
     return (
-      <button onClick={openSettings} title="Edit template settings">
+      <button onClick={this.#editTemplate} title="Edit template settings">
         <FontAwesomeIcon icon={faCog} />
         &nbsp;Settings
+        <EditTemplateSettings
+          componentName="TemplateSettings"
+          active={this.state.editTemplate}
+          props={this.#editTemplateProps}
+        />
       </button>
     );
   }
