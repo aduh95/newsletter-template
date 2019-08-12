@@ -63,12 +63,8 @@ export default class App extends Component {
 
   update(data) {
     try {
-      const main = Array.isArray(data.main) ? (
-        <GenerateComponents data={data.main} />
-      ) : null;
-      const aside = Array.isArray(data.aside) ? (
-        <GenerateComponents data={data.aside} />
-      ) : null;
+      const main = Array.isArray(data.main) ? data.main : null;
+      const aside = Array.isArray(data.aside) ? data.aside : null;
       const customCSS = data.css ? (
         <style data-export data-type="css">
           {data.css}
@@ -121,7 +117,9 @@ export default class App extends Component {
             {appReadyForEditor ? (
               <Editor title={APP_TITLE} onChange={this.#saveState}>
                 <main data-export data-type="main">
-                  <Suspense fallback={<Loading />}>{main}</Suspense>
+                  <Suspense fallback={<Loading />}>
+                    <GenerateComponents data={main} />
+                  </Suspense>
                   <AddNewComponent
                     components={[
                       "Footer",
@@ -135,7 +133,9 @@ export default class App extends Component {
                 </main>
                 <aside data-export data-type="aside" data-contents>
                   <section className="newsletter aside" data-type="aside">
-                    <Suspense fallback={<Loading />}>{aside}</Suspense>
+                    <Suspense fallback={<Loading />}>
+                      <GenerateComponents data={aside} />
+                    </Suspense>
                     <AddNewComponent
                       components={[
                         "AsideList",
