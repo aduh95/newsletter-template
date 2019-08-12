@@ -17,9 +17,7 @@ const DropZone = lazy(() => import("./DropZone.js"));
 const Editor = lazy(() => import("./editor/Editor.js"));
 const AddNewComponent = lazy(() => import("./edit_components/AddComponent.js"));
 const SplashScreen = lazy(() => import("./SplashScreen.js"));
-const GenerateComponents = lazy(() =>
-  import("./components/generateComponents.js")
-);
+const GenerateComponents = lazy(() => import("./components/lazy-component.js"));
 
 export default class App extends Component {
   state = { previewing: true, hasError: false };
@@ -34,7 +32,8 @@ export default class App extends Component {
     return { hasError: true };
   }
 
-  componentWillMount() {
+  componentDidMount() {
+    console.log("mount");
     statePersistance.subscribe(this.update.bind(this));
     const { currentState } = statePersistance;
     if (currentState) {

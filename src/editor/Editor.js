@@ -157,6 +157,7 @@ export default class Editor extends Component {
   }
 
   componentDidMount() {
+    console.log("mount");
     this.#DOMData.set(this, {});
     requestIdleCallback(this.checkForDOMChanges.bind(this));
   }
@@ -175,6 +176,7 @@ export default class Editor extends Component {
   }
 
   componentWillUnmount() {
+    console.log("unmount");
     this.#observer.disconnect();
   }
 
