@@ -31,6 +31,10 @@ const cleanHTML = node => {
   for (const child of node.childNodes) {
     clone.appendChild(cleanHTML(child));
   }
+  if (node instanceof HTMLImageElement) {
+    clone.addAttribute("height", node.naturalHeight);
+    clone.addAttribute("width", node.naturalWidth);
+  }
 
   return clone;
 };
