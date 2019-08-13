@@ -204,7 +204,7 @@ export default class EditNewsletterArticle extends Component {
         .filter(({ label, href }) => label || href)
         .map(({ label, href }) => ({
           label: label || "[Link]",
-          href: normalizeURLL(href) || "about:blank",
+          href: normalizeURL(href) || "about:blank",
         }));
     }
 
