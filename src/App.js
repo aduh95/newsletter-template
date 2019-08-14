@@ -6,7 +6,7 @@ import {
 import { h, Component, Fragment } from "preact";
 import { Suspense, lazy, createPortal } from "preact/compat";
 
-import statePersistance from "./StatePersistance.js";
+import statePersistance from "./app_global_state/templateComponents.js";
 
 import Error from "./AppError.js";
 import Loading from "./Loading.js";
@@ -65,12 +65,8 @@ export default class App extends Component {
     try {
       const main = Array.isArray(data.main) ? data.main : null;
       const aside = Array.isArray(data.aside) ? data.aside : null;
-      const customCSS = data.css ? (
-        <style data-export data-type="css">
-          {data.css}
-        </style>
-      ) : null;
-      this.setState({ aside, main, customCSS });
+
+      this.setState({ aside, main });
     } catch (e) {
       console.warn(e, data);
       this.setState({ hasError: true });
@@ -86,7 +82,7 @@ export default class App extends Component {
     // into one history entry
     this.#idleCallback = requestIdleCallback(() => {
       this.#idleCallback = null;
-      statePersistance.currentState = state;
+      statePersistance.set(state);
       this.#shouldUpdateDOM = shouldUpdateDOM;
     });
   }
@@ -104,7 +100,7 @@ export default class App extends Component {
       updateOfflineApp();
     }
 
-    const { main, aside, customCSS } = this.state;
+    const { main, aside } = this.state;
     const appReadyForEditor = main && aside;
 
     return (
@@ -145,7 +141,6 @@ export default class App extends Component {
                     />
                   </section>
                 </aside>
-                {createPortal(customCSS, document.head)}
               </Editor>
             ) : (
               <SplashScreen
