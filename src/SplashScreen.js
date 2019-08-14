@@ -1,5 +1,6 @@
 import { h, Component, Fragment } from "preact";
-import statePersistance from "./StatePersistance.js";
+
+import * as lastSaveState from "./app_global_state/lastSaveState.js";
 
 import "./SplashScreen.scss";
 
@@ -25,6 +26,7 @@ export default class SplashScreen extends Component {
 
   render() {
     console.log("render");
+    const previousStateDate = lastSaveState.lastSaveDate();
     return (
       <>
         <header>
@@ -48,7 +50,7 @@ export default class SplashScreen extends Component {
                 />
               </label>
             </p>
-            {this.props.previousStateDate ? (
+            {previousStateDate ? (
               <>
                 <p>
                   <small>or</small>
@@ -56,7 +58,7 @@ export default class SplashScreen extends Component {
                   <label>
                     <large>
                       <button
-                        onClick={() => statePersistance.recoverSaveState()}
+                        onClick={lastSaveState.recover}
                         type="button"
                         autofocus
                       >
@@ -65,9 +67,7 @@ export default class SplashScreen extends Component {
                     </large>
                   </label>
                   <br></br>
-                  <small>
-                    Saved on {this.props.previousStateDate.toLocaleString()}
-                  </small>
+                  <small>Saved on {previousStateDate.toLocaleString()}</small>
                 </p>
                 <details>
                   <summary>Delete recovered version</summary>
@@ -76,10 +76,7 @@ export default class SplashScreen extends Component {
                     <br />
                     Make sure you have backup all the useful data.
                   </p>
-                  <button
-                    onClick={() => statePersistance.clearRecoverState()}
-                    type="button"
-                  >
+                  <button onClick={lastSaveState.clear} type="button">
                     Delete saved version
                   </button>
                 </details>
