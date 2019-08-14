@@ -2,7 +2,7 @@ import { h, Component, Fragment } from "preact";
 import { FontAwesomeIcon } from "@aduh95/preact-fontawesome";
 import { faUndo, faRedo } from "@fortawesome/free-solid-svg-icons";
 
-import statePersistance from "../StatePersistance.js";
+import statePersistance from "../app_global_state/History.js";
 
 const undo = statePersistance.rewindToPreviousState.bind(statePersistance);
 const redo = statePersistance.forwardToNextState.bind(statePersistance);
@@ -17,8 +17,7 @@ export default class HistoryControl extends Component {
     statePersistance.unsubscribe(this.update.bind(this));
   }
 
-  update() {
-    const { hasPreviousState, hasNextState } = statePersistance;
+  update({ hasPreviousState, hasNextState }) {
     if (
       hasPreviousState !== this.state.hasPreviousState ||
       hasNextState !== this.state.hasNextState
