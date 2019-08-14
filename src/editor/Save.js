@@ -4,8 +4,6 @@ import { PureComponent } from "preact/compat";
 import { FontAwesomeIcon } from "@aduh95/preact-fontawesome";
 import { faDownload, faFileExport } from "@fortawesome/free-solid-svg-icons";
 
-import { getHostNameRegExp } from "../currentStateHostName";
-
 /**
  *
  * @param {HTMLElement} node
@@ -39,18 +37,36 @@ const cleanHTML = node => {
   return clone;
 };
 
+const getTemplateName = () =>
+  import("../app_global_state/templateName.js")
+    .then(module => module.default)
+    .then(templateName => templateName.get());
+
+const getCurrentState = () =>
+  import("../app_global_state/History.js")
+    .then(module => module.default)
+    .then(history => history.getCurrentStateAsArrayBuffer());
+
+const getHostNameRegExp = flags =>
+  import("../app_global_state/templateHostName.js")
+    .then(module => module.default)
+    .then(templateHostName => templateHostName.getHostNameRegExp(flags));
+
 export default class Save extends PureComponent {
   exportJSONFile = () =>
-    this.#exportFile("editorialCalendar.json", "application/json", [
-      JSON.stringify(this.props.editor.data),
-    ]);
+    Promise.all([getTemplateName(), getCurrentState()]).then(
+      ([name, fileContent]) =>
+        this.#exportFile(name + ".json", "application/json", fileContent)
+    );
 
   exportHTMLFile = () =>
-    this.#exportFile("editorialCalendar.html", "text/html", this.#getHTML());
+    Promise.all([getTemplateName(), getHostNameRegExp("g")]).then(
+      ([name, hostname]) =>
+        this.#exportFile(name + ".html", "text/html", this.#getHTML(hostname))
+    );
 
-  #getHTML() {
+  #getHTML(hostname) {
     const exportedElements = document.querySelectorAll("[data-export]");
-    const hostname = getHostNameRegExp("g");
 
     return Array.from(exportedElements, cleanHTML).map(el =>
       el.outerHTML.replace(hostname, "/")

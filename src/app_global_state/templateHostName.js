@@ -11,4 +11,8 @@ export default new (class TemplateHostName extends Observable {
   get() {
     return this.#currentName;
   }
+
+  getHostNameRegExp(flags) {
+    return new RegExp(`(https?:)?//${this.#currentName}/?`, flags);
+  }
 })();
