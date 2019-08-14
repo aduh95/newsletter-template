@@ -12,7 +12,7 @@ const historyKeys = {
   [SAVE_COMPONENTS]: "components",
 };
 
-import * as history from "./StatePersistance-history.js";
+import { history } from "./StatePersistance-history.js";
 
 export const handleCommand = ([command, data]) => {
   const newHistoryEntry = { [historyKeys[command]]: data };
