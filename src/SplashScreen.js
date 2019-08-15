@@ -24,6 +24,11 @@ export default class SplashScreen extends Component {
     }
   };
 
+  #clearSavedTemplate = () => {
+    lastSaveState.clear();
+    this.forceUpdate();
+  };
+
   render() {
     console.log("render");
     const previousStateDate = lastSaveState.lastSaveDate();
@@ -76,7 +81,7 @@ export default class SplashScreen extends Component {
                     <br />
                     Make sure you have backup all the useful data.
                   </p>
-                  <button onClick={lastSaveState.clear} type="button">
+                  <button onClick={this.#clearSavedTemplate} type="button">
                     Delete saved version
                   </button>
                 </details>
