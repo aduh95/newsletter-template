@@ -3,7 +3,7 @@ import Observable from "./Observer.js";
 import templateName from "./templateName.js";
 import templateHostName from "./templateHostName.js";
 import templateComponents from "./templateComponents.js";
-import templateCustomCSS from "./TemplateCustomCSS.js";
+import templateCustomCSS from "./templateCustomCSS.js";
 
 export default new (class InitiateState extends Observable {
   initiateWith({ name, hostname, css, components }) {

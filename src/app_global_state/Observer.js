@@ -20,6 +20,6 @@ export default class Observable {
    * @protected
    */
   notify(func) {
-    this.#observer.forEach(func);
+    this.#observers.forEach(func);
   }
 }

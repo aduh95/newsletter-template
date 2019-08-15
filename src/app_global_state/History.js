@@ -4,7 +4,7 @@ import initiateState from "./initiateState.js";
 import templateName from "./templateName.js";
 import templateHostName from "./templateHostName.js";
 import templateComponents from "./templateComponents.js";
-import templateCustomCSS from "./TemplateCustomCSS.js";
+import templateCustomCSS from "./templateCustomCSS.js";
 
 import {
   HISTORY_FORWARD,
@@ -13,7 +13,7 @@ import {
   SAVE_HOSTNAME,
   SAVE_CSS,
   SAVE_COMPONENTS,
-  INITIATE_FROM_DATASET,
+  PERSISTANCE_INITIATE_FROM_DATASET,
 } from "./commands.js";
 
 import Worker from "./StatePersistance.worker.js";
@@ -49,7 +49,10 @@ export default new (class History extends Observable {
     currentWorkerJob = waitForFulfillment;
     return job.then(({ data }) => this.#set(data));
   }
-  #initiateState = this.#sendCommand.bind(this, INITIATE_FROM_DATASET);
+  #initiateState = this.#sendCommand.bind(
+    this,
+    PERSISTANCE_INITIATE_FROM_DATASET
+  );
 
   #set({ name, hostname, css, components, hasPrevious, hasNext }) {
     if (name) {
