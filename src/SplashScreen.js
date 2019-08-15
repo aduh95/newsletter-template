@@ -13,7 +13,7 @@ export default class SplashScreen extends Component {
     if (target.files.length) {
       const [file] = target.files;
       file
-        .text()
+        .arrayBuffer()
         .then(JSON.parse)
         .then(this.props.dataHandler)
         .catch(e => {
