@@ -1,4 +1,4 @@
-import Observable from "./Observer.js";
+import Observable from "./Observable.js";
 
 const DEFAULT_TITLE = "No template selected";
 
@@ -21,7 +21,7 @@ export default new (class TemplateName extends Observable {
 
   set(name) {
     this.#currentName = name;
-    this.notify(() => this.#currentName);
+    this.notify(this.#currentName);
   }
 
   get() {

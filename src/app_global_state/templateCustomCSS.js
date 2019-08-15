@@ -1,4 +1,4 @@
-import Observable from "./Observer.js";
+import Observable from "./Observable.js";
 
 export default new (class TemplateCustomCSS extends Observable {
   #currentCSS;
@@ -19,7 +19,7 @@ export default new (class TemplateCustomCSS extends Observable {
 
   set(css) {
     this.#currentCSS = css;
-    this.notify(() => css);
+    this.notify(css);
   }
 
   get() {

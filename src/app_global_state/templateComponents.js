@@ -1,11 +1,11 @@
-import Observable from "./Observer.js";
+import Observable from "./Observable.js";
 
 export default new (class TemplateComponents extends Observable {
   #components = {};
 
   set(newData) {
     this.#components = newData;
-    this.notify(() => newData);
+    this.notify(newData);
   }
 
   get() {

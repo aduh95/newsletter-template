@@ -1,4 +1,4 @@
-import Observable from "./Observer.js";
+import Observable from "./Observable.js";
 
 import initiateState from "./initiateState.js";
 import templateName from "./templateName.js";
@@ -72,7 +72,7 @@ export default new (class History extends Observable {
       templateComponents.set(components);
     }
     Object.assign(this.#state, { isOutdated: false, hasPrevious, hasNext });
-    this.notify(() => this.#state);
+    this.notify(this.#state);
   }
 
   #subscribeToObservables() {
@@ -94,6 +94,7 @@ export default new (class History extends Observable {
   }
 
   constructor() {
+    super();
     this.#subscribeToObservables();
     this.#initiateState({
       name: templateName.get(),

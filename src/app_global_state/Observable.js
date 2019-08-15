@@ -12,14 +12,14 @@ export default class Observable {
    * @param {(notification:any)=>void} callback
    */
   unsubscribe(callback) {
-    this.#observers.remove(callback);
+    this.#observers.delete(callback);
   }
 
   /**
-   * @param {()=>any} func Function that returns an object to share with all observers
    * @protected
+   * @param {any} func Object to be shared with all observers
    */
-  notify(func) {
-    this.#observers.forEach(func);
+  notify(value) {
+    this.#observers.forEach(func => func(value));
   }
 }
