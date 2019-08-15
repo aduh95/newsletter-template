@@ -1,1 +1,1 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[22],{29:function(n,s,e){"use strict";e.r(s),e.d(s,"default",function(){return t});var o=e(0);class t extends o.a{onChange(){this.props.onChange(this)}}}}]);
+(window.webpackJsonp=window.webpackJsonp||[]).push([[22],{55:function(e,n){Object.defineProperty(Blob.prototype,"text",{configurable:!0,enumerable:!0,writable:!0,value:function(){return new Response(this).text()}})}}]);

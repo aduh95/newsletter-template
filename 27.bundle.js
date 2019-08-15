@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[27],{31:function(n,a){window.requestIdleCallback=requestAnimationFrame,window.cancelIdleCallback=cancelAnimationFrame}}]);

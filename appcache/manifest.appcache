@@ -1,15 +1,16 @@
 CACHE MANIFEST
-#ver:2019-8-11 16:43:10
+#ver:2019-8-14 21:49:11
 #plugin:5.0.7
 
 CACHE:
-../adfb402c072b1a1540cb.worker.js
-../25e8b5bb6f306b1d55e5.worker.js
+../f41fa8374fceb1b006fc.worker.js
+../e1d7e27ad4a268823c9a.worker.js
+../cb4cdbc0bec39800bfd9.worker.js
+../0.css
 ../0.bundle.js
-../1.css
-../1.bundle.js
 ../main.css
 ../bundle.js
+../2.bundle.js
 ../3.bundle.js
 ../4.bundle.js
 ../5.bundle.js
@@ -18,17 +19,14 @@ CACHE:
 ../8.bundle.js
 ../9.bundle.js
 ../10.bundle.js
-../11.css
 ../11.bundle.js
-../12.css
 ../12.bundle.js
+../13.css
 ../13.bundle.js
-../14.css
 ../14.bundle.js
 ../15.bundle.js
 ../16.bundle.js
 ../17.bundle.js
-../18.css
 ../18.bundle.js
 ../19.bundle.js
 ../20.bundle.js
@@ -37,9 +35,6 @@ CACHE:
 ../23.bundle.js
 ../24.bundle.js
 ../25.bundle.js
-../26.bundle.js
-../27.bundle.js
-../28.bundle.js
 ../
 
 NETWORK:
