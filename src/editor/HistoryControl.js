@@ -8,13 +8,15 @@ const undo = statePersistance.rewindToPreviousState.bind(statePersistance);
 const redo = statePersistance.forwardToNextState.bind(statePersistance);
 
 export default class HistoryControl extends Component {
+  #update = this.update.bind(this);
+
   componentWillMount() {
-    statePersistance.subscribe(this.update.bind(this));
-    this.update();
+    statePersistance.subscribe(this.#update);
+    this.update(statePersistance.get());
   }
 
   componentWillUnmount() {
-    statePersistance.unsubscribe(this.update.bind(this));
+    statePersistance.unsubscribe(this.#update);
   }
 
   update({ hasPreviousState, hasNextState }) {

@@ -26,8 +26,8 @@ let currentWorkerJob = Promise.resolve();
 export default new (class History extends Observable {
   #state = {
     isOutdated: true,
-    hasPrevious: false,
-    hasNext: false,
+    hasPreviousState: false,
+    hasNextState: false,
   };
 
   #sendCommand(command, message = null) {
@@ -71,7 +71,11 @@ export default new (class History extends Observable {
     if (components) {
       templateComponents.set(components);
     }
-    Object.assign(this.#state, { isOutdated: false, hasPrevious, hasNext });
+    Object.assign(this.#state, {
+      isOutdated: false,
+      hasPreviousState: hasPrevious,
+      hasNextState: hasNext,
+    });
     this.notify(this.#state);
   }
 
