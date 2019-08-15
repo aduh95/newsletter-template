@@ -1,5 +1,6 @@
 import Observable from "./Observer.js";
 
+import initiateState from "./initiateState.js";
 import templateName from "./templateName.js";
 import templateHostName from "./templateHostName.js";
 import templateComponents from "./templateComponents.js";
@@ -12,6 +13,7 @@ import {
   SAVE_HOSTNAME,
   SAVE_CSS,
   SAVE_COMPONENTS,
+  INITIATE_FROM_DATASET,
 } from "./commands.js";
 
 import Worker from "./StatePersistance.worker.js";
@@ -47,6 +49,7 @@ export default new (class History extends Observable {
     currentWorkerJob = waitForFulfillment;
     return job.then(({ data }) => this.#set(data));
   }
+  #initiateState = this.#sendCommand.bind(this, INITIATE_FROM_DATASET);
 
   #set({ name, hostname, css, components, hasPrevious, hasNext }) {
     if (name) {
@@ -66,10 +69,18 @@ export default new (class History extends Observable {
   }
 
   constructor() {
-    templateName.subscribe(sendCommand.bind(this, SAVE_NAME));
-    templateHostName.subscribe(sendCommand.bind(this, SAVE_HOSTNAME));
-    templateCustomCSS.subscribe(sendCommand.bind(this, SAVE_CSS));
-    templateComponents.subscribe(sendCommand.bind(this, SAVE_COMPONENTS));
+    initiateState.subscribe(this.#initiateState);
+    templateName.subscribe(this.#sendCommand.bind(this, SAVE_NAME));
+    templateHostName.subscribe(this.#sendCommand.bind(this, SAVE_HOSTNAME));
+    templateCustomCSS.subscribe(this.#sendCommand.bind(this, SAVE_CSS));
+    templateComponents.subscribe(this.#sendCommand.bind(this, SAVE_COMPONENTS));
+
+    this.#initiateState({
+      name: templateName.get(),
+      hostname: templateHostName.get(),
+      css: templateCustomCSS.get(),
+      components: templateComponents.get(),
+    });
   }
 
   get() {
@@ -77,10 +88,14 @@ export default new (class History extends Observable {
   }
 
   rewindToPreviousState() {
-    return sendCommand(HISTORY_REWIND);
+    return this.#sendCommand(HISTORY_REWIND);
   }
 
   forwardToNextState() {
-    return sendCommand(HISTORY_FORWARD);
+    return this.#sendCommand(HISTORY_FORWARD);
+  }
+
+  recoverSavedState() {
+    return this.#sendCommand(INITIATE_RESTORE_SAVED_STATE);
   }
 })();

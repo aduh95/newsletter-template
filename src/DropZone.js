@@ -4,10 +4,7 @@ import {
   removeGlobalDragOverListener,
 } from "./createDragHandler.js";
 
-import templateName from "./templateName.js";
-import templateHostName from "./templateHostName.js";
-import templateComponents from "./templateComponents.js";
-import templateCustomCSS from "./TemplateCustomCSS.js";
+import initiateState from "./app_global_state/initiateState.js";
 
 import "./DropZone.scss";
 
@@ -37,15 +34,13 @@ const drop = function(e) {
        * @type {File} file
        */
       const file = item.kind === "file" ? item.getAsFile() : item;
+      const { name } = file;
       file
         .text()
         .then(JSON.parse)
-        .then(({ hostname, css, components }) => {
-          templateName.set(file.name);
-          templateHostName.set(hostname);
-          templateCustomCSS.set(css);
-          templateComponents.set(components);
-        })
+        .then(({ hostname, css, components }) =>
+          initiateState.initiateWith({ name, hostname, css, components })
+        )
         .catch(e =>
           import("./notify.js")
             .then(module => module.default)
