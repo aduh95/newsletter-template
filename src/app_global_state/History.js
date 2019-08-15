@@ -14,6 +14,7 @@ import {
   SAVE_CSS,
   SAVE_COMPONENTS,
   PERSISTANCE_INITIATE_FROM_DATASET,
+  PERSISTANCE_INITIATE_FROM_SCRATCH,
 } from "./commands.js";
 
 import Worker from "./StatePersistance.worker.js";
@@ -49,10 +50,13 @@ export default new (class History extends Observable {
     currentWorkerJob = waitForFulfillment;
     return job.then(({ data }) => this.#set(data));
   }
-  #initiateState = this.#sendCommand.bind(
-    this,
-    PERSISTANCE_INITIATE_FROM_DATASET
-  );
+  #initiateState = dataset => {
+    this.#unsubscribeToObservables();
+    return this.#sendCommand(
+      PERSISTANCE_INITIATE_FROM_DATASET,
+      dataset
+    ).finally(this.#subscribeToObservables.bind(this));
+  };
 
   #set({ name, hostname, css, components, hasPrevious, hasNext }) {
     if (name) {
@@ -71,13 +75,26 @@ export default new (class History extends Observable {
     this.notify(() => this.#state);
   }
 
-  constructor() {
+  #subscribeToObservables() {
     initiateState.subscribe(this.#initiateState);
     templateName.subscribe(this.#sendCommand.bind(this, SAVE_NAME));
     templateHostName.subscribe(this.#sendCommand.bind(this, SAVE_HOSTNAME));
     templateCustomCSS.subscribe(this.#sendCommand.bind(this, SAVE_CSS));
     templateComponents.subscribe(this.#sendCommand.bind(this, SAVE_COMPONENTS));
+  }
 
+  #unsubscribeToObservables() {
+    initiateState.unsubscribe(this.#initiateState);
+    templateName.unsubscribe(this.#sendCommand.bind(this, SAVE_NAME));
+    templateHostName.unsubscribe(this.#sendCommand.bind(this, SAVE_HOSTNAME));
+    templateCustomCSS.unsubscribe(this.#sendCommand.bind(this, SAVE_CSS));
+    templateComponents.unsubscribe(
+      this.#sendCommand.bind(this, SAVE_COMPONENTS)
+    );
+  }
+
+  constructor() {
+    this.#subscribeToObservables();
     this.#initiateState({
       name: templateName.get(),
       hostname: templateHostName.get(),
@@ -96,6 +113,13 @@ export default new (class History extends Observable {
 
   forwardToNextState() {
     return this.#sendCommand(HISTORY_FORWARD);
+  }
+
+  clearCurrentSession() {
+    this.#unsubscribeToObservables();
+    return this.#sendCommand(PERSISTANCE_INITIATE_FROM_SCRATCH)
+      .then(() => initiateState.initiateWith({}))
+      .finally(this.#subscribeToObservables.bind(this));
   }
 
   recoverSavedState() {
