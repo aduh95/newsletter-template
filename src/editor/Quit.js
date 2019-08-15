@@ -3,7 +3,7 @@ import { PureComponent } from "preact/compat";
 import { FontAwesomeIcon } from "@aduh95/preact-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
-import statePersistance from "../StatePersistance.js";
+import statePersistance from "../app_global_state/History.js";
 const closeCurrentSession = statePersistance.clearCurrentSession.bind(
   statePersistance
 );
