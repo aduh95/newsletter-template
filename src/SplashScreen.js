@@ -12,10 +12,8 @@ export default class SplashScreen extends Component {
 
     if (target.files.length) {
       const [file] = target.files;
-      file
-        .arrayBuffer()
-        .then(JSON.parse)
-        .then(this.props.dataHandler)
+      import("./app_global_state/initiateState.js")
+        .then(module => module.default.initiateWithFile(file))
         .catch(e => {
           console.error(e);
           target.setCustomValidity("Invalid file");

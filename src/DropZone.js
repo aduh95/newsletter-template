@@ -4,8 +4,6 @@ import {
   removeGlobalDragOverListener,
 } from "./createDragHandler.js";
 
-import initiateState from "./app_global_state/initiateState.js";
-
 import "./DropZone.scss";
 
 const DRAG_CLASS_NAME = "dragover";
@@ -34,13 +32,8 @@ const drop = function(e) {
        * @type {File} file
        */
       const file = item.kind === "file" ? item.getAsFile() : item;
-      const { name } = file;
-      file
-        .text()
-        .then(JSON.parse)
-        .then(({ hostname, css, components }) =>
-          initiateState.initiateWith({ name, hostname, css, components })
-        )
+      import("./app_global_state/initiateState.js")
+        .then(module => module.default.initiateWithFile(file))
         .catch(e =>
           import("./notify.js")
             .then(module => module.default)

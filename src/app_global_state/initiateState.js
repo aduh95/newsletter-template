@@ -15,4 +15,15 @@ export default new (class InitiateState extends Observable {
     templateCustomCSS.set(css);
     templateComponents.set(components);
   }
+
+  /**
+   * @param {File} file
+   */
+  initiateWithFile(file) {
+    const { name } = file;
+
+    return new Response(file)
+      .json()
+      .then(data => this.initiateWith(Object.assign({ name }, data)));
+  }
 })();
