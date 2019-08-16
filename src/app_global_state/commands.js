@@ -1,10 +1,10 @@
 export const NO_OP = 0;
 
-export const COMMAND_OF_TYPE_SAVE = 1 >> 4;
-export const COMMAND_OF_TYPE_RESTORE = 1 >> 5;
-export const COMMAND_OF_TYPE_EXPORT = 1 >> 6;
-export const COMMAND_OF_TYPE_HISTORY = 1 >> 7;
-export const COMMAND_OF_TYPE_PERSISTANCE = 1 >> 8;
+export const COMMAND_OF_TYPE_SAVE = 1 << 4;
+export const COMMAND_OF_TYPE_RESTORE = 1 << 5;
+export const COMMAND_OF_TYPE_EXPORT = 1 << 6;
+export const COMMAND_OF_TYPE_HISTORY = 1 << 7;
+export const COMMAND_OF_TYPE_PERSISTANCE = 1 << 8;
 
 export const SAVE_NAME = COMMAND_OF_TYPE_SAVE | 1;
 export const SAVE_HOSTNAME = COMMAND_OF_TYPE_SAVE | 2;
