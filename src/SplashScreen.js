@@ -137,10 +137,13 @@ export default class SplashScreen extends Component {
             ) : null}
           </form>
           <NewTemplate
-            active={this.state.createNewTemplate}
-            previousStateDate={previousStateDate}
-            recoverSavedState={this.#startTemplate}
             componentName="TemplateSettings"
+            active={this.state.createNewTemplate}
+            props={{
+              previousStateDate: previousStateDate,
+              recoverSavedState: this.#startTemplate,
+              saveChange: this.props.startTemplateFromScratch,
+            }}
           />
         </main>
       </>

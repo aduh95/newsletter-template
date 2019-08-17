@@ -18,6 +18,9 @@ export default class EditTemplateSettings extends Component {
     templateHostName.set(this.state.hostname);
     templateName.set(this.state.name);
     this.componentDidMount();
+    if (this.props.saveChange) {
+      requestAnimationFrame(this.props.saveChange);
+    }
   };
 
   #updateCSS = this.update.bind(this, "css");

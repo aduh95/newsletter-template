@@ -25,6 +25,8 @@ export default class App extends Component {
   #shouldUpdateDOM = true;
   #idleCallback = null;
   #saveState = this.saveState.bind(this);
+  #startTemplateFromScratch = () =>
+    statePersistance.set({ main: [], aside: [] });
 
   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
@@ -62,6 +64,7 @@ export default class App extends Component {
   }
 
   update(data) {
+    data = data || {};
     try {
       const main = Array.isArray(data.main) ? data.main : null;
       const aside = Array.isArray(data.aside) ? data.aside : null;
@@ -145,7 +148,7 @@ export default class App extends Component {
             ) : (
               <SplashScreen
                 title={APP_TITLE}
-                dataHandler={this.#saveState}
+                startTemplateFromScratch={this.#startTemplateFromScratch}
                 previousStateDate={statePersistance.lastSavedStateDate}
               />
             )}
