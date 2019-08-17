@@ -37,6 +37,10 @@ export default new (class History extends Observable {
   };
 
   #sendCommand(command, message = null) {
+    if (command & COMMAND_OF_TYPE_SAVE && message === null) {
+      console.warn("Cannot save a null value");
+      return Promise.resolve();
+    }
     let done;
     const waitForFulfillment = new Promise(resolve => (done = resolve));
     const job = currentWorkerJob
@@ -72,7 +76,6 @@ export default new (class History extends Observable {
   };
 
   #set({ name, hostname, css, components, hasPrevious, hasNext }) {
-    console.log(arguments);
     if (name) {
       templateName.set(name);
     }
