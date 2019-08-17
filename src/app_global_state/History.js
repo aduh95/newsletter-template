@@ -14,6 +14,7 @@ import {
   SAVE_CSS,
   SAVE_COMPONENTS,
   COMMAND_OF_TYPE_SAVE,
+  COMMAND_OF_TYPE_HISTORY,
   PERSISTANCE_INITIATE_FROM_DATASET,
   PERSISTANCE_INITIATE_FROM_SCRATCH,
   PERSISTANCE_GET_LAST_SAVE_DATE,
@@ -51,8 +52,8 @@ export default new (class History extends Observable {
       )
       .finally(done);
     currentWorkerJob = waitForFulfillment;
-    if (command & COMMAND_OF_TYPE_SAVE) {
-      return job.then(({ data }) => this.#set(data));
+    if (command & (COMMAND_OF_TYPE_SAVE | COMMAND_OF_TYPE_HISTORY)) {
+      return job.then(data => this.#set(data));
     } else {
       return job;
     }

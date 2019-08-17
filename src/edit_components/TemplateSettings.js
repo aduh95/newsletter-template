@@ -8,21 +8,24 @@ import templateName from "../app_global_state/templateName.js";
 export default class EditTemplateSettings extends Component {
   state = {
     css: templateCSS.get(),
-    hostname: templateHostName.get(),
+    hostname: templateHostName.getAsURL()?.toString() || "",
     name: templateName.get(),
   };
 
   #handleSubmit = () => {
+    this.componentWillUnmount();
     templateCSS.set(this.state.css);
     templateHostName.set(this.state.hostname);
     templateName.set(this.state.name);
+    this.componentDidMount();
   };
 
   #updateCSS = this.update.bind(this, "css");
   #updateHostName = this.update.bind(this, "hostname");
   #updateName = this.update.bind(this, "name");
 
-  update(key, value) {
+  update(key, ev) {
+    const value = "string" === typeof ev ? ev : ev?.target?.value;
     this.setState({ [key]: value });
   }
 
@@ -57,8 +60,8 @@ export default class EditTemplateSettings extends Component {
               Targeted domain name:&nbsp;
               <input
                 name="hostname"
-                required
-                placeholder="E.G.: www.se.com"
+                type="url"
+                placeholder="E.G.: https://se.com"
                 value={this.state.hostname}
                 onChange={this.#updateHostName}
               />
