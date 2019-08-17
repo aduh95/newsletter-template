@@ -2,6 +2,8 @@ import { h, Component, Fragment } from "preact";
 
 import "./SplashScreen.scss";
 
+const canAccessDatabases = "function" === typeof window.indexedDB?.databases;
+
 export default class SplashScreen extends Component {
   state = { loading: true };
   handleFile = e => {
@@ -26,15 +28,18 @@ export default class SplashScreen extends Component {
     this.forceUpdate();
   };
   #clearSavedTemplate = () => {
-    import("./notify.js").then(m => m.default("Not implemented"));
-    this.forceUpdate();
+    return import("./app_global_state/History.js")
+      .then(module => module.default.clearSavedTemplate())
+      .then(
+        () => this.setState({ previousStateDate: null }),
+        () => import("./notify.js").then(m => m.default("Operation failed"))
+      );
   };
 
   componentDidMount() {
-    const databases =
-      "function" === typeof window.indexedDB?.databases
-        ? indexedDB.databases()
-        : Promise.resolve([null]);
+    const databases = canAccessDatabases
+      ? indexedDB.databases()
+      : Promise.resolve([null]);
 
     databases
       .then(({ length }) =>
@@ -91,13 +96,16 @@ export default class SplashScreen extends Component {
                 </large>
               </label>
               <br></br>
-              {loading ? (
-                <small>
-                  <em>Checking if previous version exists</em>
-                </small>
-              ) : previousStateDate ? (
-                <small>Saved on {previousStateDate.toLocaleString()}</small>
-              ) : null}
+
+              <small>
+                <em>
+                  {loading
+                    ? "Checking if previous version exists..."
+                    : previousStateDate
+                    ? `Saved on ${previousStateDate.toLocaleString()}`
+                    : "No recoverable version found"}
+                </em>
+              </small>
             </p>
             {previousStateDate ? (
               <details>

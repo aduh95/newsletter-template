@@ -17,6 +17,7 @@ import {
   PERSISTANCE_INITIATE_FROM_DATASET,
   PERSISTANCE_INITIATE_FROM_SCRATCH,
   PERSISTANCE_GET_LAST_SAVE_DATE,
+  PERSISTANCE_CLEAR_SAVED_STATE,
 } from "./commands.js";
 
 import Worker from "./StatePersistance.worker.js";
@@ -106,12 +107,6 @@ export default new (class History extends Observable {
   constructor() {
     super();
     this.#subscribeToObservables();
-    this.#initiateState({
-      name: templateName.get(),
-      hostname: templateHostName.get(),
-      css: templateCustomCSS.get(),
-      components: templateComponents.get(),
-    });
   }
 
   get() {
@@ -137,6 +132,10 @@ export default new (class History extends Observable {
     return this.#sendCommand(PERSISTANCE_INITIATE_FROM_SCRATCH)
       .then(() => initiateState.initiateWith({}))
       .finally(this.#subscribeToObservables.bind(this));
+  }
+
+  clearSavedState() {
+    return this.#sendCommand(PERSISTANCE_CLEAR_SAVED_STATE);
   }
 
   recoverSavedState() {
