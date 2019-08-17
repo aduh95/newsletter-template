@@ -12,10 +12,20 @@ export default new (class TemplateName extends Observable {
 
   constructor() {
     super();
-    this.#DOMNodeTitleForTemplateName = document.createTextNode(DEFAULT_TITLE);
+    const savedNameBeforePanic = sessionStorage.getItem(this.constructor.name);
+    if (savedNameBeforePanic) {
+      sessionStorage.removeItem(this.constructor.name);
+      this.#DOMNodeTitleForTemplateName = document.createTextNode(
+        savedNameBeforePanic
+      );
+    } else {
+      this.#DOMNodeTitleForTemplateName = document.createTextNode(
+        DEFAULT_TITLE
+      );
+    }
     document.head
       .querySelector("title")
-      .appendChild(this.#DOMNodeTitleForTemplateName);
+      .append(" - ", this.#DOMNodeTitleForTemplateName);
     this.subscribe(this.#updatePageTile);
   }
 
@@ -26,5 +36,12 @@ export default new (class TemplateName extends Observable {
 
   get() {
     return this.#currentName;
+  }
+
+  /**
+   * @throws When sessionStorage is not available
+   */
+  panic() {
+    sessionStorage.setItem(this.constructor.name, this.#currentName);
   }
 })();
