@@ -116,7 +116,7 @@ export default new (class History extends Observable {
 
   getLastSavedDate() {
     return this.#sendCommand(PERSISTANCE_GET_LAST_SAVE_DATE).then(
-      timestamp => new Date(timestamp)
+      timestamp => timestamp && new Date(timestamp)
     );
   }
 
