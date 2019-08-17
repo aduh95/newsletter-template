@@ -1,3 +1,5 @@
+import localForage from "localforage";
+
 import {
   LAST_SAVE_KEY,
   SAVED_TEMPLATE_NAME,
@@ -13,15 +15,15 @@ import { clear as clearSessionHistory } from "./StatePersistance-history.js";
 
 const cachedState = {};
 
-export function saveState(replacingState) {
+export async function saveState(replacingState) {
   try {
-    localStorage.setItem(
+    await localForage.setItem(
       PERSISTANT_STORAGE_KEY,
       JSON.stringify(Object.assign(cachedState, replacingState))
     );
-    localStorage.setItem(LAST_SAVE_KEY, Date.now());
+    await localForage.setItem(LAST_SAVE_KEY, Date.now());
   } catch {
-    console.log("localStorage is not available");
+    console.log("localForage is not available");
   }
 }
 
@@ -29,13 +31,15 @@ export const handleCommand = ([command, data]) => {
   switch (command) {
     case FROM_DATASET:
       const { css, components, hostname, name } = data;
-      localStorage.setItem(SAVED_TEMPLATE_NAME, name);
-      saveState({ css, components, hostname });
+      localForage
+        .setItem(SAVED_TEMPLATE_NAME, name)
+        .then(() => saveState({ css, components, hostname }))
+        .catch(console.warn);
 
     case FROM_SCRACTH:
       return clearSessionHistory();
 
     case PERSISTANCE_CLEAR_SAVED_STATE:
-      localStorage.clear();
+      localForage.clear().catch(console.warn);
   }
 };
