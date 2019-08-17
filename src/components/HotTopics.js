@@ -11,11 +11,29 @@ export default class HotTopics extends Component {
     resetState: () => this.setState({ openNewArticleDialog: false }),
   };
 
+  #readyToConsumeState = false;
+  #readyToCleanState = false;
+
   addNewArticle(data) {
-    this.setState({
-      newTopic: <output data-request-render data-json={data} />,
-      openNewArticleDialog: false,
-    });
+    this.setState(
+      {
+        newTopic: <output data-request-render data-json={data} />,
+        openNewArticleDialog: false,
+      },
+      () => (this.#readyToConsumeState = true)
+    );
+  }
+
+  componentDidUpdate() {
+    if (this.#readyToCleanState) {
+      this.setState(
+        { newTopic: null },
+        () => (this.#readyToCleanState = false)
+      );
+    } else if (this.#readyToConsumeState) {
+      this.#readyToCleanState = true;
+      this.#readyToConsumeState = false;
+    }
   }
 
   render() {

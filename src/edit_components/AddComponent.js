@@ -3,15 +3,20 @@ import { PureComponent } from "preact/compat";
 
 export default class AddNewComponent extends PureComponent {
   state = { newComponent: null };
+
+  #readyToConsumeState = false;
+  #readyToCleanState = false;
   #handleChange = this.handleChange.bind(this);
 
   addNewComponent(data) {
-    console.log(arguments);
-    this.setState({
-      newComponent: (
-        <output data-request-render data-json={JSON.stringify(data)} />
-      ),
-    });
+    this.setState(
+      {
+        newComponent: (
+          <output data-request-render data-json={JSON.stringify(data)} />
+        ),
+      },
+      () => (this.#readyToConsumeState = true)
+    );
   }
 
   handleChange(event) {
@@ -33,6 +38,18 @@ export default class AddNewComponent extends PureComponent {
         });
       })
       .catch(this.addNewComponent.bind(this, { type: value }));
+  }
+
+  componentDidUpdate() {
+    if (this.#readyToCleanState) {
+      this.setState(
+        { newComponent: null },
+        () => (this.#readyToCleanState = false)
+      );
+    } else if (this.#readyToConsumeState) {
+      this.#readyToCleanState = true;
+      this.#readyToConsumeState = false;
+    }
   }
 
   render() {

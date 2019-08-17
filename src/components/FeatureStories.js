@@ -13,21 +13,27 @@ export default class FeatureStories extends Component {
   #editSection = this.editSection.bind(this);
   #resetState = () => this.setState({ edit: null });
 
+  #readyToConsumeState = false;
+  #readyToCleanState = false;
+
   addSection(e) {
     e.preventDefault();
     this.setState({
       edit: {
         type: SECTION_TYPE,
         saveState: newSectionData => {
-          this.setState({
-            edit: null,
-            newSection: (
-              <output
-                data-request-render
-                data-json={JSON.stringify(newSectionData)}
-              />
-            ),
-          });
+          this.setState(
+            {
+              edit: null,
+              newSection: (
+                <output
+                  data-request-render
+                  data-json={JSON.stringify(newSectionData)}
+                />
+              ),
+            },
+            () => (this.#readyToConsumeState = true)
+          );
         },
       },
     });
@@ -65,6 +71,18 @@ export default class FeatureStories extends Component {
         },
       });
     };
+  }
+
+  componentDidUpdate() {
+    if (this.#readyToCleanState) {
+      this.setState(
+        { newSection: null },
+        () => (this.#readyToCleanState = false)
+      );
+    } else if (this.#readyToConsumeState) {
+      this.#readyToCleanState = true;
+      this.#readyToConsumeState = false;
+    }
   }
 
   render() {

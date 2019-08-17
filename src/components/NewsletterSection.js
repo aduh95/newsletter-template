@@ -11,16 +11,28 @@ export default class NewsletterSection extends Component {
     resetState: () => this.setState({ openNewArticleDialog: false }),
   };
 
+  #readyToConsumeState = false;
+  #readyToCleanState = false;
+
   addNewArticle(data) {
-    this.setState({
-      newArticle: <output data-request-render data-json={data} />,
-      openNewArticleDialog: false,
-    });
+    this.setState(
+      {
+        newArticle: <output data-request-render data-json={data} />,
+        openNewArticleDialog: false,
+      },
+      () => (this.#readyToConsumeState = true)
+    );
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.content?.length !== this.props.content?.length) {
-      this.setState({ tempArticles: [] });
+  componentDidUpdate() {
+    if (this.#readyToCleanState) {
+      this.setState(
+        { newArticle: null },
+        () => (this.#readyToCleanState = false)
+      );
+    } else if (this.#readyToConsumeState) {
+      this.#readyToCleanState = true;
+      this.#readyToConsumeState = false;
     }
   }
 
