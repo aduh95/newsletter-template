@@ -9,6 +9,7 @@ import {
   PERSISTANCE_INITIATE_FROM_DATASET as FROM_DATASET,
   PERSISTANCE_INITIATE_FROM_SCRATCH as FROM_SCRACTH,
   PERSISTANCE_CLEAR_SAVED_STATE,
+  PERSISTANCE_GET_LAST_SAVE_DATE,
 } from "./commands.js";
 
 import { clear as clearSessionHistory } from "./StatePersistance-history.js";
@@ -37,9 +38,12 @@ export const handleCommand = ([command, data]) => {
         .catch(console.warn);
 
     case FROM_SCRACTH:
-      return clearSessionHistory();
+      return Promise.resolve(clearSessionHistory());
 
     case PERSISTANCE_CLEAR_SAVED_STATE:
-      localForage.clear().catch(console.warn);
+      return localForage.clear().catch(console.warn);
+
+    case PERSISTANCE_GET_LAST_SAVE_DATE:
+      return localForage.getItem(LAST_SAVE_KEY).catch(() => null);
   }
 };

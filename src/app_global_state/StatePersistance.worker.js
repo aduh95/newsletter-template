@@ -24,6 +24,6 @@ onmessage = message => {
     const data = exportState.handleCommand(message.data);
     postMessage({ data }, [data]);
   } else if (command & COMMAND_OF_TYPE_PERSISTANCE) {
-    persistance.handleCommand(message.data);
+    persistance.handleCommand(message.data).then(postMessage);
   }
 };

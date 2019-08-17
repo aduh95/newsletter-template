@@ -13,8 +13,10 @@ import {
   SAVE_HOSTNAME,
   SAVE_CSS,
   SAVE_COMPONENTS,
+  COMMAND_OF_TYPE_SAVE,
   PERSISTANCE_INITIATE_FROM_DATASET,
   PERSISTANCE_INITIATE_FROM_SCRATCH,
+  PERSISTANCE_GET_LAST_SAVE_DATE,
 } from "./commands.js";
 
 import Worker from "./StatePersistance.worker.js";
@@ -48,7 +50,11 @@ export default new (class History extends Observable {
       )
       .finally(done);
     currentWorkerJob = waitForFulfillment;
-    return job.then(({ data }) => this.#set(data));
+    if (command & COMMAND_OF_TYPE_SAVE) {
+      return job.then(({ data }) => this.#set(data));
+    } else {
+      return job;
+    }
   }
   #initiateState = dataset => {
     this.#unsubscribeToObservables();
@@ -110,6 +116,12 @@ export default new (class History extends Observable {
 
   get() {
     return this.#state;
+  }
+
+  getLastSavedDate() {
+    return this.#sendCommand(PERSISTANCE_GET_LAST_SAVE_DATE).then(
+      timestamp => new Date(timestamp)
+    );
   }
 
   rewindToPreviousState() {
