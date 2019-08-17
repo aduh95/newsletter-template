@@ -1,5 +1,7 @@
 import { h, Component, Fragment } from "preact";
 
+import NewTemplate from "./edit_components/lazy-edit-component.js";
+
 import "./SplashScreen.scss";
 
 const canAccessDatabases = "function" === typeof window.indexedDB?.databases;
@@ -24,8 +26,15 @@ export default class SplashScreen extends Component {
   };
 
   #startTemplate = () => {
-    import("./notify.js").then(m => m.default("Not implemented"));
-    this.forceUpdate();
+    if (this.state.previousStateDate) {
+      return import("./app_global_state/History.js")
+        .then(module => module.default.recoverSavedState())
+        .catch(() =>
+          import("./notify.js").then(m => m.default("Operation failed"))
+        );
+    } else {
+      this.setState({ createNewTemplate: true });
+    }
   };
   #clearSavedTemplate = () => {
     return import("./app_global_state/History.js")
@@ -124,6 +133,12 @@ export default class SplashScreen extends Component {
               </details>
             ) : null}
           </form>
+          <NewTemplate
+            active={this.state.createNewTemplate}
+            previousStateDate={previousStateDate}
+            recoverSavedState={this.#startTemplate}
+            componentName="TemplateSettings"
+          />
         </main>
       </>
     );

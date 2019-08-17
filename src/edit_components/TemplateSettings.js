@@ -76,6 +76,11 @@ export default class EditTemplateSettings extends Component {
             <button type="reset" onClick={this.props.resetState}>
               Cancel
             </button>
+            {this.props.previousStateDate ? (
+              <button type="button" onClick={this.props.recoverSavedState}>
+                Recover last template
+              </button>
+            ) : null}
           </div>
         </form>
       </Modal>
