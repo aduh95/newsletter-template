@@ -15,6 +15,9 @@ const historyKeys = {
 import { history } from "./StatePersistance-history.js";
 
 export const handleCommand = ([command, data]) => {
+  if (data === null) {
+    return {};
+  }
   const newHistoryEntry = { [historyKeys[command]]: data };
   history.pushNewEntry(newHistoryEntry);
   return newHistoryEntry;

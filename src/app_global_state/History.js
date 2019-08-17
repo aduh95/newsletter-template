@@ -15,6 +15,8 @@ import {
   SAVE_COMPONENTS,
   COMMAND_OF_TYPE_SAVE,
   COMMAND_OF_TYPE_HISTORY,
+  COMMAND_OF_TYPE_RESTORE,
+  RESTORE_LAST_SAVED_TEMPLATE,
   PERSISTANCE_INITIATE_FROM_DATASET,
   PERSISTANCE_INITIATE_FROM_SCRATCH,
   PERSISTANCE_GET_LAST_SAVE_DATE,
@@ -52,7 +54,10 @@ export default new (class History extends Observable {
       )
       .finally(done);
     currentWorkerJob = waitForFulfillment;
-    if (command & (COMMAND_OF_TYPE_SAVE | COMMAND_OF_TYPE_HISTORY)) {
+    if (
+      command &
+      (COMMAND_OF_TYPE_SAVE | COMMAND_OF_TYPE_HISTORY | COMMAND_OF_TYPE_RESTORE)
+    ) {
       return job.then(data => this.#set(data));
     } else {
       return job;
@@ -67,6 +72,7 @@ export default new (class History extends Observable {
   };
 
   #set({ name, hostname, css, components, hasPrevious, hasNext }) {
+    console.log(arguments);
     if (name) {
       templateName.set(name);
     }
@@ -140,6 +146,6 @@ export default new (class History extends Observable {
   }
 
   recoverSavedState() {
-    return this.#sendCommand(INITIATE_RESTORE_SAVED_STATE);
+    return this.#sendCommand(RESTORE_LAST_SAVED_TEMPLATE);
   }
 })();

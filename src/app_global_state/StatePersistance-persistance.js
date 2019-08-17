@@ -10,6 +10,7 @@ import {
   PERSISTANCE_INITIATE_FROM_SCRATCH as FROM_SCRACTH,
   PERSISTANCE_CLEAR_SAVED_STATE,
   PERSISTANCE_GET_LAST_SAVE_DATE,
+  RESTORE_LAST_SAVED_TEMPLATE,
 } from "./commands.js";
 
 import { clear as clearSessionHistory } from "./StatePersistance-history.js";
@@ -18,10 +19,14 @@ const cachedState = {};
 
 export async function saveState(replacingState) {
   try {
-    await localForage.setItem(
-      PERSISTANT_STORAGE_KEY,
-      JSON.stringify(Object.assign(cachedState, replacingState))
-    );
+    if (replacingState.name) {
+      await localForage.setItem(SAVED_TEMPLATE_NAME, replacingState.name);
+    } else {
+      await localForage.setItem(
+        PERSISTANT_STORAGE_KEY,
+        JSON.stringify(Object.assign(cachedState, replacingState))
+      );
+    }
     await localForage.setItem(LAST_SAVE_KEY, Date.now());
   } catch {
     console.log("localForage is not available");
@@ -45,5 +50,17 @@ export const handleCommand = ([command, data]) => {
 
     case PERSISTANCE_GET_LAST_SAVE_DATE:
       return localForage.getItem(LAST_SAVE_KEY).catch(() => null);
+
+    case RESTORE_LAST_SAVED_TEMPLATE:
+      return Promise.all(
+        [SAVED_TEMPLATE_NAME, PERSISTANT_STORAGE_KEY].map(key =>
+          localForage.getItem(key)
+        )
+      )
+        .then(([name, other]) => {
+          const { hostname, css, components } = JSON.parse(other);
+          return { name, hostname, css, components };
+        })
+        .catch(console.error);
   }
 };

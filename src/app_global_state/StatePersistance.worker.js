@@ -3,6 +3,7 @@ import {
   COMMAND_OF_TYPE_HISTORY,
   COMMAND_OF_TYPE_SAVE,
   COMMAND_OF_TYPE_PERSISTANCE,
+  COMMAND_OF_TYPE_RESTORE,
 } from "./commands.js";
 
 import * as history from "./StatePersistance-history.js";
@@ -23,7 +24,10 @@ onmessage = message => {
   } else if (command & COMMAND_OF_TYPE_EXPORT) {
     const data = exportState.handleCommand(message.data);
     postMessage({ data }, [data]);
-  } else if (command & COMMAND_OF_TYPE_PERSISTANCE) {
+  } else if (
+    command &
+    (COMMAND_OF_TYPE_RESTORE | COMMAND_OF_TYPE_PERSISTANCE)
+  ) {
     persistance.handleCommand(message.data).then(postMessage);
   }
 };

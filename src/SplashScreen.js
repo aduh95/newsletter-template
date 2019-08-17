@@ -29,8 +29,10 @@ export default class SplashScreen extends Component {
     if (this.state.previousStateDate) {
       return import("./app_global_state/History.js")
         .then(module => module.default.recoverSavedState())
-        .catch(() =>
-          import("./notify.js").then(m => m.default("Operation failed"))
+        .catch(e =>
+          import("./notify.js").then(m =>
+            m.default("Operation failed", console.error(e))
+          )
         );
     } else {
       this.setState({ createNewTemplate: true });
