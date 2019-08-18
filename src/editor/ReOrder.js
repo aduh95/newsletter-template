@@ -8,7 +8,7 @@ export default class ReOrder extends PureComponent {
     this.props.editor.setState(state => {
       if (state.reOrder) {
         this.props.editor.commitChanges();
-        // return { reOrder: false }; // this would cancel all recent modifs
+        return { reOrder: false };
       } else {
         return { reOrder: true };
       }

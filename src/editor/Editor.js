@@ -6,6 +6,7 @@ import MenuBar from "./MenuBar.js";
 export default class Editor extends Component {
   #observer = new window.MutationObserver(this.handleMutation.bind(this));
   #DOMData = new WeakMap();
+  #letSNotBuildTheDOMAgain = false;
 
   state = { hasError: false, showControls: false, reOrder: false };
 
@@ -13,7 +14,11 @@ export default class Editor extends Component {
     return this.#DOMData.get(this);
   }
 
+  /**
+   * Commits current DOM as App's state
+   */
   commitChanges() {
+    this.#letSNotBuildTheDOMAgain = true; // changes could be overridden by a render
     this.props.onChange(this.data);
   }
 
@@ -168,6 +173,12 @@ export default class Editor extends Component {
       if (!this.#DOMData.has(node)) {
         this.observeNodeDeep(node);
       }
+    }
+  }
+
+  shouldComponentUpdate() {
+    if (this.#letSNotBuildTheDOMAgain) {
+      return (this.#letSNotBuildTheDOMAgain = false);
     }
   }
 
