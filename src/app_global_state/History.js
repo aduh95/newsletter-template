@@ -96,22 +96,25 @@ export default new (class History extends Observable {
     this.notify(this.#state);
   }
 
+  #sendCommand_SAVE_NAME = this.#sendCommand.bind(this, SAVE_NAME);
+  #sendCommand_SAVE_HOSTNAME = this.#sendCommand.bind(this, SAVE_HOSTNAME);
+  #sendCommand_SAVE_CSS = this.#sendCommand.bind(this, SAVE_CSS);
+  #sendCommand_SAVE_COMPONENTS = this.#sendCommand.bind(this, SAVE_COMPONENTS);
+
   #subscribeToObservables() {
     initiateState.subscribe(this.#initiateState);
-    templateName.subscribe(this.#sendCommand.bind(this, SAVE_NAME));
-    templateHostName.subscribe(this.#sendCommand.bind(this, SAVE_HOSTNAME));
-    templateCustomCSS.subscribe(this.#sendCommand.bind(this, SAVE_CSS));
-    templateComponents.subscribe(this.#sendCommand.bind(this, SAVE_COMPONENTS));
+    templateName.subscribe(this.#sendCommand_SAVE_NAME);
+    templateHostName.subscribe(this.#sendCommand_SAVE_HOSTNAME);
+    templateCustomCSS.subscribe(this.#sendCommand_SAVE_CSS);
+    templateComponents.subscribe(this.#sendCommand_SAVE_COMPONENTS);
   }
 
   #unsubscribeToObservables() {
     initiateState.unsubscribe(this.#initiateState);
-    templateName.unsubscribe(this.#sendCommand.bind(this, SAVE_NAME));
-    templateHostName.unsubscribe(this.#sendCommand.bind(this, SAVE_HOSTNAME));
-    templateCustomCSS.unsubscribe(this.#sendCommand.bind(this, SAVE_CSS));
-    templateComponents.unsubscribe(
-      this.#sendCommand.bind(this, SAVE_COMPONENTS)
-    );
+    templateName.unsubscribe(this.#sendCommand_SAVE_NAME);
+    templateHostName.unsubscribe(this.#sendCommand_SAVE_HOSTNAME);
+    templateCustomCSS.unsubscribe(this.#sendCommand_SAVE_CSS);
+    templateComponents.unsubscribe(this.#sendCommand_SAVE_COMPONENTS);
   }
 
   constructor() {
