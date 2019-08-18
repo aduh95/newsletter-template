@@ -1,6 +1,6 @@
 import { HISTORY_FORWARD, HISTORY_REWIND } from "./commands.js";
 
-const DELAY_FOR_STATE_MERGING = 3000;
+const DELAY_FOR_STATE_MERGING = 1500;
 
 class StateHistory {
   #history = [];
@@ -11,6 +11,14 @@ class StateHistory {
   #numberOfNextStates = 0;
 
   pushNewEntry(state) {
+    if (
+      "components" in state &&
+      this.#history[this.#currentStatePointer] &&
+      JSON.stringify(state.components) ===
+        JSON.stringify(this.#history[this.#currentStatePointer].components)
+    ) {
+      return;
+    }
     if (this.#mergeSuccessiveStates) {
       clearTimeout(this.#mergeSuccessiveStates);
     } else {
