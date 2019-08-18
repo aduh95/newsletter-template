@@ -18,8 +18,10 @@ export default new (class TemplateCustomCSS extends Observable {
   }
 
   set(css) {
-    this.#currentCSS = css;
-    this.notify(css);
+    if (css !== this.#currentCSS) {
+      this.#currentCSS = css;
+      this.notify(css);
+    }
   }
 
   get() {

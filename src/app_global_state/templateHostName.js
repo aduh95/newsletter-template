@@ -4,13 +4,15 @@ export default new (class TemplateHostName extends Observable {
   #currentName;
 
   set(name) {
-    try {
-      this.#currentName = new URL(name || "about:blank").hostname;
-    } catch (e) {
-      console.warn(e);
-      this.#currentName = "";
+    if (name !== this.#currentName) {
+      try {
+        this.#currentName = new URL(name || "about:blank").hostname;
+      } catch (e) {
+        console.warn(e);
+        this.#currentName = "";
+      }
+      this.notify(this.#currentName);
     }
-    this.notify(this.#currentName);
   }
 
   get() {

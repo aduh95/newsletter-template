@@ -20,8 +20,10 @@ export default new (class TemplateName extends Observable {
   }
 
   set(name) {
-    this.#currentName = name;
-    this.notify(this.#currentName);
+    if (name !== this.#currentName) {
+      this.#currentName = name;
+      this.notify(this.#currentName);
+    }
   }
 
   get() {
