@@ -7,6 +7,7 @@ import { h, Component, Fragment } from "preact";
 import { Suspense, lazy, createPortal } from "preact/compat";
 
 import statePersistance from "./app_global_state/templateComponents.js";
+import { PERSISTANT_STORAGE_KEY } from "./app_global_state/StatePersistance-const.js";
 
 import Error from "./AppError.js";
 import Loading from "./Loading.js";
@@ -32,6 +33,18 @@ export default class App extends Component {
     // Update state so the next render will show the fallback UI.
     console.warn(error);
     return { hasError: true };
+  }
+
+  constructor() {
+    super();
+    const currentState = sessionStorage.getItem(PERSISTANT_STORAGE_KEY);
+    if (currentState) {
+      Object.assign(this.state, JSON.parse(currentState));
+      sessionStorage.removeItem(PERSISTANT_STORAGE_KEY);
+      import("./app_global_state/History.js").then(m =>
+        m.default.recoverSavedState()
+      );
+    }
   }
 
   componentDidMount() {
@@ -99,12 +112,20 @@ export default class App extends Component {
 
   render() {
     console.log("render", this.state);
-    if (this.updateReady) {
-      updateOfflineApp();
-    }
-
     const { main, aside } = this.state;
     const appReadyForEditor = main && aside;
+
+    if (this.updateReady) {
+      try {
+        sessionStorage.setItem(
+          PERSISTANT_STORAGE_KEY,
+          JSON.stringify({ main, aside })
+        );
+      } catch {
+        console.warn("sessionStorage is not available");
+      }
+      updateOfflineApp();
+    }
 
     return (
       <>
