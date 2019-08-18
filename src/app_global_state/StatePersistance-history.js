@@ -1,15 +1,26 @@
 import { HISTORY_FORWARD, HISTORY_REWIND } from "./commands.js";
 
+const DELAY_FOR_STATE_MERGING = 3000;
+
 class StateHistory {
   #history = [];
-  #currentStatePointer = 0;
+  #currentStatePointer = -1;
   #oldestPointer = 0;
 
+  #mergeSuccessiveStates;
   #numberOfNextStates = 0;
 
   pushNewEntry(state) {
+    if (this.#mergeSuccessiveStates) {
+      clearTimeout(this.#mergeSuccessiveStates);
+    } else {
+      ++this.#currentStatePointer;
+    }
     this.#numberOfNextStates = 0;
-    this.#history[++this.#currentStatePointer] = state;
+    this.#history[this.#currentStatePointer] = state;
+    this.#mergeSuccessiveStates = setTimeout(() => {
+      this.#mergeSuccessiveStates = null;
+    }, DELAY_FOR_STATE_MERGING);
   }
 
   rewindToPreviousState() {
@@ -24,8 +35,8 @@ class StateHistory {
 
   getNavigationPossibilities() {
     return {
-      hasPreviousState: this.#oldestPointer < this.#currentStatePointer,
-      hasNextState: this.#numberOfNextStates > 0,
+      hasPrevious: this.#oldestPointer < this.#currentStatePointer,
+      hasNext: this.#numberOfNextStates > 0,
     };
   }
 }
@@ -37,14 +48,12 @@ export function clear() {
 }
 
 export const handleCommand = command => {
-  if (HISTORY_FORWARD === command) {
-    history.forwardToNextState();
-  } else if (HISTORY_REWIND === command) {
-    history.rewindToPreviousState();
-  }
-  return JSON.parse(getCurrentStateAsString());
+  return HISTORY_FORWARD === command
+    ? history.forwardToNextState()
+    : HISTORY_REWIND === command
+    ? history.rewindToPreviousState()
+    : {};
 };
 
-export const getNavigationPossibilities = history.getNavigationPossibilities.bind(
-  history
-);
+export const getNavigationPossibilities = () =>
+  history.getNavigationPossibilities();
