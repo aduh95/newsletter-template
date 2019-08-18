@@ -1,1 +1,1 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[23],{56:function(e,o){Element.prototype.scrollIntoViewIfNeeded=Element.prototype.scrollIntoView}}]);
+(window.webpackJsonp=window.webpackJsonp||[]).push([[23],{55:function(n,a){window.requestIdleCallback=requestAnimationFrame,window.cancelIdleCallback=cancelAnimationFrame}}]);
