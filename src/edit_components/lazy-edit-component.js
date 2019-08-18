@@ -1,5 +1,6 @@
 import { h } from "preact";
 import { Suspense, lazy } from "preact/compat";
+import LoadingDialog from "../LoadingDialog";
 
 const ASYNC_COMP = new Map();
 
@@ -13,13 +14,7 @@ export default function EditComponent({ active, componentName, props }) {
 
   console.log("render", "Edit" + componentName, active);
   return (
-    <Suspense
-      fallback={
-        <dialog data-do-not-export open data-ignore>
-          Loading...
-        </dialog>
-      }
-    >
+    <Suspense fallback={<LoadingDialog />}>
       {active ? <EditComponent {...props} /> : null}
     </Suspense>
   );

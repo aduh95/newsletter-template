@@ -14,12 +14,12 @@ export default class MenuBar extends Component {
     return (
       <>
         <Save editor={this.props.editor} />
-        <HistoryControl />
+        <HistoryControl editor={this.props.editor} />
         &nbsp;|&nbsp;
         <TemplateSettings editor={this.props.editor} />
         <ReOrder editor={this.props.editor} />
         &nbsp;|&nbsp;
-        <Quit />
+        <Quit editor={this.props.editor} />
       </>
     );
   }

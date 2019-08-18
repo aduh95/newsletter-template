@@ -2,11 +2,13 @@ import { h, Component, Fragment } from "preact";
 
 import ReOrderComponents from "./ReOrderComponents.js";
 import MenuBar from "./MenuBar.js";
+import LoadingDialog from "../LoadingDialog.js";
 
 export default class Editor extends Component {
   #observer = new window.MutationObserver(this.handleMutation.bind(this));
   #DOMData = new WeakMap();
   #letSNotBuildTheDOMAgain = false;
+  #waitForHistoryRewind = false;
 
   state = { hasError: false, showControls: false, reOrder: false };
 
@@ -20,6 +22,11 @@ export default class Editor extends Component {
   commitChanges() {
     this.#letSNotBuildTheDOMAgain = true; // changes could be overridden by a render
     this.props.onChange(this.data);
+  }
+
+  forceToReRender() {
+    this.#waitForHistoryRewind = true;
+    this.forceUpdate();
   }
 
   /**
@@ -183,6 +190,7 @@ export default class Editor extends Component {
   }
 
   componentDidUpdate() {
+    this.#waitForHistoryRewind = false;
     requestIdleCallback(this.checkForDOMChanges.bind(this));
   }
 
@@ -205,7 +213,7 @@ export default class Editor extends Component {
           <MenuBar editor={this} />
         </header>
         {this.state.reOrder ? <ReOrderComponents /> : null}
-        {this.props.children}
+        {this.#waitForHistoryRewind ? <LoadingDialog /> : this.props.children}
       </>
     );
   }
