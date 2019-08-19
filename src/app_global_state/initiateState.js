@@ -5,6 +5,8 @@ import templateHostName from "./templateHostName.js";
 import templateComponents from "./templateComponents.js";
 import templateCustomCSS from "./templateCustomCSS.js";
 
+const fileExtension = /\.json$/;
+
 export default new (class InitiateState extends Observable {
   initiateWith({ name, hostname, css, components }) {
     console.log("initiateWith", arguments);
@@ -20,7 +22,7 @@ export default new (class InitiateState extends Observable {
    * @param {File} file
    */
   initiateWithFile(file) {
-    const { name } = file;
+    const name = file.name.replace(fileExtension, "");
 
     return new Response(file)
       .json()
