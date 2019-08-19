@@ -15,7 +15,7 @@ import {
 
 import { clear as clearSessionHistory } from "./StatePersistance-history.js";
 
-const cachedState = {};
+export const cachedState = {};
 
 export async function saveState(replacingState) {
   try {

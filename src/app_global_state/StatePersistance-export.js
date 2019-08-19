@@ -1,18 +1,17 @@
-import string2UInt8Array from "./base64DecToArr.js";
+import object2ArrayBuffer from "./exportJSONObjectToArrayBuffer.js";
 import {
   EXPORT_STATE_AS_ARRAY_BUFFER,
   EXPORT_STATE_AS_JS_OBJECT,
 } from "./commands.js";
 
-import { PERSISTANT_STORAGE_KEY } from "./StatePersistance-const.js";
+import { cachedState } from "./StatePersistance-persistance.js";
 
 export const handleCommand = ([command]) => {
   switch (command) {
     case EXPORT_STATE_AS_ARRAY_BUFFER:
-      return string2UInt8Array(localStorage.getItem(PERSISTANT_STORAGE_KEY))
-        .buffer;
+      return object2ArrayBuffer(cachedState);
 
     case EXPORT_STATE_AS_JS_OBJECT:
-      return JSON.parse(localStorage.getItem(PERSISTANT_STORAGE_KEY));
+      return JSON.stringify(cachedState);
   }
 };

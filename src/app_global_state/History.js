@@ -21,6 +21,7 @@ import {
   PERSISTANCE_INITIATE_FROM_SCRATCH,
   PERSISTANCE_GET_LAST_SAVE_DATE,
   PERSISTANCE_CLEAR_SAVED_STATE,
+  EXPORT_STATE_AS_ARRAY_BUFFER,
 } from "./commands.js";
 
 import Worker from "./StatePersistance.worker.js";
@@ -124,6 +125,12 @@ export default new (class History extends Observable {
 
   get() {
     return this.#state;
+  }
+
+  getCurrentStateAsArrayBuffer() {
+    return this.#sendCommand(EXPORT_STATE_AS_ARRAY_BUFFER).then(({ data }) => [
+      data,
+    ]);
   }
 
   getLastSavedDate() {
