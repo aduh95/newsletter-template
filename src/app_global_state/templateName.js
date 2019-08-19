@@ -15,7 +15,7 @@ export default new (class TemplateName extends Observable {
     this.#DOMNodeTitleForTemplateName = document.createTextNode(DEFAULT_TITLE);
     document.head
       .querySelector("title")
-      .appendChild(this.#DOMNodeTitleForTemplateName);
+      .append(" - ", this.#DOMNodeTitleForTemplateName);
     this.subscribe(this.#updatePageTile);
   }
 
