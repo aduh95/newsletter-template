@@ -12,6 +12,7 @@ export default new (class TemplateCustomCSS extends Observable {
     super();
     const style = document.createElement("style");
     this.#DOMNodeStyle = document.createTextNode("");
+    style.dataset.export = true;
     style.appendChild(this.#DOMNodeStyle);
     document.head.appendChild(style);
     this.subscribe(this.#updateCustomCSS);
