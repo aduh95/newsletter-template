@@ -94,10 +94,12 @@ export default class NewsletterArticle extends Component {
           alt={this.props.illustrationDescription}
         />
 
-        <MarkdownContent
-          content={this.props.description}
-          attributes={{ ["data-key"]: "description" }}
-        />
+        <div>
+          <MarkdownContent
+            content={this.props.description}
+            attributes={{ ["data-key"]: "description" }}
+          />
+        </div>
 
         <p>
           {getArray(this.props.links).map((link, i) => (

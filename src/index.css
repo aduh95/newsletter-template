@@ -81,6 +81,9 @@ h1 {
   text-align: center;
   margin: 0;
 }
+img {
+  max-width: 100%;
+}
 
 output[data-contents] {
   display: contents;
