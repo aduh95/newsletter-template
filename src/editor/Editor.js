@@ -157,10 +157,7 @@ export default class Editor extends Component {
   observeNodeDeep(node) {
     if (node.dataset.contents) {
       return Array.from(node.children, this.observeNodeDeep.bind(this));
-    }
-    if (node.nodeName === "STYLE") {
-      this.#DOMData.get(this)[node.dataset.type] = node.textContent;
-    } else {
+    } else if (node.dataset.type) {
       this.observeNode(node);
       this.#DOMData.get(this)[node.dataset.type] = this.#DOMData.get(
         node
