@@ -140,11 +140,17 @@ export default new (class History extends Observable {
   }
 
   rewindToPreviousState() {
-    return this.#sendCommand(HISTORY_REWIND);
+    this.#unsubscribeToObservables();
+    return this.#sendCommand(HISTORY_REWIND).finally(() =>
+      this.#subscribeToObservables()
+    );
   }
 
   forwardToNextState() {
-    return this.#sendCommand(HISTORY_FORWARD);
+    this.#unsubscribeToObservables();
+    return this.#sendCommand(HISTORY_FORWARD).finally(() =>
+      this.#subscribeToObservables()
+    );
   }
 
   clearCurrentSession() {

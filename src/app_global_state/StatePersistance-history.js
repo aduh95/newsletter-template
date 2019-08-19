@@ -10,22 +10,35 @@ class StateHistory {
   #mergeSuccessiveStates;
   #numberOfNextStates = 0;
 
+  #isDuplicateStateEntry(nextState) {
+    const currentState = this.#history[this.#currentStatePointer];
+    const nextStateKeys = Object.keys(nextState);
+
+    return (
+      nextStateKeys.reduce((pv, key) => pv && key in currentState, true) &&
+      nextStateKeys.reduce(
+        (pv, key) =>
+          pv &&
+          JSON.stringify(nextState[key]) === JSON.stringify(currentState[key]),
+        true
+      )
+    );
+  }
+
   pushNewEntry(state) {
     if (
-      "components" in state &&
-      this.#history[this.#currentStatePointer] &&
-      JSON.stringify(state.components) ===
-        JSON.stringify(this.#history[this.#currentStatePointer].components)
+      this.#currentStatePointer in this.#history &&
+      this.#isDuplicateStateEntry(state)
     ) {
       return;
     }
     if (this.#mergeSuccessiveStates) {
       clearTimeout(this.#mergeSuccessiveStates);
+      Object.assign(this.#history[this.#currentStatePointer], state);
     } else {
-      ++this.#currentStatePointer;
+      this.#history[++this.#currentStatePointer] = state;
     }
     this.#numberOfNextStates = 0;
-    this.#history[this.#currentStatePointer] = state;
     this.#mergeSuccessiveStates = setTimeout(() => {
       this.#mergeSuccessiveStates = null;
     }, DELAY_FOR_STATE_MERGING);
