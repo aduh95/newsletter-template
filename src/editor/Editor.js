@@ -155,13 +155,17 @@ export default class Editor extends Component {
   }
 
   observeNodeDeep(node) {
-    if (node.dataset.contents) {
-      return Array.from(node.children, this.observeNodeDeep.bind(this));
+    if (this.#DOMData.has(node)) {
+      // No op, node has already been taken care of
+    } else if (node.dataset.contents) {
+      Array.from(node.children, this.observeNodeDeep.bind(this));
     } else if (node.dataset.type) {
       this.observeNode(node);
       this.#DOMData.get(this)[node.dataset.type] = this.#DOMData.get(
         node
       )?.content;
+    } else {
+      this.#DOMData.set(node, "ignore");
     }
   }
 
@@ -174,9 +178,7 @@ export default class Editor extends Component {
   checkForDOMChanges() {
     console.log("updated");
     for (const node of document.querySelectorAll("[data-export]")) {
-      if (!this.#DOMData.has(node)) {
-        this.observeNodeDeep(node);
-      }
+      this.observeNodeDeep(node);
     }
   }
 
