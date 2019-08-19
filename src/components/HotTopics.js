@@ -17,7 +17,9 @@ export default class HotTopics extends Component {
   addNewArticle(data) {
     this.setState(
       {
-        newTopic: <output data-request-render data-json={data} />,
+        newTopic: (
+          <output data-request-render data-json={JSON.stringify(data)} />
+        ),
         openNewArticleDialog: false,
       },
       () => (this.#readyToConsumeState = true)

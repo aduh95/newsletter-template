@@ -17,7 +17,9 @@ export default class NewsletterSection extends Component {
   addNewArticle(data) {
     this.setState(
       {
-        newArticle: <output data-request-render data-json={data} />,
+        newArticle: (
+          <output data-request-render data-json={JSON.stringify(data)} />
+        ),
         openNewArticleDialog: false,
       },
       () => (this.#readyToConsumeState = true)
