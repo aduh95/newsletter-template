@@ -1,5 +1,7 @@
 import { HISTORY_FORWARD, HISTORY_REWIND } from "./commands.js";
 
+import { cachedState } from "./StatePersistance-persistance.js";
+
 const DELAY_FOR_STATE_MERGING = 1500;
 
 class StateHistory {
@@ -11,15 +13,14 @@ class StateHistory {
   #numberOfNextStates = 0;
 
   #isDuplicateStateEntry(nextState) {
-    const currentState = this.#history[this.#currentStatePointer];
     const nextStateKeys = Object.keys(nextState);
 
     return (
-      nextStateKeys.reduce((pv, key) => pv && key in currentState, true) &&
+      nextStateKeys.reduce((pv, key) => pv && key in cachedState, true) &&
       nextStateKeys.reduce(
         (pv, key) =>
           pv &&
-          JSON.stringify(nextState[key]) === JSON.stringify(currentState[key]),
+          JSON.stringify(nextState[key]) === JSON.stringify(cachedState[key]),
         true
       )
     );
