@@ -1,0 +1,13 @@
+{
+  "name": "Newsletter Template Builder",
+  "short_name": "NTB",
+  "start_url": "/newsletter-template/",
+  "display": "standalone",
+  "background_color": "#ebebeb",
+  "theme_color": "#3dcd58",
+  "description": "A simply WYSIWYG (kinda) app to build you're own Newsletter template.",
+  "lang": "en",
+  "serviceworker": {
+    "src": "./sw.js"
+  }
+}

@@ -20,6 +20,14 @@ module.exports = {
       {
         oneOf: [
           {
+            test: /\.webmanifest$/,
+            use: [
+              {
+                loader: "file-loader",
+              },
+            ],
+          },
+          {
             test: /\.worker\.js$/,
             use: { loader: "worker-loader" },
           },
