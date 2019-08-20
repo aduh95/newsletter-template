@@ -55,13 +55,17 @@ export default class SplashScreen extends Component {
   };
 
   componentDidMount() {
-    const databases = canAccessDatabases
-      ? indexedDB.databases()
-      : Promise.resolve([PERSISTANT_STORAGE_NAME]);
+    const doesDatabaseExist = canAccessDatabases
+      ? indexedDB
+          .databases()
+          .then(databases =>
+            databases.find(({ name }) => name === PERSISTANT_STORAGE_NAME)
+          )
+      : Promise.resolve(true); // let's assume it exists
 
-    databases
-      .then(databases =>
-        databases.includes(PERSISTANT_STORAGE_NAME)
+    doesDatabaseExist
+      .then(result =>
+        result
           ? import("./app_global_state/History.js")
           : Promise.reject("No saved state")
       )
