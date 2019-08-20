@@ -38,6 +38,9 @@ export default class SplashScreen extends Component {
       this.setState({ createNewTemplate: true });
     }
   };
+  #closeNewTemplateModal = () => {
+    this.setState({ createNewTemplate: false });
+  };
   #clearSavedTemplate = () => {
     return import("./app_global_state/History.js")
       .then(module => module.default.clearSavedState())
@@ -145,6 +148,7 @@ export default class SplashScreen extends Component {
               previousStateDate: previousStateDate,
               recoverSavedState: this.#startTemplate,
               saveChange: this.props.startTemplateFromScratch,
+              resetState: this.#closeNewTemplateModal,
             }}
           />
         </main>
