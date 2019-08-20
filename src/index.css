@@ -8,10 +8,7 @@
 }
 
 #fallback-message {
-  animation: fadeInAfterDelay 3s;
-}
-.loading {
-  animation: fadeInAfterDelay 1s;
+  animation: fadeInAfterDelay 2s;
 }
 @keyframes fadeInAfterDelay {
   0% {
@@ -94,6 +91,7 @@ output[data-contents] {
 
 .loading {
   place-self: center;
+  animation: fadeInAfterDelay 400ms;
 }
 body > .loading {
   grid-column: span 2;
