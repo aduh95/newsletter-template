@@ -1,6 +1,7 @@
 import { h, Component, Fragment } from "preact";
 
 import NewTemplate from "./edit_components/lazy-edit-component.js";
+import { PERSISTANT_STORAGE_NAME } from "./app_global_state/StatePersistance-const.js";
 
 import "./SplashScreen.scss";
 
@@ -56,11 +57,11 @@ export default class SplashScreen extends Component {
   componentDidMount() {
     const databases = canAccessDatabases
       ? indexedDB.databases()
-      : Promise.resolve([null]);
+      : Promise.resolve([PERSISTANT_STORAGE_NAME]);
 
     databases
-      .then(({ length }) =>
-        length
+      .then(databases =>
+        databases.includes(PERSISTANT_STORAGE_NAME)
           ? import("./app_global_state/History.js")
           : Promise.reject("No saved state")
       )

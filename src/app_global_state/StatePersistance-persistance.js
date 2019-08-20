@@ -4,6 +4,7 @@ import {
   LAST_SAVE_KEY,
   SAVED_TEMPLATE_NAME,
   PERSISTANT_STORAGE_KEY,
+  PERSISTANT_STORAGE_NAME,
 } from "./StatePersistance-const.js";
 import {
   PERSISTANCE_INITIATE_FROM_DATASET as FROM_DATASET,
@@ -15,6 +16,8 @@ import {
 
 import { clear as clearSessionHistory } from "./StatePersistance-history.js";
 
+localForage.config({ name: PERSISTANT_STORAGE_NAME });
+
 export const cachedState = {};
 
 export async function saveState(replacingState) {
@@ -24,7 +27,7 @@ export async function saveState(replacingState) {
     } else {
       await localForage.setItem(
         PERSISTANT_STORAGE_KEY,
-        JSON.stringify(Object.assign(cachedState, replacingState))
+        Object.assign(cachedState, replacingState)
       );
     }
     await localForage.setItem(LAST_SAVE_KEY, Date.now());
@@ -57,10 +60,12 @@ export const handleCommand = ([command, data]) => {
           localForage.getItem(key)
         )
       )
-        .then(([name, other]) => {
-          const { hostname, css, components } = JSON.parse(other);
-          return { name, hostname, css, components };
-        })
+        .then(([name, { hostname, css, components }]) => ({
+          name,
+          hostname,
+          css,
+          components,
+        }))
         .catch(console.error);
   }
 };
