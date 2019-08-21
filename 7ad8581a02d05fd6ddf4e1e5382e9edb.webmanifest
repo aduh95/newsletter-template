@@ -7,6 +7,23 @@
   "theme_color": "#3dcd58",
   "description": "A simply WYSIWYG (kinda) app to build you're own Newsletter template.",
   "lang": "en",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icon-2134.webp",
+      "type": "image/webp",
+      "sizes": "2134x2134"
+    },
+    {
+      "src": "/icon-2134.png",
+      "type": "image/png",
+      "sizes": "2134x2134"
+    }
+  ],
   "serviceworker": {
     "src": "./sw.js"
   }

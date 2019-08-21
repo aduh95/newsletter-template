@@ -1,9 +1,9 @@
 CACHE MANIFEST
-#ver:2019-8-19 23:12:47
+#ver:8/21/2019, 11:15:17 AM
 #plugin:5.0.7
 
 CACHE:
-../144a2361350b64b09e63b17fa1912c93.webmanifest
+../7ad8581a02d05fd6ddf4e1e5382e9edb.webmanifest
 ../f41fa8374fceb1b006fc.worker.js
 ../cb4cdbc0bec39800bfd9.worker.js
 ../0115055d88c997eecb0a.worker.js
@@ -35,6 +35,10 @@ CACHE:
 ../22.bundle.js
 ../23.bundle.js
 ../24.bundle.js
+../icon-192.png
+../favicon.ico
+../icon-2134.png
+../icon-2134.webp
 ../
 
 NETWORK:
