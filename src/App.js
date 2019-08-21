@@ -195,7 +195,18 @@ export default class App extends Component {
                 Report a bug
               </a>
             </li>
+            <li>
+              <a
+                target="_blank"
+                rel="noopener"
+                href="https://github.com/aduh95/newsletter-template/blob/master/README.md#privacy"
+              >
+                Privacy
+              </a>
+            </li>
           </ul>
+
+          <div class="text-center">©2019, Schneider Electric</div>
         </footer>
       </>
     );

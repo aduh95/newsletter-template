@@ -58,6 +58,11 @@ aside {
 
 footer {
   grid-area: footer;
+  display: flex;
+  flex-direction: column;
+  background-color: #3dcd58;
+  color: #fff;
+  font-size: 0.6rem;
 }
 footer ul {
   display: flex;
@@ -66,13 +71,34 @@ footer ul {
   margin: 0;
   padding: 0;
 }
+footer a {
+  color: inherit;
+  text-decoration: none;
+}
+footer a:hover {
+  color: #fff8;
+}
+@media only screen and (min-width: 1200px) {
+  footer {
+    display: grid;
+    grid-template-columns: 1fr 1050px 150px 1fr;
+    padding: 0.5rem 0;
+  }
+  footer ul {
+    justify-content: start;
+  }
+  footer::before,
+  footer::after {
+    content: "";
+  }
+}
 
 footer li {
-  border-left: 1px solid #000;
+  border-left: 1px solid currentColor;
   padding: 0 0.5rem;
 }
-footer li:last-child {
-  border-right: 1px solid #000;
+footer li:first-child {
+  border-left: none;
 }
 
 .text-center {
