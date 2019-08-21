@@ -1,6 +1,7 @@
 {
   "name": "Newsletter Template Builder",
   "short_name": "NTB",
+  "scope": "/newsletter-template/",
   "start_url": "/newsletter-template/",
   "display": "standalone",
   "background_color": "#ebebeb",
@@ -14,13 +15,13 @@
       "sizes": "192x192"
     },
     {
-      "src": "./icon-2134.webp",
-      "type": "image/webp",
+      "src": "./icon-2134.png",
+      "type": "image/png",
       "sizes": "2134x2134"
     },
     {
-      "src": "./icon-2134.png",
-      "type": "image/png",
+      "src": "./icon-2134.webp",
+      "type": "image/webp",
       "sizes": "2134x2134"
     }
   ],
