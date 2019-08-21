@@ -14,6 +14,12 @@ import Loading from "./Loading.js";
 
 const APP_TITLE = "Newsletter template builder";
 
+const addComponent = (key, component) => {
+  const state = statePersistance.get();
+  state[key].push(component);
+  statePersistance.set(state);
+};
+
 const DropZone = lazy(() => import("./DropZone.js"));
 const Editor = lazy(() => import("./editor/Editor.js"));
 const AddNewComponent = lazy(() => import("./edit_components/AddComponent.js"));
@@ -110,6 +116,9 @@ export default class App extends Component {
     }
   }
 
+  #addComponentInMain = addComponent.bind(null, "main");
+  #addComponentInAside = addComponent.bind(null, "aside");
+
   render() {
     console.log("render", this.state);
     const { main, aside } = this.state;
@@ -141,6 +150,7 @@ export default class App extends Component {
                     <GenerateComponents data={main} />
                   </Suspense>
                   <AddNewComponent
+                    onChange={this.#addComponentInMain}
                     components={[
                       "Footer",
                       "FeatureStories",
@@ -157,6 +167,7 @@ export default class App extends Component {
                       <GenerateComponents data={aside} />
                     </Suspense>
                     <AddNewComponent
+                      onChange={this.#addComponentInAside}
                       components={[
                         "AsideList",
                         "NewsletterArticle",
