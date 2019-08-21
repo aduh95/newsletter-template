@@ -7,6 +7,7 @@ const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const OfflinePlugin = require("offline-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   mode: "production",
@@ -69,6 +70,7 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new webpack.DefinePlugin({ IS_BROWSER: true }),
+    new CopyPlugin([{ from: "public/*", flatten: true }]),
     new MiniCssExtractPlugin({
       filename: "[name].css",
       chunkFilename: "[id].css",
