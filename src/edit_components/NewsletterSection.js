@@ -8,16 +8,13 @@ export default class EditNewsletterSection extends Component {
   #handleChange = this.handleChange.bind(this);
   #handleIDChange = this.handleIDChange.bind(this);
 
-  componentWillMount() {
-    const { type, title, id, illustrationDescription } = this.props;
-    this.setState({
-      type,
-      title,
-      id,
-      illustration: this.props.illustration || null,
-      illustrationDescription,
-    });
-  }
+  state = {
+    type: this.props.type,
+    title: this.props.title,
+    id: this.props.id,
+    illustration: this.props.illustration || null,
+    illustrationDescription: this.props.illustrationDescription,
+  };
 
   handleChange(event, index) {
     const { name, value } = event.target;
@@ -54,7 +51,7 @@ export default class EditNewsletterSection extends Component {
   render() {
     console.log("render");
     return (
-      <Modal onClose={Function.prototype}>
+      <Modal onClose={this.props.resetState}>
         <form method="dialog" onSubmit={this.#handleSubmit}>
           <div>
             <label>

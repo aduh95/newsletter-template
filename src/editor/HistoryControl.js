@@ -16,7 +16,7 @@ export default class HistoryControl extends Component {
     statePersistance.rewindToPreviousState();
   };
 
-  componentWillMount() {
+  componentDidMount() {
     statePersistance.subscribe(this.#update);
     this.update(statePersistance.get());
   }

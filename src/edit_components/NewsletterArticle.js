@@ -130,19 +130,16 @@ export default class EditNewsletterArticle extends Component {
       illustrationDescription,
     });
 
-  componentWillMount() {
-    const { type, title, description, links } = this.props;
-    this.setState({
-      type,
-      title,
-      description,
-      isMain: !!this.props.isMain,
-      isVideo: !!this.props.isVideo,
-      illustration: this.props.illustration || null,
-      illustrationDescription: this.props.illustrationDescription,
-      links: Array.isArray(links) ? links : [],
-    });
-  }
+  state = {
+    type: this.props.type,
+    title: this.props.title,
+    description: this.props.description,
+    isMain: !!this.props.isMain,
+    isVideo: !!this.props.isVideo,
+    illustration: this.props.illustration || null,
+    illustrationDescription: this.props.illustrationDescription,
+    links: Array.isArray(this.props.links) ? this.props.links : [],
+  };
 
   componentDidMount() {
     this.update();

@@ -7,14 +7,10 @@ const doNotPropagateEvent = event => event.stopPropagation();
 
 export default class EditFooter extends Component {
   #handleSubmit = this.handleSubmit.bind(this);
-
-  componentWillMount() {
-    const { type, text } = this.props;
-    this.setState({
-      type,
-      text,
-    });
-  }
+  state = {
+    type: this.props.type,
+    text: this.props.text,
+  };
 
   handleSubmit() {
     const data = { ...this.state };

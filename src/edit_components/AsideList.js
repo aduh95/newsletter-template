@@ -11,14 +11,13 @@ export default class UpdateAsideList extends Component {
   #handleChange = this.handleChange.bind(this);
   #handleSubmit = this.handleSubmit.bind(this);
 
-  componentWillMount() {
-    const { type, title, content } = this.props;
-    this.setState({
-      type,
-      title,
-      content: Array.isArray(content) ? content.map(obj => ({ ...obj })) : [],
-    });
-  }
+  state = {
+    type: this.props.type,
+    title: this.props.title,
+    content: Array.isArray(this.props.content)
+      ? this.props.content.map(obj => ({ ...obj }))
+      : [],
+  };
 
   componentDidMount() {
     this.update();
