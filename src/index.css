@@ -61,7 +61,7 @@ footer {
   display: flex;
   flex-direction: column;
   background-color: #3dcd58;
-  color: #fff;
+  color: #000;
   font-size: 0.6rem;
 }
 footer ul {
@@ -76,7 +76,7 @@ footer a {
   text-decoration: none;
 }
 footer a:hover {
-  color: #fff8;
+  color: #0008;
 }
 @media only screen and (min-width: 1200px) {
   footer {
