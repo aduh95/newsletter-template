@@ -1,7 +1,8 @@
 {
   "name": "Newsletter Template Builder",
   "short_name": "NTB",
-  "start_url": "/newsletter-template/",
+  "scope": "/newsletter-template/",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#ebebeb",
   "theme_color": "#3dcd58",
