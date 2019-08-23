@@ -88,6 +88,8 @@ module.exports = {
     new OfflinePlugin({
       ServiceWorker: {
         events: true,
+        scope: "/newsletter-template-builder/",
+        scope: "newsletter-template-builder",
       },
       AppCache: {
         events: true,

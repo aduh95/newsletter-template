@@ -1,4 +1,5 @@
 {
+  "name": "newsletter-template-builder",
   "private": true,
   "license": "MIT",
   "scripts": {
