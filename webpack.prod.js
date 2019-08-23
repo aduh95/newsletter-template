@@ -13,7 +13,7 @@ module.exports = {
   mode: "production",
   entry: "./src/index.js",
   output: {
-    path: path.resolve(__dirname, "./dist"),
+    path: path.resolve(__dirname, "./newsletter-template-builder"),
     filename: "bundle.js",
   },
   module: {
@@ -87,9 +87,10 @@ module.exports = {
     }),
     new OfflinePlugin({
       ServiceWorker: {
+        appShell: "/",
         events: true,
         scope: "/newsletter-template-builder/",
-        scope: "newsletter-template-builder",
+        cacheName: "newsletter-template-builder",
       },
       AppCache: {
         events: true,
