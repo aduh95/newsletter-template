@@ -6,7 +6,7 @@
     "start": "webpack-dev-server --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d newsletter-template-builder"
   },
   "dependencies": {
     "@aduh95/preact-fontawesome": "^0.1.4",
