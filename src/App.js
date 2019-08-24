@@ -192,7 +192,7 @@ export default class App extends Component {
               <a
                 target="_blank"
                 rel="noopener"
-                href="https://github.com/aduh95/newsletter-template"
+                href="https://github.com/aduh95/newsletter-template-builder"
               >
                 View the code
               </a>
@@ -201,7 +201,7 @@ export default class App extends Component {
               <a
                 target="_blank"
                 rel="noopener"
-                href="https://github.com/aduh95/newsletter-template/issues"
+                href="https://github.com/aduh95/newsletter-template-builder/issues"
               >
                 Report a bug
               </a>
@@ -210,7 +210,7 @@ export default class App extends Component {
               <a
                 target="_blank"
                 rel="noopener"
-                href="https://github.com/aduh95/newsletter-template/blob/master/README.md#privacy"
+                href="https://github.com/aduh95/newsletter-template-builder/blob/master/README.md#privacy"
               >
                 Privacy
               </a>
