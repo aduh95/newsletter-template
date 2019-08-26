@@ -26,7 +26,7 @@ class StateHistory {
     );
   }
 
-  pushNewEntry(state) {
+  pushNewEntry(state, operationsToStore = null) {
     if (
       this.#currentStatePointer in this.#history &&
       this.#isDuplicateStateEntry(state)
@@ -35,7 +35,19 @@ class StateHistory {
     }
     if (this.#mergeSuccessiveStates) {
       clearTimeout(this.#mergeSuccessiveStates);
-      Object.assign(this.#history[this.#currentStatePointer], state);
+      if (operationToStore) {
+        for (const [key, operation] of Object.entries(operationsToStore)) {
+          if (!Array.isArray(this.#history[this.#currentStatePointer][key])) {
+            Object.assign(this.#history[this.#currentStatePointer], {
+              [key]: [operation],
+            });
+          } else {
+            this.#history[this.#currentStatePointer][key].push(operation);
+          }
+        }
+      } else {
+        Object.assign(this.#history[this.#currentStatePointer], state);
+      }
     } else {
       this.#history[++this.#currentStatePointer] = state;
     }
