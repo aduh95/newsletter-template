@@ -10,19 +10,9 @@
   "lang": "en",
   "icons": [
     {
-      "src": "./icon-192.png",
+      "src": "./icon-256.png",
       "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "./icon-2134.png",
-      "type": "image/png",
-      "sizes": "2134x2134"
-    },
-    {
-      "src": "./icon-2134.webp",
-      "type": "image/webp",
-      "sizes": "2134x2134"
+      "sizes": "256x256"
     }
   ],
   "serviceworker": {
