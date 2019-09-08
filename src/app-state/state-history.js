@@ -1,6 +1,9 @@
 import { HISTORY_FORWARD, HISTORY_REWIND } from "./commands.js";
-
-import { cachedState } from "./StatePersistance-persistance.js";
+import {
+  OPERATION_ADD,
+  OPERATION_SET,
+  OPERATION_MOVE,
+} from "./state-apply-revert-operations.js";
 
 const DELAY_FOR_STATE_MERGING = 1500;
 
@@ -12,32 +15,59 @@ class StateHistory {
   #mergeSuccessiveStates;
   #numberOfNextStates = 0;
 
-  #isDuplicateStateEntry(nextState) {
-    const nextStateKeys = Object.keys(nextState);
-
+  #isDuplicateStateEntry(previousHistoryEntry) {
     return (
-      nextStateKeys.reduce((pv, key) => pv && key in cachedState, true) &&
-      nextStateKeys.reduce(
-        (pv, key) =>
-          pv &&
-          JSON.stringify(nextState[key]) === JSON.stringify(cachedState[key]),
-        true
-      )
+      -1 === previousHistoryEntry.findIndex(entry => entry.revert !== null)
     );
   }
 
-  pushNewEntry(state) {
-    if (
-      this.#currentStatePointer in this.#history &&
-      this.#isDuplicateStateEntry(state)
-    ) {
-      return;
+  #mergeOperations(historyEntry, operation) {
+    const { target, type } = operation;
+    const ADDITIVE_OPERATION = OPERATION_ADD | OPERATION_SET;
+    if (type & ADDITIVE_OPERATION) {
+      const addOperation = historyEntry.find(
+        ({ apply: { target: entryTarget, type } }) =>
+          target === entryTarget && type & ADDITIVE_OPERATION
+      );
+      if (addOperation) {
+        if (
+          addOperation.revert.type === OPERATION_SET &&
+          addOperation.revert.value === operation.value
+        ) {
+          Object.assign(addOperation, { apply: null, revert: null });
+        } else {
+          addOperation.apply.value = operation.value;
+        }
+        return;
+      }
+    } else if (type & OPERATION_MOVE) {
+      const moveOperation = historyEntry.find(
+        ({ apply: { target: entryTarget, type } }) =>
+          target === entryTarget && type === OPERATION_MOVE
+      );
+      if (moveOperation) {
+        if (moveOperation.revert.position === operation.position) {
+          Object.assign(moveOperation, { apply: null, revert: null });
+        } else {
+          moveOperation.apply.position = operation.position;
+        }
+        return;
+      }
     }
+    historyEntry.push(getHistoryEntryFromOperation(operation));
+  }
+
+  pushNewEntry(operation) {
     if (this.#mergeSuccessiveStates) {
       clearTimeout(this.#mergeSuccessiveStates);
-      Object.assign(this.#history[this.#currentStatePointer], state);
+      this.#mergeOperations(
+        this.#history[this.#currentStatePointer],
+        operation
+      );
     } else {
-      this.#history[++this.#currentStatePointer] = state;
+      this.#history[++this.#currentStatePointer] = [
+        getHistoryEntryFromOperation(operation),
+      ];
     }
     this.#numberOfNextStates = 0;
     this.#mergeSuccessiveStates = setTimeout(() => {
@@ -47,7 +77,12 @@ class StateHistory {
 
   rewindToPreviousState() {
     this.#numberOfNextStates++;
-    return this.#history[--this.#currentStatePointer];
+    while (
+      this.#isDuplicateStateEntry(this.#history[--this.#currentStatePointer])
+    ) {
+      this.#history.splice(this.#currentStatePointer, 1);
+    }
+    return this.#history[this.#currentStatePointer];
   }
 
   forwardToNextState() {
