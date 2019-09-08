@@ -8,7 +8,7 @@ export default function normalizeURL(inputValue) {
     templateHostname.getHostNameRegExp().test(inputValue)
   ) {
     const [str, uuid, name] = malformedURL.exec(inputValue);
-    const url = new URL("/search", templateHostname.get());
+    const url = new URL("/search", templateHostname.getAsURL());
     url.searchParams.set("documentUUID", uuid);
     url.searchParams.set("title", name);
 
