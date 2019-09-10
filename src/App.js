@@ -3,8 +3,7 @@ import {
   applyUpdate as updateOfflineApp,
 } from "offline-plugin/runtime";
 
-import { h, Component, Fragment } from "preact";
-import { Suspense, lazy, createPortal } from "preact/compat";
+import { h, Component, Fragment, Suspense, lazy } from "./utils/jsx.js";
 
 import statePersistance from "./app_global_state/templateComponents.js";
 import { PERSISTANT_STORAGE_KEY } from "./app_global_state/StatePersistance-const.js";

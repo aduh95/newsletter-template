@@ -1,5 +1,4 @@
-import { h } from "preact";
-import { PureComponent } from "preact/compat";
+import { h, Component as PureComponent } from "../utils/jsx.js";
 
 export default class NewsletterSection extends PureComponent {
   render() {

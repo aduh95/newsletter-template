@@ -1,10 +1,10 @@
-import { h } from "preact";
-import { Suspense, lazy } from "preact/compat";
-import LoadingDialog from "../LoadingDialog";
+import { h, Suspense, lazy } from "../utils/jsx.js";
+
+import LoadingDialog from "../LoadingDialog.js";
 
 const ASYNC_COMP = new Map();
 
-export default function EditComponent({ active, componentName, props }) {
+function EditComponent({ active, componentName, props }) {
   if (!ASYNC_COMP.has(componentName)) {
     console.log("try loading edit_component", componentName);
     ASYNC_COMP.set(componentName, lazy(() => import(`./${componentName}.js`)));
@@ -19,3 +19,6 @@ export default function EditComponent({ active, componentName, props }) {
     </Suspense>
   );
 }
+
+EditComponent.prototype = null;
+export default EditComponent;

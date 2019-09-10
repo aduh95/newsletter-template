@@ -1,5 +1,5 @@
-import { h } from "preact";
-import { PureComponent } from "preact/compat";
+import { h, Component } from "../utils/jsx.js";
+
 import { FontAwesomeIcon } from "@aduh95/preact-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
@@ -8,7 +8,7 @@ const closeCurrentSession = statePersistance.clearCurrentSession.bind(
   statePersistance
 );
 
-export default class Quit extends PureComponent {
+export default class Quit extends Component {
   render() {
     console.log("render");
     return (

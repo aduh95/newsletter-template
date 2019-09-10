@@ -1,5 +1,4 @@
-import { h } from "preact";
-import { lazy } from "preact/compat";
+import { lazy, h } from "../utils/jsx.js";
 
 const ASYNC_COMP = new Map();
 

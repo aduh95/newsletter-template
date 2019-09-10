@@ -1,4 +1,4 @@
-import { h, Component, Fragment } from "preact";
+import { h, Component, Fragment } from "../utils/jsx.js"
 
 import ReOrderComponents from "./ReOrderComponents.js";
 import MenuBar from "./MenuBar.js";

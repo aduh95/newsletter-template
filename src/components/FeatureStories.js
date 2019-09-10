@@ -1,4 +1,4 @@
-import { h, Component } from "preact";
+import { h, Component } from "../utils/jsx.js"
 
 import Edit from "../edit_components/lazy-edit-component.js";
 import Nav from "./FeatureStoriesNav.js";

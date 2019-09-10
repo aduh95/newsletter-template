@@ -1,11 +1,7 @@
-import { h } from "preact";
-import { memo } from "preact/compat";
+import { h } from "./utils/jsx.js";
 
-export default memo(function Loading() {
-  console.log("render");
-  return (
-    <div data-ignore data-do-not-export className="loading">
-      Loading...
-    </div>
-  );
-});
+export default () => (
+  <div data-ignore data-do-not-export className="loading">
+    Loading...
+  </div>
+);

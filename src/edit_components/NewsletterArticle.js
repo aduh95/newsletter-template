@@ -1,4 +1,4 @@
-import { h, Component, createRef } from "preact";
+import { h, Component, createRef } from "../utils/jsx.js"
 
 import OrderedList from "./OrderedList.js";
 import EditMarkdown from "../markdown/EditMarkdownContent.js";

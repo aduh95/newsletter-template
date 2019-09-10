@@ -1,11 +1,13 @@
-import { h } from "preact";
-import { memo } from "preact/compat";
+import { h } from "./utils/jsx.js";
 
-export default memo(function Loading() {
+function Loading() {
   console.log("render");
   return (
     <dialog data-do-not-export open data-ignore class="loading">
       Loading...
     </dialog>
   );
-});
+}
+
+Loading.prototype = null;
+export default Loading;

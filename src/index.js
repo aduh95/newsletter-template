@@ -1,4 +1,4 @@
-import { h, render } from "preact";
+import { h, renderAsync } from "./utils/jsx.js";
 
 import "./index.css";
 import "./modifier.scss";
@@ -8,6 +8,6 @@ import App from "./App.js";
 // (browsers that don't won't be able to parse the script anyway)
 document.getElementById("fallback-message").remove();
 
-render(<App />, document.body);
+document.body.append(renderAsync(<App />));
 
 import "./polyfill/bootstrap.js";

@@ -1,4 +1,4 @@
-import { h, Component, Fragment } from "preact";
+import { h, Component, Fragment } from "../utils/jsx.js"
 
 import "./ReOrderComponents.scss";
 import createDragHandler from "../createDragHandler.js";

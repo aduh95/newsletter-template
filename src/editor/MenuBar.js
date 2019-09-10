@@ -1,4 +1,4 @@
-import { h, Component, Fragment } from "preact";
+import { h, Component, Fragment } from "../utils/jsx.js"
 
 import HistoryControl from "./HistoryControl.js";
 import Quit from "./Quit.js";

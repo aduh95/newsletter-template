@@ -1,4 +1,4 @@
-import { h, Component } from "preact";
+import { h, Component } from "../utils/jsx.js"
 
 import EditMarkdown from "../markdown/EditMarkdownContent.js";
 import Modal from "../editor/Modal.js";

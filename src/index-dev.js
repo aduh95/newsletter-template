@@ -1,2 +1,2 @@
-import "preact/debug"
-import "./index.js"
+// import "preact/debug"
+import "./index.js";

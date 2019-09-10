@@ -1,5 +1,4 @@
-import { h, Fragment } from "preact";
-import { PureComponent } from "preact/compat";
+import { h, Fragment, Component as PureComponent } from "../utils/jsx.js";
 
 import { FontAwesomeIcon } from "@aduh95/preact-fontawesome";
 import { faDownload, faFileExport } from "@fortawesome/free-solid-svg-icons";

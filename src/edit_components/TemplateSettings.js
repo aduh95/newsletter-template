@@ -1,4 +1,4 @@
-import { h, Component } from "preact";
+import { h, Component } from "../utils/jsx.js"
 import Modal from "../editor/Modal.js";
 
 import templateCSS from "../app_global_state/templateCustomCSS.js";

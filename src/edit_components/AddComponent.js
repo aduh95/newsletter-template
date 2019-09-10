@@ -1,5 +1,4 @@
-import { h, Fragment } from "preact";
-import { PureComponent } from "preact/compat";
+import { h, Fragment, Component as PureComponent } from "../utils/jsx.js";
 
 export default class AddNewComponent extends PureComponent {
   state = { newComponent: null };

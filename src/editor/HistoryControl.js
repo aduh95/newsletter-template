@@ -1,4 +1,4 @@
-import { h, Component, Fragment } from "preact";
+import { h, Component, Fragment } from "../utils/jsx.js"
 import { FontAwesomeIcon } from "@aduh95/preact-fontawesome";
 import { faUndo, faRedo } from "@fortawesome/free-solid-svg-icons";
 

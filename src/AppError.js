@@ -1,4 +1,4 @@
-import { h } from "preact";
+import { h } from "./utils/jsx.js";
 
 import "./AppError.css";
 

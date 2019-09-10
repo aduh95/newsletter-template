@@ -1,4 +1,4 @@
-import { h, Component, Fragment } from "preact";
+import { h, Component, Fragment } from "./utils/jsx.js";
 
 import NewTemplate from "./edit_components/lazy-edit-component.js";
 import { PERSISTANT_STORAGE_NAME } from "./app_global_state/StatePersistance-const.js";

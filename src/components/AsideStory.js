@@ -1,4 +1,4 @@
-import { h, Component } from "preact";
+import { h, Component } from "../utils/jsx.js"
 
 export default class AsideStory extends Component {
   render() {

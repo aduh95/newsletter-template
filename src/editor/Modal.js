@@ -1,5 +1,4 @@
-import { h, Component, createRef } from "preact";
-import { createPortal } from "preact/compat";
+import { h, Component, createRef, createPortal } from "../utils/jsx.js";
 
 import registerDialogElement from "../polyfill/htmldialogelement.js";
 

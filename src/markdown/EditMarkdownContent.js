@@ -1,4 +1,4 @@
-import { h, Component, createRef } from "preact";
+import { h, Component, createRef } from "../utils/jsx.js"
 import { FontAwesomeIcon } from "@aduh95/preact-fontawesome";
 import {
   faBold,
