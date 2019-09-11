@@ -1,4 +1,4 @@
-import { h, Component, Fragment } from "./utils/jsx.js";
+import { h, Component, Fragment, renderAsync } from "./utils/jsx.js";
 
 import NewTemplate from "./edit_components/lazy-edit-component.js";
 import { PERSISTANT_STORAGE_NAME } from "./app_global_state/StatePersistance-const.js";
@@ -8,7 +8,9 @@ import "./SplashScreen.scss";
 const canAccessDatabases = "function" === typeof window.indexedDB?.databases;
 
 export default class SplashScreen extends Component {
-  state = { loading: true };
+  #newTemplateNode = document.createComment("new template");
+  #previousSavedDate = null;
+
   handleFile = e => {
     const { target } = e;
 
@@ -27,7 +29,7 @@ export default class SplashScreen extends Component {
   };
 
   #startTemplate = () => {
-    if (this.state.previousStateDate) {
+    if (this.#previousSavedDate) {
       return import("./app_global_state/History.js")
         .then(module => module.default.recoverSavedState())
         .catch(e =>
@@ -36,11 +38,27 @@ export default class SplashScreen extends Component {
           )
         );
     } else {
-      this.setState({ createNewTemplate: true });
+      const newTemplateNode = (
+        <NewTemplate
+          componentName="TemplateSettings"
+          active={true}
+          props={{
+            recoverSavedState: this.#startTemplate,
+            saveChange: this.props.startTemplateFromScratch,
+            resetState: this.#closeNewTemplateModal,
+          }}
+        />
+      );
+      newTemplateNode.then(element => {
+        this.#newTemplateNode.replaceWith(element);
+        this.#newTemplateNode = element;
+      });
     }
   };
   #closeNewTemplateModal = () => {
-    this.setState({ createNewTemplate: false });
+    const element = document.createComment("new template");
+    this.#newTemplateNode.replaceWith(element);
+    this.#newTemplateNode = element;
   };
   #clearSavedTemplate = () => {
     return import("./app_global_state/History.js")
@@ -63,25 +81,23 @@ export default class SplashScreen extends Component {
           )
       : Promise.resolve(true); // let's assume it exists
 
-    doesDatabaseExist
+    return doesDatabaseExist
       .then(result =>
         result
           ? import("./app_global_state/History.js")
           : Promise.reject("No saved state")
       )
       .then(module => module.default)
-      .then(appStateHistory => appStateHistory.getLastSavedDate())
-      .then(previousStateDate =>
-        this.setState({ previousStateDate, loading: false })
-      )
-      .catch(() => {
-        this.setState({ loading: false });
-      });
+      .then(appStateHistory => appStateHistory.getLastSavedDate());
   }
 
   render() {
     console.log("render");
-    const { previousStateDate, loading } = this.state;
+    const hasSavedState = this.componentDidMount();
+    hasSavedState.then(d => {
+      this.#previousSavedDate = d;
+    });
+
     return (
       <>
         <header>
@@ -111,9 +127,11 @@ export default class SplashScreen extends Component {
               <label>
                 <large>
                   <button onClick={this.#startTemplate} type="button" autofocus>
-                    {previousStateDate
-                      ? "Continue where you left"
-                      : "Start an empty template"}
+                    {renderAsync(
+                      hasSavedState.then(() => "Continue where you left"),
+                      document.createTextNode("Start an empty template"),
+                      () => "Start an empty template"
+                    )}
                   </button>
                 </large>
               </label>
@@ -121,41 +139,39 @@ export default class SplashScreen extends Component {
 
               <small>
                 <em>
-                  {loading
-                    ? "Checking if previous version exists..."
-                    : previousStateDate
-                    ? `Saved on ${previousStateDate.toLocaleString()}`
-                    : "No recoverable version found"}
+                  {renderAsync(
+                    hasSavedState.then(
+                      previousStateDate =>
+                        `Saved on ${previousStateDate.toLocaleString()}`
+                    ),
+                    document.createTextNode(
+                      "Checking if previous version exists..."
+                    ),
+                    () => "No recoverable version found"
+                  )}
                 </em>
               </small>
             </p>
-            {previousStateDate ? (
-              <details>
-                <summary>
-                  Erase recovered version to start a new template
-                </summary>
-                <p>
-                  You can remove the recovered version and start a new template
-                  from scratch.
-                  <br />
-                  Make sure you have backup all the useful data.
-                </p>
-                <button onClick={this.#clearSavedTemplate} type="button">
-                  Delete saved version
-                </button>
-              </details>
-            ) : null}
+            {renderAsync(
+              hasSavedState.then(() => (
+                <details>
+                  <summary>
+                    Erase recovered version to start a new template
+                  </summary>
+                  <p>
+                    You can remove the recovered version and start a new
+                    template from scratch.
+                    <br />
+                    Make sure you have backup all the useful data.
+                  </p>
+                  <button onClick={this.#clearSavedTemplate} type="button">
+                    Delete saved version
+                  </button>
+                </details>
+              ))
+            )}
           </form>
-          <NewTemplate
-            componentName="TemplateSettings"
-            active={this.state.createNewTemplate}
-            props={{
-              previousStateDate: previousStateDate,
-              recoverSavedState: this.#startTemplate,
-              saveChange: this.props.startTemplateFromScratch,
-              resetState: this.#closeNewTemplateModal,
-            }}
-          />
+          {this.#newTemplateNode}
         </main>
       </>
     );
