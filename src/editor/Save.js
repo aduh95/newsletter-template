@@ -10,11 +10,16 @@ import { faDownload, faFileExport } from "@fortawesome/free-solid-svg-icons";
  */
 const cleanHTML = node => {
   if (
+    "function" === typeof node.hasAttribute &&
+    node.hasAttribute("data-contents")
+  ) {
+    return Array.from(node.childNodes, cleanHTML);
+  } else if (
     node.nodeName === "OUTPUT" ||
     ("function" === typeof node.hasAttribute &&
       node.hasAttribute("data-do-not-export"))
   ) {
-    return document.createDocumentFragment();
+    return [];
   }
 
   const clone = node.cloneNode(false);
@@ -26,9 +31,9 @@ const cleanHTML = node => {
     }
     clone.removeAttribute("contenteditable");
   }
-  for (const child of node.childNodes) {
-    clone.appendChild(cleanHTML(child));
-  }
+  Array.from(node.childNodes)
+    .flatMap(cleanHTML)
+    .forEach(el => clone.appendChild(el));
   if (node instanceof HTMLImageElement) {
     clone.setAttribute("height", node.naturalHeight);
     clone.setAttribute("width", node.naturalWidth);
@@ -68,9 +73,9 @@ export default class Save extends PureComponent {
   #getHTML(hostname) {
     const exportedElements = document.querySelectorAll("[data-export]");
 
-    return Array.from(exportedElements, cleanHTML).map(el =>
-      el.outerHTML.replace(hostname, "/")
-    );
+    return Array.from(exportedElements)
+      .flatMap(cleanHTML)
+      .map(el => el.outerHTML.replace(hostname, "/"));
   }
 
   #exportFile(fileName, type, fileContent) {
