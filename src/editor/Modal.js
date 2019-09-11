@@ -7,13 +7,6 @@ const doNotPropagateEvent = event => event.stopPropagation();
 export default class Modal extends Component {
   dialog = createRef();
 
-  componentDidMount() {
-    this.update();
-  }
-  componentDidUpdate() {
-    this.update();
-  }
-
   update() {
     const { current } = this.dialog;
 
@@ -34,7 +27,8 @@ export default class Modal extends Component {
       >
         {this.props.children}
       </dialog>,
-      document.body
+      document.body,
+      () => this.update()
     );
   }
 }
