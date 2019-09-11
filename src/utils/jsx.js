@@ -74,13 +74,19 @@ export async function h(element, props = null, ...children) {
       element = document.createElement(element);
 
       if (props) {
-        Object.entries(props).forEach(([name, value]) =>
-          EVENT_PROP.test(name)
-            ? (element[name.toLowerCase()] = value)
-            : name in element
-            ? (element[name] = value)
-            : element.setAttribute(name, value)
-        );
+        if (props.ref) {
+          refMap.set(props.ref, element);
+          props.ref = undefined;
+        }
+        Object.entries(props)
+          .filter(([name, value]) => value !== undefined)
+          .forEach(([name, value]) =>
+            EVENT_PROP.test(name)
+              ? (element[name.toLowerCase()] = value)
+              : name in element
+              ? (element[name] = value)
+              : element.setAttribute(name, value)
+          );
       }
       break;
 
@@ -88,12 +94,8 @@ export async function h(element, props = null, ...children) {
       element = "render" in element ? await element.render() : await element;
   }
 
-  if (props?.ref) {
-    refMap.set(props.ref, element);
-  }
-
   if (children.length && element.append) {
-    const subElements = await Promise.all(children);
+    const subElements = await Promise.all(children.flat(Infinity));
     element.append(...subElements.filter(Boolean));
   }
   return element;
