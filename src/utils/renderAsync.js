@@ -32,9 +32,15 @@ class AsyncElement extends HTMLElement {
 customElements.define(ASYNC_WRAPPER, AsyncElement);
 
 /**
- * @param {Promise<Node>} asyncElement Async element
+ * @callback errorCallback
+ * @param {Error} error
+ * @returns {Node|string|Promise<Node|string>} fallbackElement
+ */
+
+/**
+ * @param {Promise<Node|string>} asyncElement Async element
  * @param {ChildNode|Promise<ChildNode>} placeholder Node to be displayed until the element settle
- * @param {ChildNode|Promise<ChildNode>} fallback Node to display in case the promise is rejected
+ * @param {errorCallback} fallback Node to display in case the promise is rejected
  * @return {ChildNode}
  */
 export function renderAsync(asyncElement, placeholder = {}, fallback = null) {
@@ -47,13 +53,13 @@ export function renderAsync(asyncElement, placeholder = {}, fallback = null) {
     wrapper.placeholder(placeholder);
   }
 
-  asyncElement.then(prototype.commit.bind(wrapper)).catch(err => {
-    console.error(err);
-    Promise.resolve(fallback)
-      .then(fallback => wrapper.commit(fallback))
-      .catch(() => {
-        wrapper.remove();
-      });
-  });
+  asyncElement
+    .then(prototype.commit.bind(wrapper))
+    .catch(fallback)
+    .then(prototype.commit.bind(wrapper))
+    .catch(() => {
+      wrapper.remove();
+    });
+
   return wrapper;
 }
