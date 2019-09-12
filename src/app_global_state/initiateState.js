@@ -13,7 +13,7 @@ export default new (class InitiateState extends Observable {
 
     this.notify({ name, hostname, css, components });
     templateName.set(name);
-    templateHostName.set(hostname);
+    templateHostName.set(`${location.protocol}//${hostname}`);
     templateCustomCSS.set(css);
     templateComponents.set(components);
   }
