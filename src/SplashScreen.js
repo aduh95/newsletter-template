@@ -1,4 +1,4 @@
-import { h, Component, Fragment, renderAsync } from "./utils/jsx.js";
+import { h, Component, Fragment, conditionalRendering } from "./utils/jsx.js";
 
 import NewTemplate from "./edit_components/lazy-edit-component.js";
 import { PERSISTANT_STORAGE_NAME } from "./app_global_state/StatePersistance-const.js";
@@ -10,6 +10,7 @@ const canAccessDatabases = "function" === typeof window.indexedDB?.databases;
 export default class SplashScreen extends Component {
   #newTemplateNode = document.createComment("new template");
   #previousSavedDate = null;
+  #stateObservers = new Set();
 
   handleFile = e => {
     const { target } = e;
@@ -64,7 +65,10 @@ export default class SplashScreen extends Component {
     return import("./app_global_state/History.js")
       .then(module => module.default.clearSavedState())
       .then(
-        () => this.setState({ previousStateDate: null }),
+        () => {
+          this.#previousSavedDate = null;
+          this.#stateObservers.forEach(fn => fn(false));
+        },
         e =>
           import("./notify.js").then(m =>
             m.default("Operation failed", console.error(e))
@@ -96,6 +100,7 @@ export default class SplashScreen extends Component {
     const hasSavedState = this.componentDidMount();
     hasSavedState.then(d => {
       this.#previousSavedDate = d;
+      this.#stateObservers.forEach(fn => fn(Boolean(d)));
     });
 
     return (
@@ -127,10 +132,13 @@ export default class SplashScreen extends Component {
               <label>
                 <large>
                   <button onClick={this.#startTemplate} type="button" autofocus>
-                    {renderAsync(
-                      hasSavedState.then(() => "Continue where you left"),
-                      document.createTextNode("Start an empty template"),
-                      () => "Start an empty template"
+                    {conditionalRendering(
+                      {
+                        [true]: "Continue where you left",
+                        [false]: "Start an empty template",
+                      },
+                      this.#stateObservers,
+                      false
                     )}
                   </button>
                 </large>
@@ -139,36 +147,41 @@ export default class SplashScreen extends Component {
 
               <small>
                 <em>
-                  {renderAsync(
-                    hasSavedState.then(
-                      previousStateDate =>
-                        `Saved on ${previousStateDate.toLocaleString()}`
-                    ),
-                    document.createTextNode(
-                      "Checking if previous version exists..."
-                    ),
-                    () => "No recoverable version found"
+                  {conditionalRendering(
+                    {
+                      [true]: () =>
+                        document.createTextNode(
+                          `Saved on ${this.#previousSavedDate.toLocaleString()}`
+                        ),
+                      [false]: "No recoverable version found",
+                      default: "Checking if previous version exists...",
+                    },
+                    this.#stateObservers,
+                    "default"
                   )}
                 </em>
               </small>
             </p>
-            {renderAsync(
-              hasSavedState.then(() => (
-                <details>
-                  <summary>
-                    Erase recovered version to start a new template
-                  </summary>
-                  <p>
-                    You can remove the recovered version and start a new
-                    template from scratch.
-                    <br />
-                    Make sure you have backup all the useful data.
-                  </p>
-                  <button onClick={this.#clearSavedTemplate} type="button">
-                    Delete saved version
-                  </button>
-                </details>
-              ))
+            {conditionalRendering(
+              {
+                [true]: (
+                  <details>
+                    <summary>
+                      Erase recovered version to start a new template
+                    </summary>
+                    <p>
+                      You can remove the recovered version and start a new
+                      template from scratch.
+                      <br />
+                      Make sure you have backup all the useful data.
+                    </p>
+                    <button onClick={this.#clearSavedTemplate} type="button">
+                      Delete saved version
+                    </button>
+                  </details>
+                ),
+              },
+              this.#stateObservers
             )}
           </form>
           {this.#newTemplateNode}
