@@ -1,3 +1,4 @@
-async-component {
+async-component,
+conditional-element {
   display: contents;
 }

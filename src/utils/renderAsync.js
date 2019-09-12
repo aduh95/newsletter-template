@@ -1,19 +1,25 @@
 import "./renderAsync.css";
+import initiateState from "../app_global_state/initiateState";
 
 const ASYNC_WRAPPER = "async-component";
+const CONDITIONAL_WRAPPER = "conditional-element";
 
 class AsyncElement extends HTMLElement {
   #domElement;
   #settled = false;
 
-  placeholder(element) {
-    if (this.#settled) return;
-    this.classList.add("loading");
+  _setElement(element) {
     if (this.#domElement) {
       this.#domElement.replaceWith(element);
     } else {
       this.#domElement = this.appendChild(element);
     }
+  }
+
+  placeholder(element) {
+    if (this.#settled) return;
+    this.classList.add("loading");
+    this._setElement(element);
   }
 
   commit(element) {
@@ -29,7 +35,48 @@ class AsyncElement extends HTMLElement {
   }
 }
 
+class ConditionalRendering extends AsyncElement {
+  #states = {};
+  #currentState;
+
+  #_setElement = this._setElement.bind(this);
+
+  _setElement(element) {
+    switch (typeof element) {
+      case "undefined":
+        break;
+
+      case "string":
+        super._setElement(document.createTextNode(element));
+        break;
+
+      case "function":
+        Promise.resolve(element.call(this)).then(this.#_setElement);
+        break;
+
+      default:
+        if (element.nodeType > 0) {
+          super._setElement(element);
+        } else {
+          Promise.resolve(element).then(this.#_setElement);
+        }
+    }
+  }
+
+  defineStates(states) {
+    return Object.assign(this.#states, states);
+  }
+
+  setState(state) {
+    if (state !== this.#currentState) {
+      this.#currentState = state;
+      this._setElement(this.#states[state]);
+    }
+  }
+}
+
 customElements.define(ASYNC_WRAPPER, AsyncElement);
+customElements.define(CONDITIONAL_WRAPPER, ConditionalRendering);
 
 /**
  * @callback errorCallback
@@ -61,6 +108,24 @@ export function renderAsync(asyncElement, placeholder = {}, fallback = null) {
     .catch(() => {
       wrapper.remove();
     });
+
+  return wrapper;
+}
+
+export function conditionalRendering(states, store, initialState = undefined) {
+  const wrapper = document.createElement(CONDITIONAL_WRAPPER);
+  wrapper.dataset.contents = true;
+
+  wrapper.defineStates(states);
+  if (initialState !== undefined) {
+    wrapper.setState(initialState);
+  }
+
+  if (store) {
+    store.add(state => {
+      wrapper.setState(state);
+    });
+  }
 
   return wrapper;
 }

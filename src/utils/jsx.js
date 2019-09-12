@@ -101,5 +101,5 @@ export async function h(element, props = null, ...children) {
   return element;
 }
 
-export { renderAsync } from "./renderAsync.js";
+export { renderAsync, conditionalRendering } from "./renderAsync.js";
 export { createPortal } from "./createPortal.js";
