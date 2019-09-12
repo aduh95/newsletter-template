@@ -46,6 +46,7 @@ customElements.define(ASYNC_WRAPPER, AsyncElement);
 export function renderAsync(asyncElement, placeholder = {}, fallback = null) {
   const wrapper = document.createElement(ASYNC_WRAPPER);
   const { prototype } = AsyncElement;
+  wrapper.dataset.contents = true;
 
   if (placeholder.then) {
     placeholder.then(prototype.placeholder.bind(wrapper)).catch(console.warn);

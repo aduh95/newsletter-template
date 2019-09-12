@@ -46,6 +46,7 @@ customElements.define(PORTAL_ELEMENT_NAME, Portal);
  */
 export function createPortal(asyncElement, parent, callback = null) {
   const portal = document.createElement(PORTAL_ELEMENT_NAME);
+  portal.dataset.contents = true;
 
   Promise.resolve(asyncElement).then(element => {
     portal.attach(element, parent);
