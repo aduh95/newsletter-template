@@ -76,7 +76,7 @@ export default class SplashScreen extends Component {
       );
   };
 
-  componentDidMount() {
+  checkSavedState() {
     const doesDatabaseExist = canAccessDatabases
       ? indexedDB
           .databases()
@@ -85,23 +85,23 @@ export default class SplashScreen extends Component {
           )
       : Promise.resolve(true); // let's assume it exists
 
-    return doesDatabaseExist
-      .then(result =>
-        result
-          ? import("./app_global_state/History.js")
-          : Promise.reject("No saved state")
-      )
-      .then(module => module.default)
-      .then(appStateHistory => appStateHistory.getLastSavedDate());
+    return doesDatabaseExist.then(result =>
+      result
+        ? import("./app_global_state/History.js")
+            .then(module => module.default)
+            .then(appStateHistory => appStateHistory.getLastSavedDate())
+        : Promise.resolve(false)
+    );
   }
 
   render() {
     console.log("render");
-    const hasSavedState = this.componentDidMount();
-    hasSavedState.then(d => {
-      this.#previousSavedDate = d;
-      this.#stateObservers.forEach(fn => fn(Boolean(d)));
-    });
+    this.checkSavedState()
+      .then(d => {
+        this.#previousSavedDate = d;
+        this.#stateObservers.forEach(fn => fn(Boolean(d)));
+      })
+      .catch(console.error);
 
     return (
       <>
