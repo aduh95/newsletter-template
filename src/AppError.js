@@ -13,7 +13,7 @@ const historyAction = (action, errorMessage) =>
         .then(() => Promise.reject(e))
     );
 
-export default function Error(props) {
+function AppError(props) {
   const cancelLastAction = e => {
     e.preventDefault();
     historyAction(
@@ -42,3 +42,6 @@ export default function Error(props) {
     </main>
   );
 }
+
+AppError.prototype = null;
+export default AppError;
