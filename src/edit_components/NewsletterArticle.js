@@ -116,6 +116,10 @@ export default class EditNewsletterArticle extends Component {
   form = createRef();
 
   #handleChange = handleChange.bind(this, this.setState.bind(this));
+  #handleCheckboxChange = ({ target: { name, checked } }) =>
+    this.#handleChange({
+      target: { name, value: checked },
+    });
   #handleSubmit = this.handleSubmit.bind(this);
   #handleListChange = this.handleListChange.bind(this);
   #handleListReOrder = this.handleListReOrder.bind(this);
@@ -278,7 +282,7 @@ export default class EditNewsletterArticle extends Component {
                 name="isMain"
                 checked={this.state.isMain}
                 type="checkbox"
-                onChange={this.#handleChange}
+                onChange={this.#handleCheckboxChange}
               />
             </label>
             <EditIllustration
