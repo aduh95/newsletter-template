@@ -149,10 +149,16 @@ export default class SplashScreen extends Component {
                 <em>
                   {conditionalRendering(
                     {
-                      [true]: () =>
-                        document.createTextNode(
-                          `Saved on ${this.#previousSavedDate.toLocaleString()}`
-                        ),
+                      [true]: () => (
+                        <>
+                          Saved on{" "}
+                          <time
+                            dateTime={this.#previousSavedDate.toISOString()}
+                          >
+                            {this.#previousSavedDate.toLocaleString()}
+                          </time>
+                        </>
+                      ),
                       [false]: "No recoverable version found",
                       default: "Checking if previous version exists...",
                     },
