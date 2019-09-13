@@ -116,6 +116,10 @@ export default class EditNewsletterArticle extends Component {
   form = createRef();
 
   #handleChange = handleChange.bind(this, this.setState.bind(this));
+  #handleCheckboxChange = ({ target: { name, checked } }) =>
+    this.#handleChange({
+      target: { name, value: checked },
+    });
   #handleSubmit = this.handleSubmit.bind(this);
   #handleListChange = this.handleListChange.bind(this);
   #handleListReOrder = this.handleListReOrder.bind(this);
@@ -205,9 +209,24 @@ export default class EditNewsletterArticle extends Component {
         }));
     }
 
-    data.illustration = data.illustration
-      ? normalizeURL(data.illustration)
-      : undefined;
+    if (data.illustration) {
+      if (data.isVideo) {
+        const url = new URL(data.illustration);
+        if (/youtube(\.com)?$/.test(url.hostname)) {
+          data.illustration =
+            "https://www.youtube.com/embed/" + url.searchParams.get("v");
+        } else if (url.hostname === "youtube.be") {
+          data.illustration =
+            "https://www.youtube.com/embed/" + url.pathname.substring(1);
+        } else if (url.hostname.endsWith("vimeo.com")) {
+          data.illustration =
+            "https://player.vimeo.com/video/" +
+            url.pathname.substring(1, url.pathname.indexOf("/", 2));
+        }
+      } else {
+        data.illustration = normalizeURL(data.illustration);
+      }
+    }
 
     requestAnimationFrame(() => this.props.saveState(data));
   }
@@ -263,7 +282,7 @@ export default class EditNewsletterArticle extends Component {
                 name="isMain"
                 checked={this.state.isMain}
                 type="checkbox"
-                onChange={this.#handleChange}
+                onChange={this.#handleCheckboxChange}
               />
             </label>
             <EditIllustration
