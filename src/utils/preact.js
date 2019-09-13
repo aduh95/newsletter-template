@@ -37,6 +37,14 @@ export class Component {
   constructor(props, children) {
     this.props = { children, ...props };
   }
+
+  render() {
+    return Promise.reject(new Error("No render function defined"));
+  }
+
+  _render() {
+    return this.render();
+  }
 }
 
 export class Suspense extends Component {
@@ -64,7 +72,7 @@ export async function h(element, props = null, ...children) {
     case "function":
       if (element.prototype?.constructor === element) {
         const component = new element(props, children);
-        element = await component.render();
+        element = await component._render();
       } else {
         element = await element(props, children);
       }
