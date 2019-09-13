@@ -1,5 +1,4 @@
 import "./renderAsync.css";
-import initiateState from "../app_global_state/initiateState";
 
 const ASYNC_WRAPPER = "async-component";
 const CONDITIONAL_WRAPPER = "conditional-element";
@@ -41,7 +40,7 @@ class ConditionalRendering extends AsyncElement {
 
   #_setElement = this._setElement.bind(this);
 
-  _setElement(element) {
+  async _setElement(element) {
     switch (typeof element) {
       case "undefined":
         break;
@@ -51,14 +50,14 @@ class ConditionalRendering extends AsyncElement {
         break;
 
       case "function":
-        Promise.resolve(element.call(this)).then(this.#_setElement);
+        await Promise.resolve(element.call(this)).then(this.#_setElement);
         break;
 
       default:
         if (element.nodeType > 0) {
           super._setElement(element);
         } else {
-          Promise.resolve(element).then(this.#_setElement);
+          await Promise.resolve(element).then(this.#_setElement);
         }
     }
   }
@@ -70,7 +69,7 @@ class ConditionalRendering extends AsyncElement {
   setState(state) {
     if (state !== this.#currentState) {
       this.#currentState = state;
-      this._setElement(this.#states[state]);
+      return this._setElement(this.#states[state]);
     }
   }
 }
@@ -112,7 +111,7 @@ export function renderAsync(asyncElement, placeholder = {}, fallback = null) {
   return wrapper;
 }
 
-export function conditionalRendering(states, store, initialState = undefined) {
+export function conditionalRendering(states, setOfObservers, initialState) {
   const wrapper = document.createElement(CONDITIONAL_WRAPPER);
   wrapper.dataset.contents = true;
 
@@ -121,10 +120,8 @@ export function conditionalRendering(states, store, initialState = undefined) {
     wrapper.setState(initialState);
   }
 
-  if (store) {
-    store.add(state => {
-      wrapper.setState(state);
-    });
+  if (setOfObservers) {
+    setOfObservers.add(state => wrapper.setState(state));
   }
 
   return wrapper;
