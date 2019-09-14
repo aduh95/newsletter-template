@@ -1,12 +1,8 @@
-import { h, Component } from "../utils/jsx.js"
+import { h, Component } from "../utils/jsx.js";
 import { FontAwesomeIcon } from "@aduh95/preact-fontawesome";
 import { faFolderPlus } from "@fortawesome/free-solid-svg-icons";
 
-export default function FeatureStoriesNav({
-  addSection,
-  editSection,
-  sections,
-}) {
+function FeatureStoriesNav({ addSection, editSection, sections }) {
   console.log("render");
   return (
     <nav class="newsletter" data-ignore>
@@ -39,3 +35,6 @@ export default function FeatureStoriesNav({
     </nav>
   );
 }
+
+FeatureStoriesNav.prototype = null;
+export default FeatureStoriesNav;
