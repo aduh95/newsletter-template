@@ -8,8 +8,14 @@ class ReplacableDocumentFragment extends DocumentFragment {
 
   static from(frag) {
     const newFrag = new this.prototype.constructor();
-    newFrag.#children = Array.from(frag.children);
-    newFrag.append(frag);
+    if (frag.childElementCount) {
+      newFrag.#children = Array.from(frag.children);
+      newFrag.append(frag);
+    } else {
+      const comment = document.createComment("empty fragment");
+      newFrag.#children = [comment];
+      newFrag.append(comment);
+    }
     return newFrag;
   }
 
@@ -30,10 +36,12 @@ class ReplacableDocumentFragment extends DocumentFragment {
         this.#children.push(newElements[i]);
         newElements[length].after(newElements[i]);
       }
-    } else {
-      this.#children.splice(1).forEach(el => el.remove());
-      this.#children[0].replaceWith(element);
+    } else if (this.#children.length) {
+      this.#children.pop().replaceWith(element);
+      this.#children.forEach(el => el.remove());
       this.#children = [element];
+    } else {
+      throw new Error("Cannot replace empty fragment");
     }
   }
 }
