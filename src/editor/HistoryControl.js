@@ -1,4 +1,4 @@
-import { h, Component, Fragment } from "../utils/jsx.js"
+import { h, Component, Fragment } from "../utils/jsx.js";
 import { FontAwesomeIcon } from "@aduh95/preact-fontawesome";
 import { faUndo, faRedo } from "@fortawesome/free-solid-svg-icons";
 
@@ -9,10 +9,20 @@ const redo = statePersistance.forwardToNextState.bind(statePersistance);
 export default class HistoryControl extends Component {
   #update = this.update.bind(this);
 
+  #undoButton = (
+    <button onClick={this.#undo} disabled={true} title="Cancel last action">
+      <FontAwesomeIcon icon={faUndo} />
+      &nbsp;Undo
+    </button>
+  );
+  #redoButton = (
+    <button onClick={redo} disabled={true} title="Redo last action">
+      <FontAwesomeIcon icon={faRedo} />
+      &nbsp;Redo
+    </button>
+  );
+
   #undo = () => {
-    if (!this.state.hasNextState) {
-      this.props.editor.forceToReRender();
-    }
     statePersistance.rewindToPreviousState();
   };
 
@@ -26,34 +36,23 @@ export default class HistoryControl extends Component {
   }
 
   update({ hasPreviousState, hasNextState }) {
-    if (
-      hasPreviousState !== this.state.hasPreviousState ||
-      hasNextState !== this.state.hasNextState
-    ) {
-      this.setState({ hasPreviousState, hasNextState });
-    }
+    this.#undoButton.then(btn => {
+      btn.disabled = !hasPreviousState;
+    });
+    this.#redoButton.then(btn => {
+      btn.disabled = !hasNextState;
+    });
   }
 
   render() {
     console.log("render");
+
+    this.componentDidMount();
+
     return (
       <>
-        <button
-          onClick={this.#undo}
-          disabled={!this.state.hasPreviousState}
-          title="Cancel last action"
-        >
-          <FontAwesomeIcon icon={faUndo} />
-          &nbsp;Undo
-        </button>
-        <button
-          onClick={redo}
-          disabled={!this.state.hasNextState}
-          title="Redo last action"
-        >
-          <FontAwesomeIcon icon={faRedo} />
-          &nbsp;Redo
-        </button>
+        {this.#undoButton}
+        {this.#redoButton}
       </>
     );
   }
