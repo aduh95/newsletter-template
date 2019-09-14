@@ -6,25 +6,22 @@ import statePersistance from "../app_global_state/History.js";
 
 const redo = statePersistance.forwardToNextState.bind(statePersistance);
 
+const createButton = (onClick, title, icon, text) => (
+  <button onClick={onClick} disabled={true} title={title}>
+    <FontAwesomeIcon icon={icon} />
+    &nbsp;{text}
+  </button>
+);
+
 export default class HistoryControl extends Component {
   #update = this.update.bind(this);
-
-  #undoButton = (
-    <button onClick={this.#undo} disabled={true} title="Cancel last action">
-      <FontAwesomeIcon icon={faUndo} />
-      &nbsp;Undo
-    </button>
-  );
-  #redoButton = (
-    <button onClick={redo} disabled={true} title="Redo last action">
-      <FontAwesomeIcon icon={faRedo} />
-      &nbsp;Redo
-    </button>
-  );
 
   #undo = () => {
     statePersistance.rewindToPreviousState();
   };
+
+  #undoButton = createButton(this.#undo, "Cancel last action", faUndo, "Undo");
+  #redoButton = createButton(redo, "Redo last action", faRedo, "Redo");
 
   componentDidMount() {
     statePersistance.subscribe(this.#update);
