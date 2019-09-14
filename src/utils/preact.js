@@ -56,7 +56,8 @@ export class Suspense extends Component {
         frag.append(...children.filter(Boolean));
         return frag;
       }),
-      await this.props.fallback
+      await this.props.fallback,
+      this.props.onError || console.error
     );
   }
 }
