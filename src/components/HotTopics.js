@@ -1,41 +1,26 @@
-import { h, Component } from "../utils/jsx.js"
+import { h, Component, conditionalRendering } from "../utils/jsx.js";
 import NewsletterArticle from "./NewsletterArticle";
 import NewArticle from "../edit_components/lazy-edit-component.js";
 
 export default class HotTopics extends Component {
   state = { newTopic: null };
 
-  #createNewArticle = this.setState.bind(this, { openNewArticleDialog: true });
+  #createNewArticleObservers = new Set();
+  #newArticleAnchor = document.createComment("create new articles here");
+
+  #createNewArticle = () =>
+    this.#createNewArticleObservers.foreach(fn => fn(true));
   #newArticleProps = {
     saveState: this.addNewArticle.bind(this),
-    resetState: () => this.setState({ openNewArticleDialog: false }),
+    resetState: () => this.#createNewArticleObservers.foreach(fn => fn(false)),
   };
 
   #readyToConsumeState = false;
   #readyToCleanState = false;
 
   addNewArticle(data) {
-    this.setState(
-      {
-        newTopic: (
-          <output data-request-render data-json={JSON.stringify(data)} />
-        ),
-        openNewArticleDialog: false,
-      },
-      () => (this.#readyToConsumeState = true)
-    );
-  }
-
-  componentDidUpdate() {
-    if (this.#readyToCleanState) {
-      this.setState(
-        { newTopic: null },
-        () => (this.#readyToCleanState = false)
-      );
-    } else if (this.#readyToConsumeState) {
-      this.#readyToCleanState = true;
-      this.#readyToConsumeState = false;
-    }
+    const newTopic = <NewsletterArticle {...data} />;
+    newTopic.then(el => this.#newArticleAnchor.before(el));
   }
 
   render() {
@@ -49,6 +34,7 @@ export default class HotTopics extends Component {
         {articles.map(article => (
           <NewsletterArticle {...article} />
         ))}
+        {this.#newArticleAnchor}
         <button
           data-ignore
           data-do-not-export
@@ -57,12 +43,21 @@ export default class HotTopics extends Component {
         >
           Add a new article
         </button>
-        <NewArticle
-          componentName="NewsletterArticle"
-          active={this.state.openNewArticleDialog}
-          props={this.#newArticleProps}
-        />
-        {this.state.newTopic}
+        {conditionalRendering(
+          {
+            [true]: () => (
+              <NewArticle
+                componentName="NewsletterArticle"
+                active={true}
+                props={this.#newArticleProps}
+              />
+            ),
+            [false]: null,
+          },
+          this.#createNewArticleObservers,
+          false,
+          console.error
+        )}
       </section>
     );
   }
