@@ -20,7 +20,7 @@ const EVENT_PROP = /^on[A-Z]/;
 export const lazy = importCallback => (props, ...children) =>
   importCallback()
     .then(module => module.default)
-    .then(El => <El {...props}>{children}</El>);
+    .then(El => h(El, props, children));
 
 const refMap = new WeakMap();
 export function createRef() {
