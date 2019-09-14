@@ -8,6 +8,6 @@ import App from "./App.js";
 // (browsers that don't won't be able to parse the script anyway)
 document.getElementById("fallback-message").remove();
 
-document.body.append(renderAsync(<App />));
+document.body.append(renderAsync(<App />, undefined, console.error));
 
 import "./polyfill/bootstrap.js";
