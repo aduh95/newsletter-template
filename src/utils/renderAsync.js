@@ -3,6 +3,41 @@ import "./renderAsync.css";
 const ASYNC_WRAPPER = "async-component";
 const CONDITIONAL_WRAPPER = "conditional-element";
 
+class ReplacableDocumentFragment extends DocumentFragment {
+  #children = [];
+
+  static from(frag) {
+    const newFrag = new this.prototype.constructor();
+    newFrag.#children = Array.from(frag.children);
+    newFrag.append(frag);
+    return newFrag;
+  }
+
+  replaceWith(element) {
+    if (element.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
+      const { length } = this.#children;
+      const { childElementCount, children } = element;
+      const newElements = Array.from(children);
+
+      if (length > childElementCount) {
+        this.#children.splice(childElementCount).forEach(el => el.remove());
+      }
+      this.#children.forEach((oldElement, i, a) => {
+        oldElement.replaceWith((a[i] = newElements[i]));
+      });
+
+      for (let i = length; i < childElementCount; i++) {
+        this.#children.push(newElements[i]);
+        newElements[length].after(newElements[i]);
+      }
+    } else {
+      this.#children.splice(1).forEach(el => el.remove());
+      this.#children[0].replaceWith(element);
+      this.#children = [element];
+    }
+  }
+}
+
 class AsyncElement extends HTMLElement {
   #domElement;
   #settled = false;
@@ -54,7 +89,9 @@ class ConditionalRendering extends AsyncElement {
         break;
 
       default:
-        if (element.nodeType > 0) {
+        if (element.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
+          super._setElement(ReplacableDocumentFragment.from(element));
+        } else if (element.nodeType > 0) {
           super._setElement(element);
         } else {
           await Promise.resolve(element).then(this.#_setElement);
@@ -111,7 +148,12 @@ export function renderAsync(asyncElement, placeholder = {}, fallback = null) {
   return wrapper;
 }
 
-export function conditionalRendering(states, setOfObservers, initialState) {
+export function conditionalRendering(
+  states,
+  setOfObservers,
+  initialState,
+  onError = Function.prototype
+) {
   const wrapper = document.createElement(CONDITIONAL_WRAPPER);
   wrapper.dataset.contents = true;
 
@@ -121,7 +163,7 @@ export function conditionalRendering(states, setOfObservers, initialState) {
   }
 
   if (setOfObservers) {
-    setOfObservers.add(state => wrapper.setState(state));
+    setOfObservers.add(state => wrapper.setState(state).catch(onError));
   }
 
   return wrapper;
