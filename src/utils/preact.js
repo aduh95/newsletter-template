@@ -72,6 +72,7 @@ export async function h(element, props = null, ...children) {
     case "function":
       if (element.prototype?.constructor === element) {
         const component = new element(props, children);
+        if ("function" !== typeof component._render) debugger;
         element = await component._render();
       } else {
         element = await element(props, children);
