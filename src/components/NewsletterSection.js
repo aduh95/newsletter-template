@@ -1,53 +1,37 @@
-import { h, Component } from "../utils/jsx.js"
+import { h, Component, conditionalRendering } from "../utils/jsx.js";
 import NewsletterArticle from "./NewsletterArticle";
 import NewArticle from "../edit_components/lazy-edit-component.js";
 
 export default class NewsletterSection extends Component {
-  state = { newArticle: null };
+  #createNewArticleObservers = new Set();
+  #newArticleAnchor = document.createComment("create new articles here");
 
-  #createNewArticle = this.setState.bind(this, { openNewArticleDialog: true });
+  #createNewArticle = () =>
+    this.#createNewArticleObservers.foreach(fn => fn(true));
   #newArticleProps = {
     saveState: this.addNewArticle.bind(this),
-    resetState: () => this.setState({ openNewArticleDialog: false }),
+    resetState: () => this.#createNewArticleObservers.foreach(fn => fn(false)),
   };
 
-  #readyToConsumeState = false;
-  #readyToCleanState = false;
-
   addNewArticle(data) {
-    this.setState(
-      {
-        newArticle: (
-          <output data-request-render data-json={JSON.stringify(data)} />
-        ),
-        openNewArticleDialog: false,
-      },
-      () => (this.#readyToConsumeState = true)
-    );
+    const newTopic = <NewsletterArticle {...data} />;
+    newTopic.then(el => this.#newArticleAnchor.before(el));
   }
 
-  componentDidUpdate() {
-    if (this.#readyToCleanState) {
-      this.setState(
-        { newArticle: null },
-        () => (this.#readyToCleanState = false)
-      );
-    } else if (this.#readyToConsumeState) {
-      this.#readyToCleanState = true;
-      this.#readyToConsumeState = false;
-    }
+  getNbOfColumn(nbOfNonMainArticles) {
+    return nbOfNonMainArticles % 2 === 0
+      ? 2
+      : nbOfNonMainArticles % 3 === 0 || (nbOfNonMainArticles - 1) % 3 === 0
+      ? 3
+      : 2;
   }
 
   render() {
     console.log("render");
     const articles = this.props.content || [];
     const nbOfNonMainArticles = articles.filter(({ isMain }) => !isMain).length;
-    const nbOfColumns =
-      nbOfNonMainArticles % 2 === 0
-        ? 2
-        : nbOfNonMainArticles % 3 === 0 || (nbOfNonMainArticles - 1) % 3 === 0
-        ? 3
-        : 2;
+    const nbOfColumns = this.getNbOfColumn(nbOfNonMainArticles);
+
     return (
       <section
         className="newsletter"
@@ -71,6 +55,7 @@ export default class NewsletterSection extends Component {
         {articles.map(article => (
           <NewsletterArticle {...article} />
         ))}
+        {this.#newArticleAnchor}
         <button
           data-ignore
           data-do-not-export
@@ -79,12 +64,21 @@ export default class NewsletterSection extends Component {
         >
           Add a new article
         </button>
-        <NewArticle
-          componentName="NewsletterArticle"
-          active={this.state.openNewArticleDialog}
-          props={this.#newArticleProps}
-        />
-        {this.state.newArticle}
+        {conditionalRendering(
+          {
+            [true]: () => (
+              <NewArticle
+                componentName="NewsletterArticle"
+                active={true}
+                props={this.#newArticleProps}
+              />
+            ),
+            [false]: null,
+          },
+          this.#createNewArticleObservers,
+          false,
+          console.error
+        )}
       </section>
     );
   }
