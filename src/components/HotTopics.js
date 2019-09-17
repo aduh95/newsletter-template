@@ -3,8 +3,6 @@ import NewsletterArticle from "./NewsletterArticle";
 import NewArticle from "../edit_components/lazy-edit-component.js";
 
 export default class HotTopics extends Component {
-  state = { newTopic: null };
-
   #createNewArticleObservers = new Set();
   #newArticleAnchor = document.createComment("create new articles here");
 
@@ -14,9 +12,6 @@ export default class HotTopics extends Component {
     saveState: this.addNewArticle.bind(this),
     resetState: () => this.#createNewArticleObservers.foreach(fn => fn(false)),
   };
-
-  #readyToConsumeState = false;
-  #readyToCleanState = false;
 
   addNewArticle(data) {
     const newTopic = <NewsletterArticle {...data} />;
