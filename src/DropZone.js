@@ -1,8 +1,5 @@
-import { h, Component, Fragment } from "./utils/jsx.js";
-import {
-  setGlobalDragOverListener,
-  removeGlobalDragOverListener,
-} from "./createDragHandler.js";
+import { h } from "./utils/jsx.js";
+import { setGlobalDragOverListener } from "./createDragHandler.js";
 
 import "./DropZone.scss";
 
@@ -43,25 +40,16 @@ const drop = function(e) {
   }
 };
 
-export default class DropZone extends Component {
-  state = { previewing: true, content: null };
+export default function DropZone() {
+  setGlobalDragOverListener(dragStart);
 
-  componentDidMount() {
-    setGlobalDragOverListener(dragStart);
-  }
-  componentWillUnmount() {
-    removeGlobalDragOverListener(dragStart);
-  }
-
-  render() {
-    console.log("render");
-    return (
-      <div
-        id={DROP_ZONE_ID}
-        onDragLeave={dragEnd}
-        onClick={dragEnd}
-        onDrop={drop}
-      />
-    );
-  }
+  console.log("render");
+  return (
+    <div
+      id={DROP_ZONE_ID}
+      onDragLeave={dragEnd}
+      onClick={dragEnd}
+      onDrop={drop}
+    />
+  );
 }
