@@ -1,10 +1,9 @@
-import { h, Component } from "../utils/jsx.js"
+import { h, Component } from "../utils/jsx.js";
 import Worker from "./marked.worker.js";
 
 const worker = new Worker();
 
 export default class MarkdownContent extends Component {
-  state = { loading: true };
   static #translationJobs = Promise.resolve();
 
   static translate(markdown) {
@@ -27,40 +26,27 @@ export default class MarkdownContent extends Component {
     return job;
   }
 
-  componentDidMount() {
-    this.translate();
-  }
-  componentDidUpdate(prevProps) {
-    if (prevProps.content !== this.props.content) {
-      this.translate();
-    }
-  }
-  translate() {
-    this.constructor
+  render() {
+    console.log("render");
+    return this.constructor
       .translate(this.props.content)
       .then(html => {
-        this.setState({ loading: false, html });
+        const template = document.createElement("output");
+        template.dataset.contents = true;
+        template.innerHTML = html;
+
+        Object.entries(this.props.attributes).forEach(([key, value]) =>
+          template.setAttribute(key, value)
+        );
+        return template;
       })
       .catch(e => {
         console.error(e);
-        this.setState({
-          loading: false,
-          html:
-            "<div data-ignore class='error'>Error when rendering markdown content</div>",
-        });
+        return (
+          <div data-ignore class="error">
+            Error when rendering markdown content
+          </div>
+        );
       });
-  }
-
-  render() {
-    console.log("render");
-    return this.state.loading ? (
-      <p data-ignore>Loading...</p>
-    ) : (
-      <output
-        data-contents
-        dangerouslySetInnerHTML={{ __html: this.state.html }}
-        {...this.props.attributes}
-      />
-    );
   }
 }
