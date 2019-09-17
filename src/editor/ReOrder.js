@@ -1,5 +1,5 @@
 import { h, Component as PureComponent } from "../utils/jsx.js";
-import { FontAwesomeIcon } from "@aduh95/preact-fontawesome";
+import { FontAwesomeIcon } from "@aduh95/jsx-fontawesome";
 import { faSort } from "@fortawesome/free-solid-svg-icons";
 
 export default class ReOrder extends PureComponent {

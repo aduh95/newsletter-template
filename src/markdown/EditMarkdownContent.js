@@ -1,5 +1,5 @@
-import { h, Component, createRef } from "../utils/jsx.js"
-import { FontAwesomeIcon } from "@aduh95/preact-fontawesome";
+import { h, Component, createRef } from "../utils/jsx.js";
+import { FontAwesomeIcon } from "@aduh95/jsx-fontawesome";
 import {
   faBold,
   faItalic,

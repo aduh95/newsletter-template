@@ -1,6 +1,6 @@
 import { h, Component as PureComponent } from "../utils/jsx.js";
 
-import { FontAwesomeIcon } from "@aduh95/preact-fontawesome";
+import { FontAwesomeIcon } from "@aduh95/jsx-fontawesome";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
 import EditTemplateSettings from "../edit_components/lazy-edit-component";
 

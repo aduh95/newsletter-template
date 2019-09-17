@@ -1,5 +1,5 @@
 import { h, Component } from "../utils/jsx.js";
-import { FontAwesomeIcon } from "@aduh95/preact-fontawesome";
+import { FontAwesomeIcon } from "@aduh95/jsx-fontawesome";
 import { faFolderPlus } from "@fortawesome/free-solid-svg-icons";
 
 function FeatureStoriesNav({ addSection, editSection, sections }) {

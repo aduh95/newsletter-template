@@ -1,5 +1,5 @@
 import { h, Component, Fragment } from "../utils/jsx.js";
-import { FontAwesomeIcon } from "@aduh95/preact-fontawesome";
+import { FontAwesomeIcon } from "@aduh95/jsx-fontawesome";
 import { faUndo, faRedo } from "@fortawesome/free-solid-svg-icons";
 
 import statePersistance from "../app_global_state/History.js";
