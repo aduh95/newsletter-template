@@ -3,7 +3,14 @@ import {
   applyUpdate as updateOfflineApp,
 } from "offline-plugin/runtime";
 
-import { h, Component, Fragment, Suspense, lazy } from "./utils/jsx.js";
+import {
+  h,
+  Component,
+  Fragment,
+  Suspense,
+  lazy,
+  conditionalRendering,
+} from "./utils/jsx.js";
 
 import statePersistance from "./app_global_state/templateComponents.js";
 import { PERSISTANT_STORAGE_KEY } from "./app_global_state/StatePersistance-const.js";
@@ -12,6 +19,10 @@ import Error from "./AppError.js";
 import Loading from "./Loading.js";
 
 const APP_TITLE = "Newsletter template builder";
+
+const editingState = Symbol("editing");
+const splashScreenState = Symbol("splashScreen");
+const errorState = Symbol("error");
 
 const addComponent = (key, component) => {
   const state = statePersistance.get();
@@ -25,7 +36,7 @@ const AddNewComponent = lazy(() => import("./edit_components/AddComponent.js"));
 const SplashScreen = lazy(() => import("./SplashScreen.js"));
 const GenerateComponents = lazy(() => import("./components/lazy-component.js"));
 
-export default class App extends Component {
+class OldApp extends Component {
   state = { previewing: true, hasError: false };
 
   #shouldUpdateDOM = true;
@@ -50,31 +61,6 @@ export default class App extends Component {
         m.default.recoverSavedState()
       );
     }
-  }
-
-  componentDidMount() {
-    console.log("mount");
-    statePersistance.subscribe(this.update.bind(this));
-    const { currentState } = statePersistance;
-    if (currentState) {
-      this.update(currentState);
-    }
-
-    installOfflineApp({
-      onUpdateReady: () => {
-        this.updateReady = true;
-      },
-      onInstalled: () => {
-        import("./notify.js")
-          .then(module => module.default)
-          .then(notify => notify("Ready to work offline"));
-      },
-      onUpdated: () => {
-        import("./notify.js")
-          .then(module => module.default)
-          .then(notify => notify("Updated to last version"));
-      },
-    });
   }
 
   componentWillUnmount() {
@@ -114,16 +100,70 @@ export default class App extends Component {
       return false;
     }
   }
+}
+
+export default class App extends Component {
+  #saveState = Function.prototype;
+  #stateObservers = new Set();
+
+  #updateReady = false;
 
   #addComponentInMain = addComponent.bind(null, "main");
   #addComponentInAside = addComponent.bind(null, "aside");
 
-  render() {
-    console.log("render", this.state);
-    const { main, aside } = this.state;
-    const appReadyForEditor = main && aside;
+  #startTemplateFromScratch = () =>
+    statePersistance.set({ main: [], aside: [] });
 
-    if (this.updateReady) {
+  componentDidMount() {
+    console.log("mount");
+    statePersistance.subscribe(this.update.bind(this));
+    const { currentState } = statePersistance;
+    if (currentState) {
+      this.update(currentState);
+    }
+
+    installOfflineApp({
+      onUpdateReady: () => {
+        this.#updateReady = true;
+      },
+      onInstalled: () => {
+        import("./notify.js")
+          .then(module => module.default)
+          .then(notify => notify("Ready to work offline"));
+      },
+      onUpdated: () => {
+        import("./notify.js")
+          .then(module => module.default)
+          .then(notify => notify("Updated to last version"));
+      },
+    });
+  }
+
+  setState(state) {
+    this.#stateObservers.forEach(fn => fn(state).catch(console.err));
+  }
+
+  update(data) {
+    data = data || {};
+    try {
+      const main = Array.isArray(data.main) ? data.main : null;
+      const aside = Array.isArray(data.aside) ? data.aside : null;
+
+      this.state = { main, aside };
+
+      this.setState(editingState);
+    } catch (e) {
+      console.warn(e, data);
+      this.setState(errorState);
+    }
+  }
+
+  renderEditor() {
+    const { main, aside } = this.state;
+    this.state = {};
+    console.log({ main, aside });
+
+    if (this.#updateReady) {
       try {
         sessionStorage.setItem(
           PERSISTANT_STORAGE_KEY,
@@ -136,54 +176,81 @@ export default class App extends Component {
     }
 
     return (
-      <>
-        {this.state.hasError ? (
-          <Error resetState={() => this.setState({ hasError: false })} />
-        ) : (
+      <Editor title={APP_TITLE} onChange={this.#saveState}>
+        <main data-export data-type="main">
           <Suspense fallback={<Loading />}>
-            <DropZone dataHandler={this.#saveState} />
-            {appReadyForEditor ? (
-              <Editor title={APP_TITLE} onChange={this.#saveState}>
-                <main data-export data-type="main">
-                  <Suspense fallback={<Loading />}>
-                    <GenerateComponents data={main} />
-                  </Suspense>
-                  <AddNewComponent
-                    onChange={this.#addComponentInMain}
-                    components={[
-                      "Footer",
-                      "FeatureStories",
-                      "Hero",
-                      "HotTopics",
-                      "NewsletterSection",
-                      "Separator",
-                    ]}
-                  />
-                </main>
-                <aside data-export data-type="aside" data-contents>
-                  <section className="newsletter aside" data-type="aside">
-                    <Suspense fallback={<Loading />}>
-                      <GenerateComponents data={aside} />
-                    </Suspense>
-                    <AddNewComponent
-                      onChange={this.#addComponentInAside}
-                      components={[
-                        "AsideList",
-                        "NewsletterArticle",
-                        "Separator",
-                      ]}
-                    />
-                  </section>
-                </aside>
-              </Editor>
-            ) : (
-              <SplashScreen
-                title={APP_TITLE}
-                startTemplateFromScratch={this.#startTemplateFromScratch}
-                previousStateDate={statePersistance.lastSavedStateDate}
-              />
-            )}
+            <GenerateComponents data={main} />
           </Suspense>
+          <AddNewComponent
+            onChange={this.#addComponentInMain}
+            components={[
+              "Footer",
+              "FeatureStories",
+              "Hero",
+              "HotTopics",
+              "NewsletterSection",
+              "Separator",
+            ]}
+          />
+        </main>
+        <aside data-export data-type="aside" data-contents>
+          <section className="newsletter aside" data-type="aside">
+            <Suspense fallback={<Loading />}>
+              <GenerateComponents data={aside} />
+            </Suspense>
+            <AddNewComponent
+              onChange={this.#addComponentInAside}
+              components={["AsideList", "NewsletterArticle", "Separator"]}
+            />
+          </section>
+        </aside>
+      </Editor>
+    );
+  }
+
+  renderSplashScreen() {
+    return (
+      <SplashScreen
+        title={APP_TITLE}
+        startTemplateFromScratch={this.#startTemplateFromScratch}
+        previousStateDate={statePersistance.lastSavedStateDate}
+      />
+    );
+  }
+
+  renderError() {
+    return <Error resetState={() => this.setState({ hasError: false })} />;
+  }
+
+  render() {
+    console.log("render");
+
+    const currentState = sessionStorage.getItem(PERSISTANT_STORAGE_KEY);
+    if (currentState) {
+      sessionStorage.removeItem(PERSISTANT_STORAGE_KEY);
+      import("./app_global_state/History.js").then(m =>
+        m.default.recoverSavedState()
+      );
+    }
+
+    const defaultState = currentState ? editingState : splashScreenState;
+    this.componentDidMount();
+
+    return (
+      <>
+        <DropZone dataHandler={this.#saveState} />
+        {conditionalRendering(
+          {
+            [errorState]: this.renderError.bind(this),
+            [editingState]: this.renderEditor.bind(this),
+            [splashScreenState]: this.renderSplashScreen.bind(this),
+          },
+          this.#stateObservers,
+          defaultState,
+          e => {
+            console.error(e);
+            this.setState(errorState);
+          }
         )}
         <footer>
           <ul>
