@@ -9,7 +9,7 @@
     "deploy": "gh-pages -d newsletter-template-builder"
   },
   "dependencies": {
-    "@aduh95/async-jsx": "^0.1.1",
+    "@aduh95/async-jsx": "^0.2.0-0",
     "@aduh95/jsx-fontawesome": "^0.1.6",
     "@fortawesome/fontawesome-svg-core": "^1.2.21",
     "@fortawesome/free-solid-svg-icons": "^5.10.1",
