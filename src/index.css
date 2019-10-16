@@ -142,6 +142,11 @@ output[data-contents] {
   place-self: center;
   animation: fadeInAfterDelay 400ms;
 }
+dialog.loading {
+  position: fixed;
+  top: 50vh;
+  transform: translateY(-50%);
+}
 body > .loading {
   grid-column: span 2;
   grid-row: span 2;

@@ -1,11 +1,22 @@
-import { h } from "./utils/jsx.js";
+import { h, createPortal } from "./utils/jsx.js";
+
+function onClick() {
+  this.close();
+}
 
 function Loading() {
   console.log("render");
-  return (
-    <dialog data-do-not-export open data-ignore class="loading">
+  return createPortal(
+    <dialog
+      data-do-not-export
+      open
+      data-ignore
+      class="loading"
+      onClick={onClick}
+    >
       Loading...
-    </dialog>
+    </dialog>,
+    document.body
   );
 }
 
