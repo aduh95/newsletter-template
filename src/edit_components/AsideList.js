@@ -1,4 +1,4 @@
-import { h, Component, createRef } from "../utils/jsx.js"
+import { h, Component, createRef } from "../utils/jsx.js";
 
 import OrderedList from "./OrderedList.js";
 import Modal from "../editor/Modal.js";
@@ -19,11 +19,8 @@ export default class UpdateAsideList extends Component {
       : [],
   };
 
-  componentDidMount() {
-    this.update();
-  }
-  componentDidUpdate(prevProps) {
-    this.update(prevProps);
+  setState(state) {
+    Object.assign(this.state, state);
   }
 
   update(prevProps = {}) {
@@ -134,6 +131,6 @@ export default class UpdateAsideList extends Component {
           </div>
         </form>
       </Modal>
-    );
+    ).finally(() => this.update());
   }
 }
