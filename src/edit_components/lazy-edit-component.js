@@ -1,24 +1,66 @@
-import { h, Suspense, lazy } from "../utils/jsx.js";
+import {
+  h,
+  lazy,
+  StatefulComponent,
+  Component,
+  renderAsync,
+} from "../utils/jsx.js";
 
 import LoadingDialog from "../LoadingDialog.js";
 
 const ASYNC_COMP = new Map();
 
-function EditComponent({ active, componentName, props }) {
-  if (!ASYNC_COMP.has(componentName)) {
-    console.log("try loading edit_component", componentName);
-    ASYNC_COMP.set(componentName, lazy(() => import(`./${componentName}.js`)));
+export default class EditorComponent extends StatefulComponent {
+  #EditComponent;
+
+  componentDidMount() {
+    const { componentName, componentToEdit } = this.props;
+
+    if (!ASYNC_COMP.has(componentName)) {
+      ASYNC_COMP.set(
+        componentName,
+        lazy(() => import(`./${componentName}.js`))
+      );
+    }
+
+    this.#EditComponent = ASYNC_COMP.get(componentName);
+
+    if (componentToEdit) {
+      this._state = componentToEdit.state;
+      Object.defineProperty(componentToEdit, "state", {
+        get: () => this.state,
+        set: value => (this.state = value),
+      });
+
+      componentToEdit.setState = this.setState.bind(this);
+    }
   }
 
-  const EditComponent = ASYNC_COMP.get(componentName);
+  render() {
+    const EditComponent = this.#EditComponent;
+    const { active, props } = this.props.propsToApply();
 
-  console.log("render", "Edit" + componentName, active);
-  return (
-    <Suspense fallback={<LoadingDialog />}>
-      {active ? <EditComponent {...props} /> : null}
-    </Suspense>
-  );
+    return active
+      ? renderAsync(
+          <EditComponent {...props} />,
+          <LoadingDialog />,
+          console.error
+        )
+      : document.createDocumentFragment();
+  }
 }
 
-EditComponent.prototype = null;
-export default EditComponent;
+export class EditableComponent extends Component {
+  setState() {
+    throw new Error("Trying to set state before calling `getEditorComponent`");
+  }
+  getEditorComponent(getProps, componentName = this.constructor.name) {
+    return (
+      <EditorComponent
+        componentName={componentName}
+        componentToEdit={this}
+        propsToApply={getProps}
+      />
+    );
+  }
+}

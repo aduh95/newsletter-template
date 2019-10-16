@@ -1,12 +1,13 @@
-import { h, Component } from "../utils/jsx.js"
+import { h } from "../utils/jsx.js";
 
-import Edit from "../edit_components/lazy-edit-component.js";
+// import Edit from "../edit_components/lazy-edit-component.js";
 import Nav from "./FeatureStoriesNav.js";
 import NewsletterSection from "./NewsletterSection.js";
+import { EditableComponent } from "../edit_components/lazy-edit-component.js";
 
 const SECTION_TYPE = "NewsletterSection";
 
-export default class FeatureStories extends Component {
+export default class FeatureStories extends EditableComponent {
   state = { newSection: null };
 
   #addSection = this.addSection.bind(this);
@@ -101,14 +102,16 @@ export default class FeatureStories extends Component {
           editSection={this.#editSection}
         />
 
-        <Edit
-          componentName={SECTION_TYPE}
-          active={!!this.state.edit}
-          props={{
-            ...this.state.edit,
-            resetState: this.#resetState,
-          }}
-        />
+        {this.getEditorComponent(
+          () => ({
+            active: !!this.state.edit,
+            props: {
+              ...this.state.edit,
+              resetState: this.#resetState,
+            },
+          }),
+          SECTION_TYPE
+        )}
 
         {sections.map(section => (
           <NewsletterSection {...section} />

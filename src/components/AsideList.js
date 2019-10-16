@@ -1,13 +1,13 @@
-import { h, Component, Fragment } from "../utils/jsx.js"
+import { h } from "../utils/jsx.js";
 
 import {
   clickHandler,
   dblClickHandler,
   touchHandler,
 } from "./eventHandlers.js";
-import Edit from "../edit_components/lazy-edit-component.js";
+import { EditableComponent } from "../edit_components/lazy-edit-component.js";
 
-export default class AsideList extends Component {
+export default class AsideList extends EditableComponent {
   state = { writeMode: false, data: JSON.stringify(this.props) };
 
   #clickHandler = clickHandler.bind(this);
@@ -50,17 +50,16 @@ export default class AsideList extends Component {
           ))}
         </ul>
 
-        <Edit
-          componentName="AsideList"
-          active={this.state.writeMode}
-          props={{
+        {this.getEditorComponent(() => ({
+          active: this.state.writeMode,
+          props: {
             ...this.props,
             focus: this.state.focus,
             focusOffset: this.state.focusOffset,
             saveState: this.update.bind(this),
             resetState: () => this.setState({ writeMode: false }),
-          }}
-        />
+          },
+        }))}
       </article>
     );
   }

@@ -1,10 +1,10 @@
-import { h, Component as PureComponent } from "../utils/jsx.js";
+import { h } from "../utils/jsx.js";
 
 import { FontAwesomeIcon } from "@aduh95/jsx-fontawesome";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
-import EditTemplateSettings from "../edit_components/lazy-edit-component";
+import { EditableComponent } from "../edit_components/lazy-edit-component";
 
-export default class TemplateSettingsAction extends PureComponent {
+export default class TemplateSettingsAction extends EditableComponent {
   state = { editTemplate: null };
 
   #editTemplate = () => this.setState({ editTemplate: true });
@@ -18,11 +18,13 @@ export default class TemplateSettingsAction extends PureComponent {
       <button onClick={this.#editTemplate} title="Edit template settings">
         <FontAwesomeIcon icon={faCog} />
         &nbsp;Settings
-        <EditTemplateSettings
-          componentName="TemplateSettings"
-          active={this.state.editTemplate}
-          props={this.#editTemplateProps}
-        />
+        {this.getEditorComponent(
+          () => ({
+            active: this.state.editTemplate,
+            props: this.#editTemplateProps,
+          }),
+          "TemplateSettings"
+        )}
       </button>
     );
   }

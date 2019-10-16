@@ -1,4 +1,4 @@
-import { h, Component, Fragment } from "../utils/jsx.js"
+import { h, Component, Fragment } from "../utils/jsx.js";
 
 import {
   clickHandler,
@@ -6,7 +6,7 @@ import {
   touchHandler,
 } from "./eventHandlers.js";
 import MarkdownContent from "../markdown/MarkdownContent.js";
-import Edit from "../edit_components/lazy-edit-component.js";
+import { EditableComponent } from "../edit_components/lazy-edit-component.js";
 
 const getArray = obj => (obj ? (Array.isArray(obj) ? obj : [obj]) : []);
 
@@ -58,7 +58,7 @@ class Illustration extends Component {
   }
 }
 
-export default class NewsletterArticle extends Component {
+export default class NewsletterArticle extends EditableComponent {
   state = {
     writeMode: false,
     data: JSON.stringify(this.props),
@@ -117,18 +117,17 @@ export default class NewsletterArticle extends Component {
           ))}
         </p>
 
-        <Edit
-          componentName="NewsletterArticle"
-          active={this.state.writeMode}
-          props={{
+        {this.getEditorComponent(() => ({
+          active: this.state.writeMode,
+          props: {
             ...this.props,
             focus: this.state.focus,
             focusOffset: this.state.focusOffset,
             focusText: this.state.focusText,
             saveState: this.update.bind(this),
             resetState: () => this.setState({ writeMode: false }),
-          }}
-        />
+          },
+        }))}
       </article>
     );
   }

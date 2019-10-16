@@ -1,4 +1,4 @@
-import { h, Component, Fragment } from "../utils/jsx.js"
+import { h, Component, Fragment } from "../utils/jsx.js";
 
 import ReOrderComponents from "./ReOrderComponents.js";
 import MenuBar from "./MenuBar.js";
@@ -205,14 +205,21 @@ export default class Editor extends Component {
 
   render() {
     console.log("render");
+    // Promise.all(this.props.children.flat(Infinity)).then(() =>
+    this.checkForDOMChanges();
+    // );
+    window.debugNow = true;
     return (
       <>
+        <p hidden>test</p>
+        <p hidden>test2</p>
         <header>
           <h1>{this.props.title}</h1>
           <MenuBar editor={this} />
         </header>
         {this.state.reOrder ? <ReOrderComponents /> : null}
         {this.#waitForHistoryRewind ? <LoadingDialog /> : this.props.children}
+        <p hidden>test3</p>
       </>
     );
   }

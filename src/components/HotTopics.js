@@ -1,6 +1,6 @@
 import { h, Component, conditionalRendering } from "../utils/jsx.js";
 import NewsletterArticle from "./NewsletterArticle";
-import NewArticle from "../edit_components/lazy-edit-component.js";
+import {} from "../edit_components/lazy-edit-component.js";
 
 export default class HotTopics extends Component {
   #createNewArticleObservers = new Set();

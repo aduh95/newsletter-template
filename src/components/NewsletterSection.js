@@ -69,8 +69,10 @@ export default class NewsletterSection extends Component {
             [true]: () => (
               <NewArticle
                 componentName="NewsletterArticle"
-                active={true}
-                props={this.#newArticleProps}
+                propsToApply={() => ({
+                  active: true,
+                  props: this.#newArticleProps,
+                })}
               />
             ),
             [false]: null,

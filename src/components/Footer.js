@@ -1,14 +1,16 @@
-import { h, Component } from "../utils/jsx.js"
+import { h, Component } from "../utils/jsx.js";
 
 import {
   clickHandler,
   dblClickHandler,
   touchHandler,
 } from "./eventHandlers.js";
-import Edit from "../edit_components/lazy-edit-component.js";
+import Edit, {
+  EditableComponent,
+} from "../edit_components/lazy-edit-component.js";
 import MarkdownContent from "../markdown/MarkdownContent.js";
 
-export default class Footer extends Component {
+export default class Footer extends EditableComponent {
   state = { writeMode: false };
 
   #touchHandler = touchHandler.bind(this);
@@ -77,16 +79,15 @@ export default class Footer extends Component {
           }}
         />
 
-        <Edit
-          componentName="Footer"
-          active={this.state.writeMode}
-          props={{
+        {this.getEditorComponent(() => ({
+          active: this.state.writeMode,
+          props: {
             ...this.props,
             focusPosition: this.state.focusPosition,
             saveState: this.update.bind(this),
             resetState: () => this.setState({ writeMode: false }),
-          }}
-        />
+          },
+        }))}
       </section>
     );
   }

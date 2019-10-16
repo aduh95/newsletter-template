@@ -1,9 +1,10 @@
-import { h, Component, createRef } from "../utils/jsx.js"
+import { h, Component, createRef } from "../utils/jsx.js";
 
 import OrderedList from "./OrderedList.js";
 import EditMarkdown from "../markdown/EditMarkdownContent.js";
 import Modal from "../editor/Modal.js";
 import normalizeURL from "./normalizeURL.js";
+import {} from "@aduh95/async-jsx/dist/react";
 
 function handleChange(onChange, e) {
   const { target } = e;
@@ -112,7 +113,7 @@ class EditIllustration extends Component {
   }
 }
 
-export default class EditNewsletterArticle extends Component {
+export default class EditNewsletterArticle extends StatefulComponent {
   form = createRef();
 
   #handleChange = handleChange.bind(this, this.setState.bind(this));

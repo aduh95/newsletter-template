@@ -42,12 +42,14 @@ export default class SplashScreen extends Component {
       const newTemplateNode = (
         <NewTemplate
           componentName="TemplateSettings"
-          active={true}
-          props={{
-            recoverSavedState: this.#startTemplate,
-            saveChange: this.props.startTemplateFromScratch,
-            resetState: this.#closeNewTemplateModal,
-          }}
+          propsToApply={() => ({
+            active: true,
+            props: {
+              recoverSavedState: this.#startTemplate,
+              saveChange: this.props.startTemplateFromScratch,
+              resetState: this.#closeNewTemplateModal,
+            },
+          })}
         />
       );
       newTemplateNode.then(element => {

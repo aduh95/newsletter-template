@@ -1,4 +1,4 @@
-import { h, Component } from "../utils/jsx.js";
+import { h } from "../utils/jsx.js";
 import { FontAwesomeIcon } from "@aduh95/jsx-fontawesome";
 import { faFolderPlus } from "@fortawesome/free-solid-svg-icons";
 
