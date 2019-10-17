@@ -5,18 +5,25 @@ import {
   faItalic,
   faLink,
   faListUl,
+  faListOl,
   faPrint,
 } from "@fortawesome/free-solid-svg-icons";
 
 import MarkdownContent from "./MarkdownContent";
 import PrettierWorker from "./prettier.worker.js";
+import {
+  UNORDERED_LIST,
+  ORDERED_LIST,
+  handleListCommand,
+} from "./manipulateLists";
 
 const worker = new PrettierWorker();
 
 const commands = [
   { label: faBold, char: "**", shortcut: "b" },
   { label: faItalic, char: "_", shortcut: "i" },
-  { label: faListUl, charAfter: "\n\n- ", selectionAfter: true },
+  { label: faListUl, listType: UNORDERED_LIST },
+  { label: faListOl, listType: ORDERED_LIST },
   {
     label: faLink,
     charBefore: "[",
@@ -27,11 +34,13 @@ const commands = [
   },
 ];
 
-const ul_patern = /\n\s*-\s.+$/;
+const ul_patern = /\n\s*[-*]\s.+$/;
 const ol_patern = /\n(\s*)(\d+)\.\s.+$/;
 const list_end_patern = /\n\s*(-|\d+\.)\s*$/;
-const ul_end_patern = /\n\s*(-|\*)\s*$/;
-const ol_end_patern = /\n\s*\d\.\s*$/;
+const ul_end_patern = /\n\s*[-*]\s*$/;
+const ol_end_patern = /\n\s*\d+\.\s*$/;
+
+const MD_BUTTON = "md-command";
 
 export default class EditMarkdownContent extends Component {
   state = { active: this.props.initiallyActive };
@@ -63,6 +72,7 @@ export default class EditMarkdownContent extends Component {
           onClick={this.handleCommand(command)}
           accesskey={command.shortcut}
           type="button"
+          className={MD_BUTTON}
         >
           <FontAwesomeIcon icon={command.label} />
         </button>
@@ -113,35 +123,39 @@ export default class EditMarkdownContent extends Component {
         return;
       }
 
-      const { selectionStart, selectionEnd, value } = current;
-      const charBefore = command.charBefore || command.char || "";
-      const charAfter = command.charAfter || command.char || "";
+      if (command.listType) {
+        handleListCommand(command.listType, current);
+      } else {
+        const { selectionStart, selectionEnd, value } = current;
+        const charBefore = command.charBefore || command.char || "";
+        const charAfter = command.charAfter || command.char || "";
 
-      current.value =
-        value.substring(0, selectionStart) +
-        charBefore +
-        value.substring(selectionStart, selectionEnd) +
-        charAfter +
-        value.substring(selectionEnd);
+        current.value =
+          value.substring(0, selectionStart) +
+          charBefore +
+          value.substring(selectionStart, selectionEnd) +
+          charAfter +
+          value.substring(selectionEnd);
 
-      if (command.selectionAfter) {
-        if (command.selectionOffset) {
-          const [offsetBefore, offsetAfter] = command.selectionOffset;
-          current.setSelectionRange(
-            selectionEnd + charBefore.length + offsetBefore,
-            selectionEnd + charBefore.length + charAfter.length - offsetAfter
-          );
+        if (command.selectionAfter) {
+          if (command.selectionOffset) {
+            const [offsetBefore, offsetAfter] = command.selectionOffset;
+            current.setSelectionRange(
+              selectionEnd + charBefore.length + offsetBefore,
+              selectionEnd + charBefore.length + charAfter.length - offsetAfter
+            );
+          } else {
+            current.setSelectionRange(
+              selectionEnd + charAfter.length,
+              selectionEnd + charAfter.length
+            );
+          }
         } else {
           current.setSelectionRange(
-            selectionEnd + charAfter.length,
-            selectionEnd + charAfter.length
+            selectionStart + charBefore.length,
+            selectionEnd + charBefore.length
           );
         }
-      } else {
-        current.setSelectionRange(
-          selectionStart + charBefore.length,
-          selectionEnd + charBefore.length
-        );
       }
 
       this.props.onChange({ target: current });
@@ -196,7 +210,11 @@ export default class EditMarkdownContent extends Component {
   makePrettier(e) {
     const { current } = this.textarea;
 
-    if (current) {
+    // If the user has just clicked on a command button, it's not wise to run Prettier
+    // as the command will inject markdown in the textarea
+    const { relatedTarget } = e;
+
+    if (current && !relatedTarget?.classList?.contains(MD_BUTTON)) {
       const { value } = current;
 
       this.constructor
