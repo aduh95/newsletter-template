@@ -1,10 +1,15 @@
-import { h, Component, createRef } from "../utils/jsx.js";
+import {
+  h,
+  Fragment,
+  Component,
+  createRef,
+  conditionalRendering,
+} from "../utils/jsx.js";
 
 import OrderedList from "./OrderedList.js";
 import EditMarkdown from "../markdown/EditMarkdownContent.js";
 import Modal from "../editor/Modal.js";
 import normalizeURL from "./normalizeURL.js";
-import {} from "@aduh95/async-jsx/dist/react";
 
 function handleChange(onChange, e) {
   const { target } = e;
@@ -13,15 +18,19 @@ function handleChange(onChange, e) {
   onChange({ ...this.props, [name]: value });
 }
 
+const NO_ILLUSTRATION = Symbol("no illustration");
+const IMAGE = Symbol("image");
+const VIDEO = Symbol("video");
+
 class EditIllustration extends Component {
-  static getDerivedStateFromProps({ src }) {
-    return { noIllustration: !src };
-  }
+  state = { noIllustration: !this.props.src };
 
   #handleChange = handleChange.bind(this, this.props.onChange);
   #disableIllustration = this.disableIllustration.bind(this);
   #switchToImage = this.switchToImage.bind(this);
   #switchToVideo = this.switchToVideo.bind(this);
+
+  #stateChangeListeners = new Set();
 
   disableIllustration(e) {
     this.props.onChange({
@@ -29,6 +38,7 @@ class EditIllustration extends Component {
       alt: undefined,
       isVideo: undefined,
     });
+    this.#stateChangeListeners.forEach(fn => fn(NO_ILLUSTRATION));
   }
 
   switchToVideo(e) {
@@ -37,6 +47,7 @@ class EditIllustration extends Component {
       alt: undefined,
       isVideo: true,
     });
+    this.#stateChangeListeners.forEach(fn => fn(VIDEO));
     requestAnimationFrame(() => e.target.form.elements["src"].focus());
   }
 
@@ -46,6 +57,7 @@ class EditIllustration extends Component {
       alt: "",
       isVideo: false,
     });
+    this.#stateChangeListeners.forEach(fn => fn(IMAGE));
     requestAnimationFrame(() => e.target.form.elements["src"].focus());
   }
 
@@ -85,35 +97,58 @@ class EditIllustration extends Component {
           />
           &nbsp;Video
         </label>
-        {this.state.noIllustration ? null : (
-          <label>
-            {this.props.isVideo ? "Video" : "Image"} URL:&nbsp;
-            <input
-              onChange={this.#handleChange}
-              name="src"
-              type="url"
-              value={this.props.src}
-            />
-          </label>
-        )}
-        {this.state.noIllustration || this.props.isVideo ? null : (
-          <label>
-            Image description:&nbsp;
-            <input
-              onChange={this.#handleChange}
-              name="alt"
-              value={this.props.alt}
-              placeholder="Mandatory description of the image"
-              required
-            />
-          </label>
+        {conditionalRendering(
+          {
+            [NO_ILLUSTRATION]: <></>,
+            [IMAGE]: (
+              <>
+                <label>
+                  Image URL:&nbsp;
+                  <input
+                    onChange={this.#handleChange}
+                    name="src"
+                    type="url"
+                    value={this.props.src}
+                  />
+                </label>
+                <label>
+                  Image description:&nbsp;
+                  <input
+                    onChange={this.#handleChange}
+                    name="alt"
+                    value={this.props.alt}
+                    placeholder="Mandatory description of the image"
+                    required
+                  />
+                </label>
+              </>
+            ),
+            [VIDEO]: (
+              <label>
+                Video URL:&nbsp;
+                <input
+                  onChange={this.#handleChange}
+                  name="src"
+                  type="url"
+                  value={this.props.src}
+                />
+              </label>
+            ),
+          },
+          this.#stateChangeListeners,
+          this.state.noIllustration
+            ? NO_ILLUSTRATION
+            : this.props.isVideo
+            ? VIDEO
+            : IMAGE,
+          console.error
         )}
       </fieldset>
     );
   }
 }
 
-export default class EditNewsletterArticle extends StatefulComponent {
+export default class EditNewsletterArticle extends Component {
   form = createRef();
 
   #handleChange = handleChange.bind(this, this.setState.bind(this));
@@ -146,11 +181,8 @@ export default class EditNewsletterArticle extends StatefulComponent {
     links: Array.isArray(this.props.links) ? this.props.links : [],
   };
 
-  componentDidMount() {
-    this.update();
-  }
-  componentDidUpdate(prevProps) {
-    this.update(prevProps);
+  setState(state) {
+    Object.assign(this.state, state);
   }
 
   update(prevProps = {}) {
@@ -315,6 +347,6 @@ export default class EditNewsletterArticle extends StatefulComponent {
           </div>
         </form>
       </Modal>
-    );
+    ).finally(() => this.update());
   }
 }
