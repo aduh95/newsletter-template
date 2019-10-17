@@ -6,7 +6,7 @@ import {
   faLink,
   faListUl,
   faListOl,
-  faPrint,
+  faEye,
 } from "@fortawesome/free-solid-svg-icons";
 
 import MarkdownContent from "./MarkdownContent";
@@ -17,13 +17,15 @@ import {
   handleListCommand,
 } from "./manipulateLists";
 
+import "./EditMarkdownContent.scss";
+
 const worker = new PrettierWorker();
 
 const commands = [
-  { label: faBold, char: "**", shortcut: "b" },
-  { label: faItalic, char: "_", shortcut: "i" },
-  { label: faListUl, listType: UNORDERED_LIST },
-  { label: faListOl, listType: ORDERED_LIST },
+  { label: faBold, char: "**", shortcut: "b", help: "Bold" },
+  { label: faItalic, char: "_", shortcut: "i", help: "Italic" },
+  { label: faListUl, listType: UNORDERED_LIST, help: "Unorded list" },
+  { label: faListOl, listType: ORDERED_LIST, help: "Ordered list" },
   {
     label: faLink,
     charBefore: "[",
@@ -31,6 +33,7 @@ const commands = [
     selectionAfter: true,
     selectionOffset: [2, 1],
     shortcut: "k",
+    help: "Hypertext link",
   },
 ];
 
@@ -73,14 +76,18 @@ export default class EditMarkdownContent extends Component {
           accesskey={command.shortcut}
           type="button"
           className={MD_BUTTON}
+          title={command.help}
         >
           <FontAwesomeIcon icon={command.label} />
         </button>
       ))}
       &nbsp;|&nbsp;
-      <button accesskey="s" onClick={() => this.setState({ active: false })}>
-        <FontAwesomeIcon icon={faPrint} />
-        &nbsp;Preview
+      <button
+        className="md-preview"
+        accesskey="s"
+        onClick={() => this.setState({ active: false })}
+      >
+        <FontAwesomeIcon icon={faEye} />
       </button>
     </p>
   );

@@ -1,0 +1,20 @@
+button.md-preview,
+button.md-command {
+  background-color: transparent;
+  font-size: 1rem;
+  border-style: solid;
+  border-color: transparent;
+  border-radius: 0.25rem;
+
+  &:hover {
+    border-color: #626469;
+    background-color: var(--background-color);
+  }
+}
+
+button.md-preview:hover::after {
+  content: "Preview";
+  font-size: smaller;
+  line-height: 1rem;
+  padding-left: 1ch;
+}
