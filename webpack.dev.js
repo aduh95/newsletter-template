@@ -39,17 +39,7 @@ module.exports = {
           },
           {
             test: /\.scss$/,
-            use: [
-              "style-loader",
-              "css-loader",
-              {
-                loader: "sass-loader",
-                options: {
-                  implementation: require("sass"),
-                  fiber: require("fibers"),
-                },
-              },
-            ],
+            use: ["style-loader", "css-loader", "sass-loader"],
           },
         ],
       },
