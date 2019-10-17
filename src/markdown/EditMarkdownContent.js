@@ -137,12 +137,23 @@ export default class EditMarkdownContent extends Component {
         const charBefore = command.charBefore || command.char || "";
         const charAfter = command.charAfter || command.char || "";
 
-        current.value =
-          value.substring(0, selectionStart) +
-          charBefore +
-          value.substring(selectionStart, selectionEnd) +
-          charAfter +
-          value.substring(selectionEnd);
+        const toggleOff =
+          value.substring(
+            selectionStart - charBefore.length,
+            selectionStart
+          ) === charBefore &&
+          value.substring(selectionEnd, selectionEnd + charAfter.length) ===
+            charAfter;
+
+        current.value = toggleOff
+          ? value.substring(0, selectionStart - charBefore.length) +
+            value.substring(selectionStart, selectionEnd) +
+            value.substring(selectionEnd + charAfter.length)
+          : value.substring(0, selectionStart) +
+            charBefore +
+            value.substring(selectionStart, selectionEnd) +
+            charAfter +
+            value.substring(selectionEnd);
 
         if (command.selectionAfter) {
           if (command.selectionOffset) {
@@ -157,6 +168,11 @@ export default class EditMarkdownContent extends Component {
               selectionEnd + charAfter.length
             );
           }
+        } else if (toggleOff) {
+          current.setSelectionRange(
+            selectionStart - charBefore.length,
+            selectionEnd - charBefore.length
+          );
         } else {
           current.setSelectionRange(
             selectionStart + charBefore.length,
