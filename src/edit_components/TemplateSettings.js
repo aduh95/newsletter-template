@@ -60,7 +60,7 @@ export default class EditTemplateSettings extends Component {
               />
             </label>
             <label>
-              Targeted domain name:&nbsp;
+              URL of the final page:&nbsp;
               <input
                 name="hostname"
                 type="url"
