@@ -46,7 +46,7 @@ export default class AddNewComponent extends PureComponent {
         >
           <option>Add new component</option>
           {this.props.components.map(name => (
-            <option>{name}</option>
+            <option value={name}>{name}</option>
           ))}
         </select>
         {this.state.newComponent}
