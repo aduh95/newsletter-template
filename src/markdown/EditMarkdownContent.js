@@ -34,7 +34,7 @@ const commands = [
   },
 ];
 
-const ul_patern = /\n\s*[-*]\s.+$/;
+const ul_patern = /\n(\s*)[-*]\s.+$/;
 const ol_patern = /\n(\s*)(\d+)\.\s.+$/;
 const list_end_patern = /\n\s*(-|\d+\.)\s*$/;
 const ul_end_patern = /\n\s*[-*]\s*$/;
@@ -177,7 +177,13 @@ export default class EditMarkdownContent extends Component {
       // Enter
       if (ul_patern.test(currentLine)) {
         e.preventDefault();
-        e.target.setRangeText("\n- ", selectionStart, selectionEnd, "end");
+        const [_, spaces] = currentLine.match(ul_patern);
+        e.target.setRangeText(
+          `\n${spaces}- `,
+          selectionStart,
+          selectionEnd,
+          "end"
+        );
       } else if (ol_patern.test(currentLine)) {
         e.preventDefault();
         const [_, spaces, index] = currentLine.match(ol_patern);
