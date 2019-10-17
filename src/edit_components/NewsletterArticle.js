@@ -85,8 +85,8 @@ class EditIllustration extends Component {
           &nbsp;Video
         </label>
         {this.state.noIllustration ? null : (
-          <label>
-            {this.props.isVideo ? "Video" : "Image"} URL:&nbsp;
+          <label className="full-size">
+            {this.props.isVideo ? "Video" : "Image"}&nbsp;URL:&nbsp;
             <input
               onChange={this.#handleChange}
               name="src"
@@ -96,8 +96,8 @@ class EditIllustration extends Component {
           </label>
         )}
         {this.state.noIllustration || this.props.isVideo ? null : (
-          <label>
-            Image description:&nbsp;
+          <label className="full-size">
+            Image&nbsp;description:&nbsp;
             <input
               onChange={this.#handleChange}
               name="alt"
@@ -267,7 +267,7 @@ export default class EditNewsletterArticle extends Component {
       <Modal onClose={this.props.resetState}>
         <form method="dialog" ref={this.form} onSubmit={this.#handleSubmit}>
           <div>
-            <label>
+            <label className="full-size">
               Title:&nbsp;
               <input
                 name="title"

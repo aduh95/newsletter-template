@@ -54,7 +54,7 @@ export default class EditNewsletterSection extends Component {
       <Modal onClose={this.props.resetState}>
         <form method="dialog" onSubmit={this.#handleSubmit}>
           <div>
-            <label>
+            <label className="full-size">
               Title:&nbsp;
               <input
                 name="title"

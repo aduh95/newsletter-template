@@ -39,8 +39,7 @@
 
 output.editable-markdown-preview[data-contents] {
   display: block;
-  appearance: textarea;
-  -webkit-appearance: textarea;
+  border: 1px solid #a9a9a9;
   cursor: text;
   padding: 2px;
 }
@@ -63,6 +62,12 @@ dialog {
 
   form label {
     display: block;
+    &.full-size {
+      display: flex;
+      & > input {
+        width: 100%;
+      }
+    }
   }
 
   .ordered-list {
@@ -89,6 +94,10 @@ dialog {
           );
         }
       }
+    }
+
+    li > input {
+      width: 50%;
     }
   }
 }

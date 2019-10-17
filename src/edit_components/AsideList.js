@@ -111,7 +111,7 @@ export default class UpdateAsideList extends Component {
       <Modal onClose={this.props.resetState}>
         <form method="dialog" ref={this.form} onSubmit={this.#handleSubmit}>
           <div>
-            <label>
+            <label className="full-size">
               Title:&nbsp;
               <input
                 name="title"
