@@ -177,12 +177,14 @@ export default class App extends Component {
                   </section>
                 </aside>
               </Editor>
-            ) : (
+            ) : window.self === window.top ? (
               <SplashScreen
                 title={APP_TITLE}
                 startTemplateFromScratch={this.#startTemplateFromScratch}
                 previousStateDate={statePersistance.lastSavedStateDate}
               />
+            ) : (
+              <p>Loaded from iframe; use API to operate.</p>
             )}
           </Suspense>
         )}
