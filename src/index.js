@@ -11,3 +11,7 @@ document.getElementById("fallback-message").remove();
 render(<App />, document.body);
 
 import "./polyfill/bootstrap.js";
+
+if (window.self !== window.top) {
+  import("./ntbAPI.js");
+}
