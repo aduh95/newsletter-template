@@ -1,0 +1,1 @@
+button.md-command,button.md-preview{background-color:transparent;font-size:1rem;border-style:solid;border-color:transparent;border-radius:.25rem}button.md-command:hover,button.md-preview:hover{border-color:#626469;background-color:var(--background-color)}button.md-preview:hover:after{content:"Preview";font-size:smaller;line-height:1rem;padding-left:1ch}
