@@ -44,7 +44,7 @@ export default function getExportableElements() {
 
 export async function getExportableHTML() {
   const templateHostName = await import(
-    "./app_global_state/templateHostName.js"
+    "../app_global_state/templateHostName.js"
   ).then(module => module.default);
 
   const hostname = await templateHostName.getHostNameRegExp("g");
