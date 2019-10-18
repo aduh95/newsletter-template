@@ -212,7 +212,17 @@ export default class Editor extends Component {
           <MenuBar editor={this} />
         </header>
         {this.state.reOrder ? <ReOrderComponents /> : null}
-        {this.#waitForHistoryRewind ? <LoadingDialog /> : this.props.children}
+        {this.#waitForHistoryRewind ? (
+          <div
+            style={{
+              height: CSS.px(document.querySelector("main")?.offsetHeight),
+            }}
+          >
+            <LoadingDialog />
+          </div>
+        ) : (
+          this.props.children
+        )}
       </>
     );
   }
