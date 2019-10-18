@@ -35,8 +35,12 @@ window.self.addEventListener(
     await new Promise(done => {
       let timeout;
       const onTimeout = () => {
-        templateComponents.unsubscribe(resetTimeout);
-        done();
+        if (document.querySelector(".loading")) {
+          resetTimeout();
+        } else {
+          templateComponents.unsubscribe(resetTimeout);
+          done();
+        }
       };
       const resetTimeout = () => {
         clearTimeout(timeout);
@@ -45,7 +49,9 @@ window.self.addEventListener(
       templateComponents.subscribe(resetTimeout);
     });
 
-    getExportableHTML().then(html => ev.source.postMessage(html, ev.origin));
+    getExportableHTML()
+      .then(html => ev.source.postMessage(html, ev.origin))
+      .catch(console.error);
   },
   false
 );
