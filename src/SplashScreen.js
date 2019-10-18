@@ -53,6 +53,8 @@ export default class SplashScreen extends Component {
 
   componentDidMount() {
     import("./api/getLastSavedDate.js")
+      .then(module => module.default)
+      .then(getLastSavedDate => getLastSavedDate())
       .then(previousStateDate =>
         this.setState({ previousStateDate, loading: false })
       )
