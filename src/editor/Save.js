@@ -4,7 +4,7 @@ import { PureComponent } from "preact/compat";
 import { FontAwesomeIcon } from "@aduh95/preact-fontawesome";
 import { faDownload, faFileExport } from "@fortawesome/free-solid-svg-icons";
 
-import { getExportableHTML } from "../getExportableElements.js";
+import { getExportableHTML } from "../api/getExportableElements.js";
 
 const getTemplateName = () =>
   import("../app_global_state/templateName.js")

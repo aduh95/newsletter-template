@@ -1,11 +1,8 @@
 import { h, Component, Fragment } from "preact";
 
 import NewTemplate from "./edit_components/lazy-edit-component.js";
-import { PERSISTANT_STORAGE_NAME } from "./app_global_state/StatePersistance-const.js";
 
 import "./SplashScreen.scss";
-
-const canAccessDatabases = "function" === typeof window.indexedDB?.databases;
 
 export default class SplashScreen extends Component {
   state = { loading: true };
@@ -55,22 +52,7 @@ export default class SplashScreen extends Component {
   };
 
   componentDidMount() {
-    const doesDatabaseExist = canAccessDatabases
-      ? indexedDB
-          .databases()
-          .then(databases =>
-            databases.find(({ name }) => name === PERSISTANT_STORAGE_NAME)
-          )
-      : Promise.resolve(true); // let's assume it exists
-
-    doesDatabaseExist
-      .then(result =>
-        result
-          ? import("./app_global_state/History.js")
-          : Promise.reject("No saved state")
-      )
-      .then(module => module.default)
-      .then(appStateHistory => appStateHistory.getLastSavedDate())
+    import("./api/getLastSavedDate.js")
       .then(previousStateDate =>
         this.setState({ previousStateDate, loading: false })
       )
