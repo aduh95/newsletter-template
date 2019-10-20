@@ -17,19 +17,6 @@ const getCurrentState = () =>
     .then(history => history.getCurrentStateAsArrayBuffer());
 
 export default class Save extends PureComponent {
-  exportJSONFile() {
-    return Promise.all([getTemplateName(), getCurrentState()]).then(
-      ([name, fileContent]) =>
-        this.#exportFile(name + ".json", "application/json", fileContent)
-    );
-  }
-
-  exportHTMLFile() {
-    return Promise.all([getTemplateName(), getExportableHTML()]).then(
-      ([name, html]) => this.#exportFile(name + ".html", "text/html", html)
-    );
-  }
-
   #exportFile(fileName, type, fileContent) {
     const a = document.createElement("a");
     const file = new File(fileContent, fileName, { type });
@@ -43,15 +30,32 @@ export default class Save extends PureComponent {
     });
   }
 
+  #exportJSONFile = this.exportJSONFile.bind(this);
+  #exportHTMLFile = this.exportHTMLFile.bind(this);
+
+  exportJSONFile() {
+    console.log(this);
+    return Promise.all([getTemplateName(), getCurrentState()]).then(
+      ([name, fileContent]) =>
+        this.#exportFile(name + ".json", "application/json", fileContent)
+    );
+  }
+
+  exportHTMLFile() {
+    return Promise.all([getTemplateName(), getExportableHTML()]).then(
+      ([name, html]) => this.#exportFile(name + ".html", "text/html", html)
+    );
+  }
+
   render() {
     console.log("render");
     return (
       <>
-        <button onClick={this.exportJSONFile} title="Export as JSON">
+        <button onClick={this.#exportJSONFile} title="Export as JSON">
           <FontAwesomeIcon icon={faDownload} />
           &nbsp;Save
         </button>
-        <button onClick={this.exportHTMLFile} title="Export as HTML">
+        <button onClick={this.#exportHTMLFile} title="Export as HTML">
           <FontAwesomeIcon icon={faFileExport} />
           &nbsp;Export
         </button>
