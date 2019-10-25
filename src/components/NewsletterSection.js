@@ -28,10 +28,12 @@ export default class NewsletterSection extends Component {
 
   componentDidUpdate() {
     if (this.#readyToCleanState) {
-      this.setState(
-        { newArticle: null },
-        () => (this.#readyToCleanState = false)
-      );
+      this.setState({ newArticle: null }, () => {
+        this.#readyToCleanState = false;
+        requestAnimationFrame(() =>
+          this.base?.querySelector("article:last-of-type")?.focus()
+        );
+      });
     } else if (this.#readyToConsumeState) {
       this.#readyToCleanState = true;
       this.#readyToConsumeState = false;
