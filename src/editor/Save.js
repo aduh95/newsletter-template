@@ -51,11 +51,19 @@ export default class Save extends PureComponent {
     console.log("render");
     return (
       <>
-        <button onClick={this.#exportJSONFile} title="Export as JSON">
+        <button
+          onClick={this.#exportJSONFile}
+          title="Export as JSON"
+          accessKey="s"
+        >
           <FontAwesomeIcon icon={faDownload} />
           &nbsp;Save
         </button>
-        <button onClick={this.#exportHTMLFile} title="Export as HTML">
+        <button
+          onClick={this.#exportHTMLFile}
+          title="Export as HTML"
+          accessKey="x"
+        >
           <FontAwesomeIcon icon={faFileExport} />
           &nbsp;Export
         </button>

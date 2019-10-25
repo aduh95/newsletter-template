@@ -12,7 +12,11 @@ export default class Quit extends PureComponent {
   render() {
     console.log("render");
     return (
-      <button onClick={closeCurrentSession} title="Close current template">
+      <button
+        onClick={closeCurrentSession}
+        title="Close current template"
+        accessKey="q"
+      >
         <FontAwesomeIcon icon={faTimes} />
         &nbsp;Close
       </button>

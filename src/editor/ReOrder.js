@@ -31,6 +31,7 @@ export default class ReOrder extends PureComponent {
         onClick={this.#toggleReOrder}
         style={this.props.editor.state.reOrder ? { borderStyle: "inset" } : {}}
         title="Toggle re-order mode"
+        accessKey="r"
       >
         <FontAwesomeIcon icon={faSort} />
         &nbsp;Re-order components

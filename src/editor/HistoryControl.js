@@ -42,6 +42,7 @@ export default class HistoryControl extends Component {
           onClick={this.#undo}
           disabled={!this.state.hasPreviousState}
           title="Cancel last action"
+          accessKey="z"
         >
           <FontAwesomeIcon icon={faUndo} />
           &nbsp;Undo
@@ -50,6 +51,7 @@ export default class HistoryControl extends Component {
           onClick={redo}
           disabled={!this.state.hasNextState}
           title="Redo last action"
+          accessKey="y"
         >
           <FontAwesomeIcon icon={faRedo} />
           &nbsp;Redo
