@@ -9,6 +9,10 @@ const closeCurrentSession = statePersistance.clearCurrentSession.bind(
 );
 
 export default class Quit extends PureComponent {
+  componentDidMount() {
+    this.base.focus();
+  }
+
   render() {
     console.log("render");
     return (

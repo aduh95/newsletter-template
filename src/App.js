@@ -4,7 +4,7 @@ import {
 } from "offline-plugin/runtime";
 
 import { h, Component, Fragment } from "preact";
-import { Suspense, lazy, createPortal } from "preact/compat";
+import { Suspense, lazy } from "preact/compat";
 
 import statePersistance from "./app_global_state/templateComponents.js";
 import { PERSISTANT_STORAGE_KEY } from "./app_global_state/StatePersistance-const.js";
@@ -195,6 +195,7 @@ export default class App extends Component {
                 target="_blank"
                 rel="noopener"
                 href="https://github.com/aduh95/newsletter-template-builder"
+                tabIndex={9}
               >
                 View the code
               </a>
@@ -204,6 +205,7 @@ export default class App extends Component {
                 target="_blank"
                 rel="noopener"
                 href="https://github.com/aduh95/newsletter-template-builder/issues"
+                tabIndex={9}
               >
                 Report a bug
               </a>
@@ -213,6 +215,7 @@ export default class App extends Component {
                 target="_blank"
                 rel="noopener"
                 href="https://github.com/aduh95/newsletter-template-builder/blob/master/README.md#privacy"
+                tabIndex={9}
               >
                 Privacy
               </a>
