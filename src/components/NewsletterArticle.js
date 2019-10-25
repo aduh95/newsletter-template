@@ -70,14 +70,29 @@ export default class NewsletterArticle extends Component {
   #touchHandler = touchHandler.bind(this);
   #keyboardHandler = keyboardHandler.bind(this);
 
-  #closeDialog = () =>
-    this.setState({ writeMode: false }, () => this.base.focus());
+  #update = this.update.bind(this);
+  #closeDialog = () => this.setState({ writeMode: false }, this.focus);
 
   update(data) {
-    this.setState({
-      writeMode: false,
-      data: JSON.stringify(data),
-    });
+    this.setState(
+      {
+        writeMode: false,
+        data: JSON.stringify(data),
+      },
+      this.focus
+    );
+  }
+
+  focus() {
+    addEventListener(
+      "keyup",
+      () => {
+        requestIdleCallback(() => this.base.focus());
+      },
+      {
+        once: true,
+      }
+    );
   }
 
   render() {
@@ -133,7 +148,7 @@ export default class NewsletterArticle extends Component {
             focus: this.state.focus,
             focusOffset: this.state.focusOffset,
             focusText: this.state.focusText,
-            saveState: this.update.bind(this),
+            saveState: this.#update,
             resetState: this.#closeDialog,
           }}
         />
