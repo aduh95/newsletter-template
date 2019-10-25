@@ -11,10 +11,16 @@ export default class FeatureStories extends Component {
 
   #addSection = this.addSection.bind(this);
   #editSection = this.editSection.bind(this);
-  #resetState = () => this.setState({ edit: null });
+  #resetState = () => {
+    const { id } = this.state.edit;
+    this.setState({ edit: null }, () =>
+      this.base.querySelector(`a[href='#${id}']`)?.focus()
+    );
+  };
 
   #readyToConsumeState = false;
   #readyToCleanState = false;
+  #lastInsertedSectionId;
 
   addSection(e) {
     e.preventDefault();
@@ -22,6 +28,7 @@ export default class FeatureStories extends Component {
       edit: {
         type: SECTION_TYPE,
         saveState: newSectionData => {
+          this.#lastInsertedSectionId = newSectionData.id;
           this.setState(
             {
               edit: null,
@@ -67,6 +74,8 @@ export default class FeatureStories extends Component {
             navLink.href = "#" + updatedData.id;
             navLink.firstElementChild.src = updatedData.illustration;
             navLink.firstElementChild.alt = updatedData.illustrationDescription;
+
+            navLink.focus();
           },
         },
       });
@@ -75,10 +84,17 @@ export default class FeatureStories extends Component {
 
   componentDidUpdate() {
     if (this.#readyToCleanState) {
-      this.setState(
-        { newSection: null },
-        () => (this.#readyToCleanState = false)
-      );
+      this.setState({ newSection: null }, () => {
+        const addedSection = document.getElementById(
+          this.#lastInsertedSectionId
+        );
+        this.#readyToCleanState = false;
+        if (addedSection) {
+          requestAnimationFrame(() => {
+            addedSection.querySelector("button")?.focus();
+          });
+        }
+      });
     } else if (this.#readyToConsumeState) {
       this.#readyToCleanState = true;
       this.#readyToConsumeState = false;
