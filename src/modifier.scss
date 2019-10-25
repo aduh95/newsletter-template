@@ -1,7 +1,9 @@
 @mixin hoverEditHint($message) {
   &:hover:not(:focus) {
-    position: relative;
     outline: 1px solid #42b4e6;
+  }
+  &:hover {
+    position: relative;
     &::before {
       content: $message;
       position: absolute;
@@ -19,6 +21,9 @@
 [data-key][data-contents] > *,
 [data-link-to-edit] {
   @include hoverEditHint("Click to edit");
+  &:focus::before {
+    display: none;
+  }
 }
 [data-link-to-create] {
   @include hoverEditHint("Click to add a new element");

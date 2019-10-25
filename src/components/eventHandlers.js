@@ -13,6 +13,20 @@ export function touchHandler(e) {
   }
 }
 
+/**
+ *
+ * @param {KeyboardEvent} e
+ */
+export function keyboardHandler(e) {
+  if (e.keyCode === 13) {
+    dblClickHandler.call(this, e);
+  }
+}
+
+/**
+ *
+ * @param {MouseEvent} e
+ */
 export function clickHandler(e) {
   if (!this.state.writeMode && !e.ctrlKey && e.which === LEFT_CLICK_BUTTON) {
     e.preventDefault();
@@ -21,6 +35,12 @@ export function clickHandler(e) {
     if (el.nodeName === "A") {
       el.contentEditable = "true";
       setTimeout(() => {
+        try {
+          this.base.focus();
+        } catch {
+          el.blur();
+        }
+
         el.contentEditable = "false";
         if (!this.state.writeMode) {
           import("../notify")

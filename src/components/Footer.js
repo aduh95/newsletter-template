@@ -4,6 +4,7 @@ import {
   clickHandler,
   dblClickHandler,
   touchHandler,
+  keyboardHandler,
 } from "./eventHandlers.js";
 import Edit from "../edit_components/lazy-edit-component.js";
 import MarkdownContent from "../markdown/MarkdownContent.js";
@@ -14,6 +15,10 @@ export default class Footer extends Component {
   #touchHandler = touchHandler.bind(this);
   #clickHandler = clickHandler.bind(this);
   #dblClickHandler = this.dblClickHandler.bind(this);
+  #keyboardHandler = keyboardHandler.bind(this);
+
+  #closeDialog = () =>
+    this.setState({ writeMode: false }, () => this.base.focus());
 
   dblClickHandler(e) {
     if (!this.state.writeMode) {
@@ -65,6 +70,8 @@ export default class Footer extends Component {
         onTouchEnd={this.#touchHandler}
         onClick={this.#clickHandler}
         onDblclick={this.#dblClickHandler}
+        onKeyUp={this.#keyboardHandler}
+        tabIndex={0}
       >
         <output hidden data-key="text">
           {this.props.text}
@@ -84,7 +91,7 @@ export default class Footer extends Component {
             ...this.props,
             focusPosition: this.state.focusPosition,
             saveState: this.update.bind(this),
-            resetState: () => this.setState({ writeMode: false }),
+            resetState: this.#closeDialog,
           }}
         />
       </section>

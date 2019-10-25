@@ -24,6 +24,7 @@ const cleanHTML = node => {
       }
     }
     clone.removeAttribute("contenteditable");
+    clone.removeAttribute("tabindex");
   }
   Array.from(node.childNodes)
     .flatMap(cleanHTML)

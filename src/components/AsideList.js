@@ -4,6 +4,7 @@ import {
   clickHandler,
   dblClickHandler,
   touchHandler,
+  keyboardHandler,
 } from "./eventHandlers.js";
 import Edit from "../edit_components/lazy-edit-component.js";
 
@@ -13,6 +14,10 @@ export default class AsideList extends Component {
   #clickHandler = clickHandler.bind(this);
   #dblClickHandler = dblClickHandler.bind(this);
   #touchHandler = touchHandler.bind(this);
+  #keyboardHandler = keyboardHandler.bind(this);
+
+  #closeDialog = () =>
+    this.setState({ writeMode: false }, () => this.base.focus());
 
   update(data) {
     this.setState({
@@ -32,6 +37,8 @@ export default class AsideList extends Component {
         onClick={this.#clickHandler}
         onDblclick={this.#dblClickHandler}
         onTouchEnd={this.#touchHandler}
+        onKeyUp={this.#keyboardHandler}
+        tabIndex={0}
       >
         <h4 data-key="title">{this.props.title}</h4>
 
@@ -43,6 +50,7 @@ export default class AsideList extends Component {
                 href={href}
                 target="_blank"
                 rel="noopener"
+                tabIndex={-1}
               >
                 {label}
               </a>
@@ -58,7 +66,7 @@ export default class AsideList extends Component {
             focus: this.state.focus,
             focusOffset: this.state.focusOffset,
             saveState: this.update.bind(this),
-            resetState: () => this.setState({ writeMode: false }),
+            resetState: this.#closeDialog,
           }}
         />
       </article>
