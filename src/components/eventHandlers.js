@@ -18,8 +18,22 @@ export function touchHandler(e) {
  * @param {KeyboardEvent} e
  */
 export function keyboardHandler(e) {
-  if (e.key === "Enter") {
-    dblClickHandler.call(this, e);
+  switch (e.key) {
+    case "Enter":
+      dblClickHandler.call(this, e);
+      break;
+
+    case "Delete":
+      this.base.remove();
+      import("../notify.js")
+        .then(module => module.default)
+        .then(notify =>
+          notify("Article has been removed, use undo to restore it.")
+        );
+      break;
+
+    default:
+      console.log(e.key);
   }
 }
 
