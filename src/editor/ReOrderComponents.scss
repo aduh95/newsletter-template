@@ -28,8 +28,9 @@
     }
     &::after {
       content: "Click to reorder";
-      align-items: flex-start;
-      padding: 50vh 0;
+      position: sticky;
+      top: unset;
+      height: 100vh;
       font-weight: bold;
     }
   }
