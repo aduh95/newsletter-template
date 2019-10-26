@@ -14,7 +14,7 @@ export default class FeatureStories extends Component {
   #resetState = () => {
     const { id } = this.state.edit;
     this.setState({ edit: null }, () =>
-      this.base.querySelector(`a[href='#${id}']`)?.focus()
+      this.base.querySelector(`a[href='#${id || ""}']`)?.focus()
     );
   };
 
