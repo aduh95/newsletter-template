@@ -62,6 +62,9 @@ export default class EditMarkdownContent extends Component {
       e.stopImmediatePropagation();
       this.setState({ active: true });
     },
+    onFocus: () => {
+      this.setState({ active: true }, () => this.textarea.current?.focus());
+    },
   };
   #actionBar = (
     <p>
@@ -305,6 +308,9 @@ export default class EditMarkdownContent extends Component {
       <p
         onClick={e => {
           e.stopImmediatePropagation();
+          this.setState({ active: true });
+        }}
+        onFocus={() => {
           this.setState({ active: true });
         }}
       >
