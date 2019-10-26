@@ -18,7 +18,7 @@ export function touchHandler(e) {
  * @param {KeyboardEvent} e
  */
 export function keyboardHandler(e) {
-  if (e.keyCode === 13) {
+  if (e.key === "Enter") {
     dblClickHandler.call(this, e);
   }
 }

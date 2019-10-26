@@ -9,7 +9,7 @@ import {
   faEye,
 } from "@fortawesome/free-solid-svg-icons";
 
-import MarkdownContent from "./MarkdownContent";
+import MarkdownContent from "./MarkdownContent.js";
 import PrettierWorker from "./prettier.worker.js";
 import {
   UNORDERED_LIST,
@@ -196,7 +196,7 @@ export default class EditMarkdownContent extends Component {
       ~nextLineReturn ? nextLineReturn : undefined
     );
 
-    if (e.keyCode === 13) {
+    if (e.key === "Enter") {
       // Enter
       if (ul_patern.test(currentLine)) {
         e.preventDefault();
@@ -219,7 +219,7 @@ export default class EditMarkdownContent extends Component {
       } else if (list_end_patern.test(currentLine)) {
         e.target.setRangeText("\n", selectionStart - 3, selectionEnd, "end");
       }
-    } else if (e.keyCode === 9) {
+    } else if (e.key === "Tab") {
       // Tabulation
       if (list_end_patern.test(currentLine)) {
         e.preventDefault();
