@@ -43,13 +43,17 @@ export default class App extends Component {
 
   constructor() {
     super();
-    const currentState = sessionStorage.getItem(PERSISTANT_STORAGE_KEY);
-    if (currentState) {
-      Object.assign(this.state, JSON.parse(currentState));
-      sessionStorage.removeItem(PERSISTANT_STORAGE_KEY);
-      import("./app_global_state/History.js").then(m =>
-        m.default.recoverSavedState()
-      );
+    try {
+      const currentState = sessionStorage.getItem(PERSISTANT_STORAGE_KEY);
+      if (currentState) {
+        Object.assign(this.state, JSON.parse(currentState));
+        sessionStorage.removeItem(PERSISTANT_STORAGE_KEY);
+        import("./app_global_state/History.js").then(m =>
+          m.default.recoverSavedState()
+        );
+      }
+    } catch {
+      console.log("sessionStorage is not available");
     }
   }
 
