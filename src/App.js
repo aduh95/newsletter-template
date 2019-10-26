@@ -88,7 +88,9 @@ export default class App extends Component {
       const main = Array.isArray(data.main) ? data.main : null;
       const aside = Array.isArray(data.aside) ? data.aside : null;
 
-      this.setState({ aside, main });
+      this.setState({ aside, main }, () => {
+        (main && aside) || document.querySelector("input").focus();
+      });
     } catch (e) {
       console.warn(e, data);
       this.setState({ hasError: true });
