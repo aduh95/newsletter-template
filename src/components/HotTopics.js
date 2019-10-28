@@ -30,17 +30,7 @@ export default class HotTopics extends Component {
     if (this.#readyToCleanState) {
       this.setState({ newArticle: null }, () => {
         this.#readyToCleanState = false;
-        addEventListener(
-          "keyup",
-          () => {
-            requestIdleCallback(() =>
-              this.base?.querySelector("article:last-of-type")?.focus()
-            );
-          },
-          {
-            once: true,
-          }
-        );
+        this.base?.querySelector("article:last-of-type")?.focus();
       });
     } else if (this.#readyToConsumeState) {
       this.#readyToCleanState = true;
