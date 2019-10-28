@@ -201,7 +201,6 @@ export default class App extends Component {
                 target="_blank"
                 rel="noopener"
                 href="https://github.com/aduh95/newsletter-template-builder"
-                tabIndex={9}
               >
                 View the code
               </a>
@@ -211,7 +210,6 @@ export default class App extends Component {
                 target="_blank"
                 rel="noopener"
                 href="https://github.com/aduh95/newsletter-template-builder/issues"
-                tabIndex={9}
               >
                 Report a bug
               </a>
@@ -221,7 +219,6 @@ export default class App extends Component {
                 target="_blank"
                 rel="noopener"
                 href="https://github.com/aduh95/newsletter-template-builder/blob/master/README.md#privacy"
-                tabIndex={9}
               >
                 Privacy
               </a>
