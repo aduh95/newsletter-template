@@ -1,9 +1,9 @@
 CACHE MANIFEST
-#ver:10/28/2019, 2:43:55 PM
+#ver:10/28/2019, 7:11:47 PM
 #plugin:5.0.7
 
 CACHE:
-../5453111770a84d3ddef090639cdc067e.webmanifest
+../08415b6919146781813947d6af43e1d8.webmanifest
 ../949e7fc7c91b7ff54d3d.worker.js
 ../9934fcf3e23c2ee8b1da.worker.js
 ../15dfd6836f073958412f.worker.js
@@ -53,8 +53,11 @@ CACHE:
 ../35.bundle.js
 ../36.bundle.js
 ../37.bundle.js
-../icon-256.png
+../bw-logo.svg
 ../favicon.ico
+../icon-192.png
+../icon-512.png
+../logo.svg
 ../
 
 NETWORK:
