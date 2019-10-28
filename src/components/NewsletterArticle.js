@@ -70,6 +70,7 @@ export default class NewsletterArticle extends Component {
   #touchHandler = touchHandler.bind(this);
   #keyboardHandler = keyboardHandler.bind(this);
 
+  #onFocus = this.onFocus.bind(this);
   #update = this.update.bind(this);
   #closeDialog = () => this.setState({ writeMode: false }, this.focus);
 
@@ -83,16 +84,19 @@ export default class NewsletterArticle extends Component {
     );
   }
 
-  focus() {
-    addEventListener(
+  onFocus() {
+    this.base.removeEventListener("keydown", this.#keyboardHandler);
+    this.base.addEventListener(
       "keyup",
       () => {
-        requestIdleCallback(() => this.base.focus());
+        this.base.addEventListener("keydown", this.#keyboardHandler);
       },
-      {
-        once: true,
-      }
+      { once: true }
     );
+  }
+
+  focus() {
+    this.base.focus();
   }
 
   render() {
@@ -106,6 +110,7 @@ export default class NewsletterArticle extends Component {
         onDblclick={this.#dblClickHandler}
         onTouchEnd={this.#touchHandler}
         onKeyUp={this.#keyboardHandler}
+        onFocus={this.#onFocus}
         tabIndex={0}
       >
         <h4 data-key="title">{this.props.title}</h4>
