@@ -2,6 +2,7 @@ const path = require("path");
 
 const webpack = require("webpack");
 const HtmlWebPackPlugin = require("html-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   mode: "development",
@@ -47,6 +48,7 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin({ IS_BROWSER: true }),
+    new CopyPlugin([{ from: "public/*", flatten: true }]),
     new HtmlWebPackPlugin({ template: "./src/index.html" }),
   ],
   devtool: "inline-source-map",
