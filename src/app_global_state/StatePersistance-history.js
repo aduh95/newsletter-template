@@ -16,12 +16,12 @@ class StateHistory {
     const nextStateKeys = Object.keys(nextState);
 
     return (
-      nextStateKeys.reduce((pv, key) => pv && key in cachedState, true) &&
-      nextStateKeys.reduce(
-        (pv, key) =>
-          pv &&
-          JSON.stringify(nextState[key]) === JSON.stringify(cachedState[key]),
-        true
+      nextStateKeys.every(key => key in cachedState) &&
+      // Doing two rounds to avoid JSON string comparison when keys are already
+      // not the same as in the cache.
+      nextStateKeys.every(
+        key =>
+          JSON.stringify(nextState[key]) !== JSON.stringify(cachedState[key])
       )
     );
   }

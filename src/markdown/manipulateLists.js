@@ -143,9 +143,7 @@ export function handleListCommand(listType, textarea) {
 
     console.log(selectedLines);
 
-    if (
-      selectedLines.reduce((pv, line) => pv && sameListRegex.test(line), true)
-    ) {
+    if (selectedLines.every(line => sameListRegex.test(line))) {
       // The current selection already contains a list, so let's remove it
       console.log("selection across a list of same kind");
       textarea.setRangeText(
@@ -155,12 +153,7 @@ export function handleListCommand(listType, textarea) {
         beginningOfLineSelection,
         endOfLineSelection
       );
-    } else if (
-      selectedLines.reduce(
-        (pv, line) => pv && anyKindOfListRegex.test(line),
-        true
-      )
-    ) {
+    } else if (selectedLines.every(line => anyKindOfListRegex.test(line))) {
       // The current selection already contains a list, but of a different kind
       // Let's replace it with this list
       console.log("selection across a different kind of list");
