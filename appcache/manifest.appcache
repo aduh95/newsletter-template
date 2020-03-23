@@ -1,12 +1,12 @@
 CACHE MANIFEST
-#ver:10/28/2019, 7:11:47 PM
+#ver:23/03/2020, 16:51:41
 #plugin:5.0.7
 
 CACHE:
-../08415b6919146781813947d6af43e1d8.webmanifest
-../949e7fc7c91b7ff54d3d.worker.js
-../9934fcf3e23c2ee8b1da.worker.js
-../15dfd6836f073958412f.worker.js
+../cfc0dffbba2c4b1abadcb67b149cdd84.webmanifest
+../b1bef33280954b008ccf.worker.js
+../eb14665512a53505e879.worker.js
+../44d1adee71d79f1e0dc4.worker.js
 ../0.css
 ../0.bundle.js
 ../1.bundle.js
@@ -53,11 +53,11 @@ CACHE:
 ../35.bundle.js
 ../36.bundle.js
 ../37.bundle.js
-../bw-logo.svg
-../favicon.ico
-../icon-192.png
+../bw-icon.svg
 ../icon-512.png
-../logo.svg
+../icon-192.png
+../favicon.ico
+../icon.svg
 ../
 
 NETWORK:
